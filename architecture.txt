@@ -1,0 +1,35 @@
+/assets:
+
+/images: Para almacenar imágenes u otros recursos gráficos.
+/styles: Para almacenar archivos CSS globales, como tus configuraciones de Tailwind.
+/components:
+
+/common: Componentes reutilizables y pequeños (por ejemplo, botones, inputs).
+/layout: Componentes relacionados con la estructura general de las páginas, como Header, Footer, Sidebar.
+/UI: Componentes de interfaz de usuario más complejos que se pueden reutilizar (por ejemplo, Modal, Card, Table).
+/hooks:
+
+Para almacenar hooks personalizados de React. Por ejemplo, useAuth, useFetch, etc.
+/pages:
+
+Cada archivo representa una página completa de la aplicación. Ejemplos: HomePage.js, DashboardPage.js.
+/services:
+
+Para manejar la lógica de negocio y la interacción con APIs externas (incluyendo Firebase). Podrías tener archivos como authService.js, dataService.js.
+/connection:
+
+firebase.js: Aquí ya tienes la configuración de Firebase, y esta carpeta es ideal para manejar conexiones con otras APIs si las necesitas.
+/context:
+
+Para almacenar y manejar los contextos de React que utilices en tu aplicación, como AuthContext, ThemeContext.
+/utils:
+
+Para almacenar funciones auxiliares y utilidades, como formateadores, validadores, etc.
+App.js:
+
+El componente principal donde se combinan y organizan las rutas y layouts principales.
+index.js:
+
+El punto de entrada de tu aplicación, donde ReactDOM renderiza el componente App.
+index.css:
+Para configuraciones globales de CSS, incluyendo Tailwind.
