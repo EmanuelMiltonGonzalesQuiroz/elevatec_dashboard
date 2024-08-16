@@ -1,5 +1,3 @@
-// src/pages/login/Login.jsx
-
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { validateUserCredentials } from '../../services/auth';
@@ -22,7 +20,7 @@ const LoginForm = () => {
     try {
       const { success, userData } = await validateUserCredentials(username, password);
       if (success && userData) {
-        login(userData.username);
+        login(userData); // Guardar los datos del usuario
         window.location.href = '/dashboard';
       } else {
         setError(loginText.loginError);

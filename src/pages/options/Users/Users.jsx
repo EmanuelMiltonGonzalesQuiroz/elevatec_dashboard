@@ -83,7 +83,7 @@ const Users = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100">
+    <div className="p-6 bg-gray-100 text-black">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">{usersText.title}</h2>
         <button
@@ -95,7 +95,7 @@ const Users = () => {
       </div>
       <table className="min-w-full bg-white border">
         <thead>
-        <tr className='text-black font-bold'>
+          <tr className='text-black font-bold'>
             <th className="border px-4 py-2">{usersText.index}</th>
             <th className="border px-4 py-2">{usersText.username}</th>
             <th className="border px-4 py-2">{usersText.password}</th>
@@ -116,13 +116,13 @@ const Users = () => {
               <td className="border px-4 py-2">{user.role}</td>
               <td className="border px-4 py-2">
                 <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2 text-black"
                   onClick={() => handleOpenModal(user)}
                 >
                   {usersText.edit}
                 </button>
                 <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition text-black"
                   onClick={() => handleDeleteUser(user.id)}
                 >
                   {usersText.delete}
@@ -134,7 +134,7 @@ const Users = () => {
       </table>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">
               {currentUserId ? usersText.editUser : usersText.addUser}
@@ -182,13 +182,17 @@ const Users = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700">{usersText.role}</label>
-                <input
-                  type="text"
+                <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
                   className="w-full p-3 border rounded bg-gray-100 focus:outline-none"
-                />
+                >
+                  <option value="" disabled>{usersText.selectRole}</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Gerencia">Gerencia</option>
+                  <option value="Usuario">Usuario</option>
+                </select>
               </div>
               {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
               <div className="flex justify-end">

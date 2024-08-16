@@ -4,6 +4,7 @@ import Welcome from './pages/login/Welcome';
 import Login from './pages/login/Login';
 import Home from './pages/Home/Home'; // Asegúrate de que la ruta es correcta
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './services/ProtectedRoute'; // Importa el componente ProtectedRoute
 
 function App() {
   return (
@@ -12,7 +13,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Home />} />
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute element={Home} />} // Protege la ruta del dashboard
+          />
         </Routes>
       </Router>
     </AuthProvider>

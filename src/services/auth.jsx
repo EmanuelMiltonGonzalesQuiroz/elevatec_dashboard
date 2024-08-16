@@ -1,6 +1,5 @@
-// src/services/auth.js
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from '../connection/firebase'; // Asegúrate de que la ruta es correcta
+import { db } from '../connection/firebase';
 
 export async function validateUserCredentials(username, password) {
     try {
