@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from '../../assets/images/COTA LOGO/logo.png';
 import { welcomeText } from '../../components/common/Text/texts';
 
 const Welcome = () => {
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      window.location.href = '/login';
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="text-center p-10 bg-white rounded-lg shadow-lg">
