@@ -1,3 +1,4 @@
+
 // Importa las funciones necesarias desde los SDKs
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -17,6 +18,7 @@ const firebaseConfig = {
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
+// eslint-disable-next-line
 const analytics = getAnalytics(app);
 
 // Inicializa Firestore y Auth

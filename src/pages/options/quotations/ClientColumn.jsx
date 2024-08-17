@@ -1,10 +1,32 @@
-// src/pages/options/quotations/ClientColumn.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { homeText } from '../../../components/common/Text/texts';
 import NewClientModal from './NewClientModal';
+import { db } from '../../../connection/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import Select from 'react-select';
 
 const ClientColumn = ({ clientName, setClientName, handleReset }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'clients'));
+        const clientsList = querySnapshot.docs.map((doc) => ({
+          label: doc.data().name,
+          value: doc.id,
+          ...doc.data(),
+        }));
+        setClients(clientsList);
+      } catch (error) {
+        console.error('Error al obtener los clientes: ', error);
+      }
+    };
+
+    fetchClients();
+  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -14,19 +36,24 @@ const ClientColumn = ({ clientName, setClientName, handleReset }) => {
     setIsModalOpen(false);
   };
 
+  const handleClientChange = (selectedOption) => {
+    setSelectedClient(selectedOption);
+    setClientName(selectedOption ? selectedOption.label : '');
+  };
+
   return (
     <div className="col-span-1 flex flex-col text-black font-bold">
       <label htmlFor="clientName" className="mb-2 font-semibold text-black">
         {homeText.searchClient}
       </label>
       <div className="flex">
-        <input
-          type="text"
+        <Select
           id="clientName"
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
+          options={clients}
+          value={selectedClient}
+          onChange={handleClientChange}
           placeholder={homeText.searchClient}
-          className="p-2 border rounded-l focus:outline-none flex-grow"
+          className="flex-grow"
         />
         <button
           onClick={handleOpenModal}

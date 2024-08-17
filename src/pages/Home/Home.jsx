@@ -4,6 +4,7 @@ import Users from '../options/Users/Users';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
+import Clients from '../options/Clients/Clients';
 
 const Home = () => {
   const { currentUser } = useAuth();
@@ -21,7 +22,7 @@ const Home = () => {
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
           {activeContent === 'Cotizaciones' && <Quotations />}
-          {activeContent === 'Clientes' && <div>Clientes Content</div>}
+          {activeContent === 'Clientes' && <Clients/>}
           {activeContent === 'Usuarios' && <Users />}
           {activeContent === 'Ajustes' && <div>Ajustes Content</div>}
         </main>
