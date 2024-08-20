@@ -20,6 +20,7 @@ export const homeText = {
   clients: "Clientes",
   users: "Usuarios",
   settings: "Ajustes",
+  profile:"Perfil",
   logoutButton: "Cerrar Sesión",
   generateQuotation: "Generar Cotización",
   resetData: "Resetear datos",
@@ -75,4 +76,49 @@ export const quotationsText = {
   total: "Total",
   date: "Fecha",
   actions: "Acciones",
+};
+export const basicConfigurationsText = {
+  title: "Configuraciones Básicas",
+  index: "Índice",
+  name: "Nombre",
+  value: "Valor",
+  actions: "Acciones",
+};
+
+export const priceTableText = {
+  title: "Tabla de Precios",
+  index: "Índice",
+  name: "Nombre",
+  volumen: "Volumen por pieza m3",
+  price: "Precio Unitario",
+  actions: "Acciones",
+};
+
+export const elementsText = {
+  title: "Elementos",
+  index: "Índice",
+  name: "Nombre",
+  value: "Valor",
+  type: "Tipo",
+  description: "Descripción",
+  actions: "Acciones",
+};
+export const settingsText = {
+  groups: "Grupos",
+  elements: "Elementos",
+  motors: "Motores",
+  doors: "Puertas",
+  priceTable: "Tabla de Precios",
+  basicConfigurations: "Configuraciones Básicas",
+  internalConfigurations: "Configuraciones Internas",
+};
+export const groupsText = {
+  title: "Grupo: ",
+  number: "#",
+  name: "Nombre",
+  value: "Valor",
+  description: "Descripción",
+  actions: "Acciones",
+  edit: "Editar",
+  type: "Tipo: "
 };

@@ -7,7 +7,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
   useEffect(() => {
     loadQuotations();
-  }, []);
+  });
 
   const loadQuotations = async () => {
     try {

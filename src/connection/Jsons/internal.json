@@ -1,0 +1,102 @@
+[
+  {
+    "clase": "corredizas_de_cabina",
+    "items": [
+      {
+        "index": 1,
+        "velocidad_m_s": 1,
+        "precio": 10
+      },
+      {
+        "index": 2,
+        "velocidad_m_s": 1.5,
+        "precio": 23
+      },
+      {
+        "index": 3,
+        "velocidad_m_s": 1.75,
+        "precio": 80
+      },
+      {
+        "index": 4,
+        "velocidad_m_s": 2,
+        "precio": 120
+      }
+    ]
+  },
+  {
+    "clase": "corredizas_de_contrapeso",
+    "items": [
+      {
+        "index": 1,
+        "velocidad_m_s": 1,
+        "precio": 6
+      },
+      {
+        "index": 2,
+        "velocidad_m_s": 1.5,
+        "precio": 12
+      },
+      {
+        "index": 3,
+        "velocidad_m_s": 1.75,
+        "precio": 40
+      },
+      {
+        "index": 4,
+        "velocidad_m_s": 2,
+        "precio": 80
+      }
+    ]
+  },
+  {
+    "clase": "freno",
+    "items": [
+      {
+        "index": 1,
+        "velocidad_m_s": 1,
+        "precio": 117
+      },
+      {
+        "index": 2,
+        "velocidad_m_s": 1.5,
+        "precio": 200
+      },
+      {
+        "index": 3,
+        "velocidad_m_s": 1.75,
+        "precio": 250
+      },
+      {
+        "index": 4,
+        "velocidad_m_s": 2,
+        "precio": 350
+      }
+    ]
+  },
+  {
+    "clase": "regulador_de_velocidad",
+    "items": [
+      {
+        "index": 1,
+        "velocidad_m_s": 1,
+        "precio": 115
+      },
+      {
+        "index": 2,
+        "velocidad_m_s": 1.5,
+        "precio": 150
+      },
+      {
+        "index": 3,
+        "velocidad_m_s": 1.75,
+        "precio": 175
+      },
+      {
+        "index": 4,
+        "velocidad_m_s": 2,
+        "precio": 350
+      }
+    ]
+  }
+]

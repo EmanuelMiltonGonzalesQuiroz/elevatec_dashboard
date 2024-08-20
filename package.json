@@ -2,6 +2,7 @@
   "name": "elevatec_dashboard",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "firebase": "^9.0.0",
@@ -18,7 +19,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "react-scripts start"
+    "dev": "react-scripts start",
+    "loadJsons": "node src/connection/loadJsonsToFirestore.js"
   },
   "eslintConfig": {
     "extends": [

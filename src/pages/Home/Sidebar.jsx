@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { homeText } from '../../components/common/Text/texts';
-import { FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers, FaFileInvoiceDollar } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers, FaFileInvoiceDollar} from 'react-icons/fa';
+import { CgProfile } from "react-icons/cg";
 
 const Sidebar = ({ activeContent, setActiveContent }) => {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -54,6 +55,13 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           >
             <FaCog />
             {!isMinimized && <span className="ml-4">{homeText.settings}</span>}
+          </li>
+          <li
+            className={`p-4 cursor-pointer flex items-center ${activeContent === 'Perfil' ? 'bg-orange-500' : ''}`}
+            onClick={() => setActiveContent('Perfil')}
+          >
+            <CgProfile />
+            {!isMinimized && <span className="ml-4">{homeText.profile}</span>}
           </li>
         </ul>
       </nav>

@@ -1,0 +1,302 @@
+[
+  {
+    "clase": "2m/s",
+    "items": [
+      {
+        "index": 1,
+        "personas": 4,
+        "gearlessPotencia": 0,
+        "gearlessPrecio": 0,
+        "gearlessCanales": 0,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 2,
+        "personas": 6,
+        "gearlessPotencia": 8.4,
+        "gearlessPrecio": 3000,
+        "gearlessCanales": 8,
+        "conReducPotencia": 15,
+        "conReducPrecio": 4000,
+        "conReducCanales": 8
+      },
+      {
+        "index": 3,
+        "personas": 8,
+        "gearlessPotencia": 8.4,
+        "gearlessPrecio": 3000,
+        "gearlessCanales": 8,
+        "conReducPotencia": 15,
+        "conReducPrecio": 4000,
+        "conReducCanales": 8
+      },
+      {
+        "index": 4,
+        "personas": 10,
+        "gearlessPotencia": 10.7,
+        "gearlessPrecio": 4000,
+        "gearlessCanales": 8,
+        "conReducPotencia": 15,
+        "conReducPrecio": 5000,
+        "conReducCanales": 8
+      },
+      {
+        "index": 5,
+        "personas": 13,
+        "gearlessPotencia": 13.3,
+        "gearlessPrecio": 5000,
+        "gearlessCanales": 7,
+        "conReducPotencia": 18,
+        "conReducPrecio": 6000,
+        "conReducCanales": 8
+      },
+      {
+        "index": 6,
+        "personas": 15,
+        "gearlessPotencia": 16,
+        "gearlessPrecio": 5500,
+        "gearlessCanales": 8,
+        "conReducPotencia": 20,
+        "conReducPrecio": 6500,
+        "conReducCanales": 8
+      },
+      {
+        "index": 7,
+        "personas": 20,
+        "gearlessPotencia": 21.3,
+        "gearlessPrecio": 6500,
+        "gearlessCanales": 8,
+        "conReducPotencia": 22,
+        "conReducPrecio": 7500,
+        "conReducCanales": 8
+      }
+    ]
+  },
+  {
+    "clase": "1.5m/s",
+    "items": [
+      {
+        "index": 1,
+        "personas": 4,
+        "gearlessPotencia": 0,
+        "gearlessPrecio": 0,
+        "gearlessCanales": 0,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 2,
+        "personas": 6,
+        "gearlessPotencia": 4.5,
+        "gearlessPrecio": 1450,
+        "gearlessCanales": 5,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 3,
+        "personas": 8,
+        "gearlessPotencia": 6.3,
+        "gearlessPrecio": 1950,
+        "gearlessCanales": 5,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 4,
+        "personas": 10,
+        "gearlessPotencia": 8,
+        "gearlessPrecio": 2800,
+        "gearlessCanales": 6,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 5,
+        "personas": 13,
+        "gearlessPotencia": 10,
+        "gearlessPrecio": 3300,
+        "gearlessCanales": 7,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 6,
+        "personas": 15,
+        "gearlessPotencia": 12,
+        "gearlessPrecio": 3800,
+        "gearlessCanales": 8,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 7,
+        "personas": 20,
+        "gearlessPotencia": 10.7,
+        "gearlessPrecio": 5000,
+        "gearlessCanales": 10,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      }
+    ]
+  },
+  {
+    "clase": "1.75m/s",
+    "items": [
+      {
+        "index": 1,
+        "personas": 4,
+        "gearlessPotencia": 0,
+        "gearlessPrecio": 0,
+        "gearlessCanales": 0,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 2,
+        "personas": 6,
+        "gearlessPotencia": 5.3,
+        "gearlessPrecio": 1776,
+        "gearlessCanales": 5,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 3,
+        "personas": 8,
+        "gearlessPotencia": 7.4,
+        "gearlessPrecio": 2800,
+        "gearlessCanales": 5,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 4,
+        "personas": 10,
+        "gearlessPotencia": 9.3,
+        "gearlessPrecio": 3800,
+        "gearlessCanales": 6,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 5,
+        "personas": 13,
+        "gearlessPotencia": 11.7,
+        "gearlessPrecio": 4800,
+        "gearlessCanales": 7,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 6,
+        "personas": 15,
+        "gearlessPotencia": 14,
+        "gearlessPrecio": 5500,
+        "gearlessCanales": 8,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "index": 7,
+        "personas": 20,
+        "gearlessPotencia": 18.7,
+        "gearlessPrecio": 6000,
+        "gearlessCanales": 10,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      }
+    ]
+  },
+  {
+    "clase": "1m/s",
+    "items": [
+      {
+        "index": 1,
+        "personas": 4,
+        "gearlessPotencia": 3.3,
+        "gearlessPrecio": 1176,
+        "gearlessCanales": 3,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 900,
+        "conReducCanales": 5
+      },
+      {
+        "index": 2,
+        "personas": 6,
+        "gearlessPotencia": 3.3,
+        "gearlessPrecio": 1450,
+        "gearlessCanales": 4,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 900,
+        "conReducCanales": 5
+      },
+      {
+        "index": 3,
+        "personas": 8,
+        "gearlessPotencia": 4.2,
+        "gearlessPrecio": 1700,
+        "gearlessCanales": 5,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 900,
+        "conReducCanales": 5
+      },
+      {
+        "index": 4,
+        "personas": 10,
+        "gearlessPotencia": 5.3,
+        "gearlessPrecio": 2900,
+        "gearlessCanales": 6,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 5,
+        "personas": 13,
+        "gearlessPotencia": 6.7,
+        "gearlessPrecio": 4000,
+        "gearlessCanales": 7,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 6,
+        "personas": 15,
+        "gearlessPotencia": 8,
+        "gearlessPrecio": 4300,
+        "gearlessCanales": 7,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      },
+      {
+        "index": 7,
+        "personas": 20,
+        "gearlessPotencia": 10.7,
+        "gearlessPrecio": 5000,
+        "gearlessCanales": 7,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 5
+      }
+    ]
+  }
+]

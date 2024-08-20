@@ -1,0 +1,37 @@
+[
+  {
+    "clase": "basic_config",
+    "items": [
+      {
+        "index": 1,
+        "name": "Factura (%)",
+        "valor": 20
+      },
+      {
+        "index": 2,
+        "name": "Peso persona",
+        "valor": 75
+      }, 
+      {
+        "index": 3,
+        "name": "Transporte de un contenedor 40 pies más transporte terrestre",
+        "valor": 5000
+      },
+      {
+        "index": 4,
+        "name": "Utilidad (%)",
+        "valor": 25
+      },
+      {
+        "index": 5,
+        "name": "Volumen de un contenedor de 40 pies",
+        "valor": 60
+      },
+      {
+        "index": 6,
+        "name": "Volumen de un contenedor de 40 pies (%)",
+        "valor": 67.67
+      }
+    ]
+  }
+]

@@ -30,6 +30,16 @@ const LoginForm = () => {
     }
   };
 
+  const handleKeyDown = (event, nextField) => {
+    if (event.key === 'Enter') {
+      if (nextField) {
+        nextField.focus(); // Enfocar el siguiente campo
+      } else {
+        handleLogin(); // Si es el último campo, ejecutar la función de login
+      }
+    }
+  };
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-xs p-6 bg-white rounded-lg shadow-lg">
@@ -43,6 +53,7 @@ const LoginForm = () => {
           setShowPassword={setShowPassword}
           error={error}
           handleLogin={handleLogin}
+          handleKeyDown={handleKeyDown} // Pasamos la función handleKeyDown a los campos
         />
       </div>
     </div>
@@ -58,41 +69,49 @@ const LoginFields = ({
   setShowPassword,
   error,
   handleLogin,
-}) => (
-  <>
-    <div className="mb-4">
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder={loginText.usernamePlaceholder}
-        className="w-full p-3 border rounded bg-gray-100 text-black focus:outline-none"
-      />
-    </div>
-    <div className="mb-4 relative">
-      <input
-        type={showPassword ? 'text' : 'password'}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder={loginText.passwordPlaceholder}
-        className="w-full p-3 border rounded bg-gray-100 text-black focus:outline-none"
-      />
+  handleKeyDown,
+}) => {
+  let passwordInputRef = null; // Referencia para el campo de contraseña
+
+  return (
+    <>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder={loginText.usernamePlaceholder}
+          className="w-full p-3 border rounded bg-gray-100 text-black focus:outline-none"
+          onKeyDown={(e) => handleKeyDown(e, passwordInputRef)} // Pasar la referencia al campo de contraseña
+        />
+      </div>
+      <div className="mb-4 relative">
+        <input
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder={loginText.passwordPlaceholder}
+          className="w-full p-3 border rounded bg-gray-100 text-black focus:outline-none"
+          ref={(input) => (passwordInputRef = input)} // Asignar la referencia al campo de contraseña
+          onKeyDown={(e) => handleKeyDown(e, null)} // Si presiona Enter aquí, llama a handleLogin
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+        >
+          {showPassword ? '🙈' : '👁️'}
+        </button>
+      </div>
+      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
       <button
-        type="button"
-        onClick={() => setShowPassword(!showPassword)}
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+        onClick={handleLogin}
+        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition"
       >
-        {showPassword ? '🙈' : '👁️'}
+        {loginText.button}
       </button>
-    </div>
-    {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-    <button
-      onClick={handleLogin}
-      className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition"
-    >
-      {loginText.button}
-    </button>
-  </>
-);
+    </>
+  );
+};
 
 export default LoginForm;
