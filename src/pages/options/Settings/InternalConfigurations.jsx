@@ -1,30 +1,32 @@
-// src/pages/Settings/InternalConfigurations.jsx
-
 import React from 'react';
+import GroupsConfigurations from '../../../components/UI/GroupsConfigurations';
+import { internalConfigurationsText } from '../../../components/common/Text/texts';
 
 const InternalConfigurations = () => {
   return (
-    <div className="p-4 bg-gray-100 text-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6">Internal Configurations</h2>
-        <div className="grid grid-cols-1 gap-4">
-          {/* Reemplaza esto con los datos dinámicos */}
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">Cabin Sliders</h3>
-          </div>
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">Counterweight Sliders</h3>
-          </div>
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">Brake</h3>
-          </div>
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">Speed Regulator</h3>
-          </div>
-          {/* Agrega más configuraciones internas según sea necesario */}
-        </div>
-      </div>
-    </div>
+    <GroupsConfigurations
+      collectionName="internal_config"
+      columnsConfig={{
+        headers: [
+          internalConfigurationsText.number,        // #
+          internalConfigurationsText.speed,         // Velocidad (m/s)
+          internalConfigurationsText.price,         // Precio
+        ],
+        keys: [
+          'index',                                  // #
+          'velocidad_m_s',                          // Velocidad (m/s)
+          'precio',                                 // Precio
+        ],
+        fields: {
+          velocidad_m_s: internalConfigurationsText.speed,  // Velocidad (m/s)
+          precio: internalConfigurationsText.price,         // Precio
+        },
+      }}
+      textConfig={{
+        title: internalConfigurationsText.title,
+        type: internalConfigurationsText.type, // El tipo se mostrará solo si existe
+      }}
+    />
   );
 };
 

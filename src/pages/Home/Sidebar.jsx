@@ -1,6 +1,4 @@
-// src/components/layout/Sidebar.jsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { homeText } from '../../components/common/Text/texts';
 import { FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers, FaFileInvoiceDollar} from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
@@ -8,17 +6,31 @@ import { CgProfile } from "react-icons/cg";
 const Sidebar = ({ activeContent, setActiveContent }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
+  useEffect(() => {
+    // Automáticamente minimizar el Sidebar si la pantalla es pequeña (ej. celular)
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsMinimized(true);
+      } else {
+        setIsMinimized(false);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleToggleSidebar = () => {
     setIsMinimized(!isMinimized);
   };
 
   return (
     <div
-      className={`bg-gray-900 text-white flex flex-col ${
-        isMinimized
-          ? 'w-16' // Ancho cuando está minimizado
-          : 'w-[15%] xs:w-[75%]' // Ancho en computadoras y teléfonos cuando no está minimizado
-      } min-h-screen transition-all duration-300`}
+      className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-screen ${
+        isMinimized ? 'w-16' : 'w-[15%]'
+      }`}
     >
       <div className="p-4 flex justify-between items-center">
         {!isMinimized && <span className="text-lg font-bold">ELEVATEC</span>}
@@ -26,7 +38,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {isMinimized ? <FaChevronRight /> : <FaChevronLeft />}
         </button>
       </div>
-      <nav className="flex-grow">
+      <nav className="flex-grow overflow-y-auto">
         <ul>
           <li
             className={`p-4 cursor-pointer flex items-center ${activeContent === 'Cotizaciones' ? 'bg-orange-500' : ''}`}

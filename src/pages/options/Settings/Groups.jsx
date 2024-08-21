@@ -17,7 +17,6 @@ const Groups = () => {
       }}
       textConfig={{
         title: groupsText.title,
-        type: groupsText.type,
       }}
     />
   );

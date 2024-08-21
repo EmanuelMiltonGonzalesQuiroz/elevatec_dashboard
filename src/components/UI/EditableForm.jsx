@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../connection/firebase';
+import { editableformText } from '../../components/common/Text/texts';
 
 const EditableForm = ({ docId, collectionName, fields, initialValues, onClose, onSuccess }) => {
   const [formData, setFormData] = useState(initialValues);
@@ -14,8 +15,11 @@ const EditableForm = ({ docId, collectionName, fields, initialValues, onClose, o
     event.preventDefault();
 
     for (let key in fields) {
-      if (!formData[key]) {
-        setError(`El campo ${fields[key]} es obligatorio.`);
+      const value = formData[key];
+
+      // Validar que el campo no esté vacío
+      if (value === '' || value === null || value === undefined) {
+        setError(`El campo ${fields[key]} es obligatorio y no puede estar vacío.`);
         return;
       }
     }
@@ -42,7 +46,7 @@ const EditableForm = ({ docId, collectionName, fields, initialValues, onClose, o
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Editar {collectionName}</h2>
+        <h2 className="text-xl font-bold mb-4">{editableformText.title} {collectionName}</h2>
         <form onSubmit={handleSubmit}>
           {Object.keys(fields).map((key) => (
             <div className="mb-4" key={key}>
@@ -63,13 +67,13 @@ const EditableForm = ({ docId, collectionName, fields, initialValues, onClose, o
               onClick={onClose}
               className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition mr-2"
             >
-              Cancelar
+              {editableformText.cancel}
             </button>
             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
-              Actualizar
+              {editableformText.update}
             </button>
           </div>
         </form>

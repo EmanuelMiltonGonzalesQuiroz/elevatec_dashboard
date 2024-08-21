@@ -13,15 +13,15 @@ const QuotationForm = () => {
   };
 
   return (
-    <div className="flex p-4 bg-white rounded-lg shadow-lg w-full text-black space-x-8">
-      <div className="w-1/4">
+    <div className="min-h-screen flex flex-col">
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg">
         <ClientColumn
           clientName={clientName}
           setClientName={setClientName}
           handleReset={handleReset}
         />
       </div>
-      <div className="flex-grow grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg shadow-lg flex-grow max-h-[60vh] overflow-y-auto">
         <MainFormColumn1 />
         <MainFormColumn2 />
         <AdvancedOptionsColumn />

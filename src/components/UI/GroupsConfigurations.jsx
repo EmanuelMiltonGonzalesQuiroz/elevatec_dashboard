@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../connection/firebase';
 import ConfigurableTable from './ConfigurableTable';
-import GroupClassesColumn from './GroupClassesColumn'; // Componente secundario
+import GroupClassesColumn from './GroupClassesColumn';
 import EditableForm from './EditableForm';
 
 const GroupsConfigurations = ({ collectionName, columnsConfig, textConfig }) => {
@@ -20,11 +20,10 @@ const GroupsConfigurations = ({ collectionName, columnsConfig, textConfig }) => 
       const groupsSnapshot = await getDocs(groupsCollection);
       const groupsList = groupsSnapshot.docs.map(doc => {
         const groupData = doc.data();
-        const groupType = groupData.items && groupData.items.length > 0 ? groupData.items[0].tipo : 'Desconocido';
         return {
           id: doc.id,
           ...groupData,
-          tipo: groupType,
+          tipo: groupData.items && groupData.items[0]?.tipo ? groupData.items[0].tipo : null, // El tipo se establece solo si existe
         };
       });
 

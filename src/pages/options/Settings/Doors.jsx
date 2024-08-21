@@ -1,27 +1,44 @@
-// src/pages/Settings/Doors.jsx
-
 import React from 'react';
+import GroupsConfigurations from '../../../components/UI/GroupsConfigurations';
+import { doorsText } from '../../../components/common/Text/texts';
 
 const Doors = () => {
   return (
-    <div className="p-4 bg-gray-100 text-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6">Doors</h2>
-        <div className="grid grid-cols-1 gap-4">
-          {/* Reemplaza esto con los datos dinámicos */}
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">AP.CEN 4 LEAVES</h3>
-          </div>
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">AP.LAT 2 LEAVES</h3>
-          </div>
-          <div className="p-4 border rounded-lg bg-white shadow-md">
-            <h3 className="font-bold text-lg">AP.LAT 3 LEAVES</h3>
-          </div>
-          {/* Agrega más puertas según sea necesario */}
-        </div>
-      </div>
-    </div>
+    <GroupsConfigurations
+      collectionName="doors"
+      columnsConfig={{
+        headers: [
+          doorsText.number,           // #
+          doorsText.measure,          // Medida
+          doorsText.cabina,           // Cabina
+          doorsText.cDeVidrio,        // C. de vidrio
+          doorsText.pDeVidrio,        // P. de vidrio
+          doorsText.pInox,            // P. Inox
+          doorsText.pEpoxi,           // P. Epoxi
+        ],
+        keys: [
+          'index',                    // #
+          'medida',                   // Medida
+          'cabina',                   // Cabina
+          'c_de_vidrio',              // C. de vidrio
+          'p_de_vidrio',              // P. de vidrio
+          'p_inox',                   // P. Inox
+          'p_epoxi',                  // P. Epoxi
+        ],
+        fields: {
+          medida: doorsText.measure,          // Medida
+          cabina: doorsText.cabina,           // Cabina
+          c_de_vidrio: doorsText.cDeVidrio,   // C. de vidrio
+          p_de_vidrio: doorsText.pDeVidrio,   // P. de vidrio
+          p_inox: doorsText.pInox,            // P. Inox
+          p_epoxi: doorsText.pEpoxi,          // P. Epoxi
+        },
+      }}
+      textConfig={{
+        title: doorsText.title,
+        type: doorsText.type, // El tipo se mostrará solo si existe
+      }}
+    />
   );
 };
 

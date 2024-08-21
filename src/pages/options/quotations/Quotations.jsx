@@ -1,4 +1,3 @@
-// src/pages/options/quotations/Quotations.jsx
 import React, { useState } from 'react';
 import { quotationsText } from '../../../components/common/Text/texts';
 import QuotationForm from './QuotationForm';
@@ -8,7 +7,7 @@ const Quotations = () => {
   const [activeTab, setActiveTab] = useState('form');
 
   return (
-    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full">
+    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full h-full text-black">
       <div className="flex space-x-4">
         <button
           className={`p-2 ${activeTab === 'form' ? 'text-black font-bold' : 'text-blue-600'}`}
@@ -23,8 +22,10 @@ const Quotations = () => {
           <i className="fas fa-list"></i> {quotationsText.tabQuotationsList}
         </button>
       </div>
-      {activeTab === 'form' && <QuotationForm />}
-      {activeTab === 'list' && <QuotationList />}
+      <div className="flex-grow mt-4">
+        {activeTab === 'form' && <QuotationForm />}
+        {activeTab === 'list' && <QuotationList />}
+      </div>
     </div>
   );
 };

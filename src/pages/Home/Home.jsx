@@ -1,5 +1,4 @@
-// src/pages/Home/Home.jsx
-import React, { useState } from 'react';
+import React, { useState/*, useEffect*/ } from 'react';
 import Quotations from './../options/quotations/Quotations';
 import Users from '../options/Users/Users';
 import Clients from '../options/Clients/Clients';
@@ -37,15 +36,20 @@ const Home = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header />
+      {/* Header fijo con altura del 10% de la pantalla */}
+      <Header className="h-[10%] flex-shrink-0" />
       <div className="flex flex-grow">
+        {/* Sidebar con ancho fijo del 15% */}
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
-          {activeContent === 'Cotizaciones' && <Quotations />}
-          {activeContent === 'Clientes' && <Clients />}
-          {activeContent === 'Usuarios' && <Users />}
-          {activeContent === 'Ajustes' && <Settings />}
-          {activeContent === 'Perfil' && <Profile />}
+          {/* Contenido con restricciones de tamaño y scrolls si es necesario */}
+          <div className="max-w-[85vw] max-h-[80vh] overflow-auto">
+            {activeContent === 'Cotizaciones' && <Quotations />}
+            {activeContent === 'Clientes' && <Clients />}
+            {activeContent === 'Usuarios' && <Users />}
+            {activeContent === 'Ajustes' && <Settings />}
+            {activeContent === 'Perfil' && <Profile />}
+          </div>
         </main>
       </div>
     </div>

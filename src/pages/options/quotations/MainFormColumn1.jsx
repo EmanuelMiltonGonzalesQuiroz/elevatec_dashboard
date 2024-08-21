@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const MainFormColumn1 = () => {
   const [stops, setStops] = useState(0);
+  const [recorrido, setRecorrido] = useState(3.6); // Valor inicial editable
   const [errorMessage, setErrorMessage] = useState('');
   const [inoxDoors, setInoxDoors] = useState(0);
   const [epoxiDoors, setEpoxiDoors] = useState(0);
   const [vidrioDoors, setVidrioDoors] = useState(0);
-  const recorridoPorParada = 3.6; // Recorrido por cada parada
+  
   const floorOptions = [
     'Subsuelo',
     'Garaje',
@@ -21,16 +22,24 @@ const MainFormColumn1 = () => {
     Array(stops).fill('Planta baja')
   );
 
-  const handleStopsChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    setStops(value);
-    setFloorAssignments(Array(value).fill('Planta baja'));
-
-    if (value > 0) {
+  useEffect(() => {
+    const totalDoors = inoxDoors + epoxiDoors + vidrioDoors;
+    if (stops > 0 && totalDoors !== stops) {
       setErrorMessage('La suma de las puertas debe ser igual a las paradas');
     } else {
       setErrorMessage('');
     }
+  }, [stops, inoxDoors, epoxiDoors, vidrioDoors]);
+
+  const handleStopsChange = (e) => {
+    const value = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+    setStops(value);
+    setRecorrido(value * 3.6); // Recálculo de recorrido con paradas nuevas
+    setFloorAssignments(Array(value).fill('Planta baja'));
+  };
+
+  const handleRecorridoChange = (e) => {
+    setRecorrido(e.target.value === '' ? 0 : parseFloat(e.target.value));
   };
 
   const handleFloorAssignmentChange = (index, newValue) => {
@@ -40,12 +49,12 @@ const MainFormColumn1 = () => {
   };
 
   return (
-    <div className="col-span-1 gap-4">
-      <div>
+    <div className=" gap-1 text-black  overflow-y-auto p-4">
+      <div className="mb-4">
         <label htmlFor="persons" className="mb-2 font-semibold text-black">
           Personas
         </label>
-        <select id="persons" className="p-2 border rounded focus:outline-none w-full mb-4">
+        <select id="persons" className="p-2 border rounded focus:outline-none w-full">
           {Array.from({ length: 24 }, (_, i) => i + 1).map((num) => (
             <option key={num} value={num}>
               {num}
@@ -53,7 +62,8 @@ const MainFormColumn1 = () => {
           ))}
         </select>
       </div>
-      <div>
+      
+      <div className="mb-4">
         <label htmlFor="stops" className="mb-2 font-semibold text-black">
           Paradas
         </label>
@@ -64,7 +74,7 @@ const MainFormColumn1 = () => {
           max="99"
           value={stops}
           onChange={handleStopsChange}
-          className="p-2 border rounded focus:outline-none w-full mb-4"
+          className="p-2 border rounded focus:outline-none w-full"
         />
       </div>
 
@@ -76,11 +86,11 @@ const MainFormColumn1 = () => {
                 Recorrido (m)
               </label>
               <input
-                type="text"
+                type="number"
                 id="recorrido"
-                value={(stops * recorridoPorParada).toFixed(1)}
-                className="p-2 border rounded focus:outline-none w-full mb-4"
-                readOnly
+                value={recorrido}
+                onChange={handleRecorridoChange}
+                className="p-2 border rounded focus:outline-none w-full"
               />
             </div>
 
@@ -88,7 +98,7 @@ const MainFormColumn1 = () => {
               <label className="mb-2 font-semibold text-black">
                 Número de puertas
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="inox" className="block text-sm font-bold">
                     Inox
@@ -97,7 +107,7 @@ const MainFormColumn1 = () => {
                     type="number"
                     id="inox"
                     value={inoxDoors}
-                    onChange={(e) => setInoxDoors(parseInt(e.target.value, 10))}
+                    onChange={(e) => setInoxDoors(parseInt(e.target.value, 10) || 0)}
                     min="0"
                     className="p-2 border rounded focus:outline-none w-full"
                   />
@@ -110,7 +120,7 @@ const MainFormColumn1 = () => {
                     type="number"
                     id="epoxi"
                     value={epoxiDoors}
-                    onChange={(e) => setEpoxiDoors(parseInt(e.target.value, 10))}
+                    onChange={(e) => setEpoxiDoors(parseInt(e.target.value, 10) || 0)}
                     min="0"
                     className="p-2 border rounded focus:outline-none w-full"
                   />
@@ -123,7 +133,7 @@ const MainFormColumn1 = () => {
                     type="number"
                     id="vidrio"
                     value={vidrioDoors}
-                    onChange={(e) => setVidrioDoors(parseInt(e.target.value, 10))}
+                    onChange={(e) => setVidrioDoors(parseInt(e.target.value, 10) || 0)}
                     min="0"
                     className="p-2 border rounded focus:outline-none w-full"
                   />
@@ -131,9 +141,11 @@ const MainFormColumn1 = () => {
               </div>
             </div>
 
-            <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded">
-              {errorMessage}
-            </div>
+            {errorMessage && (
+              <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded">
+                {errorMessage}
+              </div>
+            )}
           </div>
 
           <div className="mb-4">
@@ -160,7 +172,7 @@ const MainFormColumn1 = () => {
       )}
 
       <div className="mb-4">
-        <label htmlFor="floors" className="block mb-1 font-semibold text-black">
+        <label htmlFor="floors" className="block mb-2 font-semibold text-black">
           Pisos a atender
         </label>
         <input
@@ -170,9 +182,9 @@ const MainFormColumn1 = () => {
           placeholder="Ejem.: PB-1-2-3-4..."
         />
       </div>
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <label htmlFor="front" className="block mb-1 font-semibold text-black">
+          <label htmlFor="front" className="block mb-2 font-semibold text-black">
             Frente (mm)
           </label>
           <input
@@ -183,7 +195,7 @@ const MainFormColumn1 = () => {
           />
         </div>
         <div>
-          <label htmlFor="depth" className="block mb-1 font-semibold text-black">
+          <label htmlFor="depth" className="block mb-2 font-semibold text-black">
             Profundidad (mm)
           </label>
           <input
@@ -194,9 +206,9 @@ const MainFormColumn1 = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <label htmlFor="pit" className="block mb-1 font-semibold text-black">
+          <label htmlFor="pit" className="block mb-2 font-semibold text-black">
             Foso (mm)
           </label>
           <input
@@ -207,7 +219,7 @@ const MainFormColumn1 = () => {
           />
         </div>
         <div>
-          <label htmlFor="height" className="block mb-1 font-semibold text-black">
+          <label htmlFor="height" className="block mb-2 font-semibold text-black">
             Huida (mm)
           </label>
           <input
@@ -219,7 +231,7 @@ const MainFormColumn1 = () => {
         </div>
       </div>
       <div className="mb-4">
-        <label htmlFor="numElevators" className="block mb-1 font-semibold text-black">
+        <label htmlFor="numElevators" className="block mb-2 font-semibold text-black">
           Número de ascensores
         </label>
         <input

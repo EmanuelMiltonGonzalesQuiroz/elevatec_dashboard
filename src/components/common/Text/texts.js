@@ -122,3 +122,61 @@ export const groupsText = {
   edit: "Editar",
   type: "Tipo: "
 };
+
+export const doorsText = {
+  title: "Puerta: ",
+  number: "#",
+  measure: "Medida",
+  cabina: "Cabina",
+  cDeVidrio: "C. de vidrio",
+  pDeVidrio: "P. de vidrio",
+  pInox: "P. Inox",
+  pEpoxi: "P. Epoxi",
+  actions: "Acciones",
+  type: "Tipo: ",
+};
+
+export const editableformText = {
+  title:"Editar: ",
+  update: "Actualizar",
+  cancel: "Cancelar"
+}
+
+export const internalConfigurationsText = {
+  title: "Configuración Interna: ",
+  number: "#",
+  speed: "Velocidad (m/s)",
+  price: "Precio",
+  actions: "Acciones",
+  type: "Tipo: "
+};
+export const motorsText = {
+  title: "Motor: ",
+  number: "#",
+  persons: "Personas",
+  gearleesPower: "Gearlees Potencia",
+  gearleesPrice: "Gearlees Precio",
+  gearleesChannels: "Gearlees Canales",
+  withReducerPower: "Con Reduc. Potencia",
+  withReducerPrice: "Con Reduc. Precio",
+  withReducerChannels: "Con Reduc. Canales",
+  actions: "Acciones",
+  type: "Tipo: "
+};
+export const advancedOptionsText = {
+  title: "Opciones avanzadas",
+  doors: "Puertas",
+  ard: "ARD",
+  cabinFinish: "Acabado puerta de cabina",
+  additionalMirror: "Espejo Adicional",
+  horizontalFloorIndicator: "Indicador de piso horizontal",
+  cardReader: "Lector de tarjetas",
+  additionalHandrail: "Pasamanos adicional",
+  floor: "Piso",
+  subCeiling: "SubTecho",
+  type: "Tipo",
+  controlPanel: "Tipo de botonera",
+  cabinButtons: "Tipo de botones en cabina",
+  floorButtons: "Tipo de botones en piso",
+  locks: "Llavines con llave",
+};

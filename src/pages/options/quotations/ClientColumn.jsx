@@ -1,32 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
 import NewClientModal from './NewClientModal';
-import { db } from '../../../connection/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import Select from 'react-select';
 
 const ClientColumn = ({ clientName, setClientName, handleReset }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
-
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'clients'));
-        const clientsList = querySnapshot.docs.map((doc) => ({
-          label: doc.data().name,
-          value: doc.id,
-          ...doc.data(),
-        }));
-        setClients(clientsList);
-      } catch (error) {
-        console.error('Error al obtener los clientes: ', error);
-      }
-    };
-
-    fetchClients();
-  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -42,35 +21,44 @@ const ClientColumn = ({ clientName, setClientName, handleReset }) => {
   };
 
   return (
-    <div className="col-span-1 flex flex-col text-black font-bold">
-      <label htmlFor="clientName" className="mb-2 font-semibold text-black">
-        {homeText.searchClient}
-      </label>
-      <div className="flex">
-        <Select
-          id="clientName"
-          options={clients}
-          value={selectedClient}
-          onChange={handleClientChange}
-          placeholder={homeText.searchClient}
-          className="flex-grow"
-        />
-        <button
-          onClick={handleOpenModal}
-          className="bg-green-500 text-white px-4 rounded-r hover:bg-green-700 transition"
-        >
-          +
-        </button>
+    <div className="flex flex-col items-center justify-center text-black font-bold h-full">
+      <div className="flex items-center mb-4">
+        <div className="flex flex-col mr-4">
+          <label htmlFor="clientName" className="mb-2 font-semibold text-black">
+            {homeText.searchClient}
+          </label>
+          <div className="flex items-center">
+            <CustomSelect
+              collectionName="clients"
+              placeholder={homeText.searchClient}
+              onChange={handleClientChange}
+              selectedValue={selectedClient}
+            />
+            <button
+              onClick={handleOpenModal}
+              className="bg-green-500 text-white px-4 rounded hover:bg-green-700 transition"
+              style={{
+                height: '39px',
+                borderRadius: '0 4px 4px 0',
+                marginLeft: '-2px',
+              }} // Ajuste para igualar la altura y pegar el botón
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <button className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition">
+            {homeText.generateQuotation}
+          </button>
+          <button
+            onClick={handleReset}
+            className="bg-red-500 text-white py-2 w-full rounded hover:bg-red-700 transition"
+          >
+            {homeText.resetData}
+          </button>
+        </div>
       </div>
-      <button className="mt-2 bg-green-500 text-white py-2 rounded hover:bg-green-700 transition">
-        {homeText.generateQuotation}
-      </button>
-      <button
-        onClick={handleReset}
-        className="mt-2 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition"
-      >
-        {homeText.resetData}
-      </button>
       {isModalOpen && <NewClientModal onClose={handleCloseModal} />}
     </div>
   );
