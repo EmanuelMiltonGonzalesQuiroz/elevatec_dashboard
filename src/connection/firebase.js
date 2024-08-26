@@ -1,9 +1,7 @@
-
 // Importa las funciones necesarias desde los SDKs
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
 
 // Configuración de Firebase para tu aplicación web
 const firebaseConfig = {
@@ -18,11 +16,31 @@ const firebaseConfig = {
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
-// eslint-disable-next-line
-const analytics = getAnalytics(app);
 
 // Inicializa Firestore y Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { db, auth };
+// Variable para controlar el número de lecturas
+let readCount = 0;
+const MAX_READS = 2000; // Límite máximo de lecturas permitidas
+
+// Wrapper para getDocs para controlar las lecturas
+const controlledGetDocs = async (collectionRef) => {
+    if (readCount >= MAX_READS) {
+        throw new Error("Número máximo de lecturas alcanzado");
+    }
+    readCount++;
+    return await getDocs(collectionRef);
+};
+
+// Resetear contador de lecturas (ejemplo: cada día, o bajo ciertas condiciones)
+const resetReadCount = () => {
+    readCount = 0;
+};
+
+// Ejemplo de uso en otro lugar de la aplicación
+// const collectionRef = collection(db, "tu-coleccion");
+// const snapshot = await controlledGetDocs(collectionRef);
+
+export { db, auth, controlledGetDocs, resetReadCount };

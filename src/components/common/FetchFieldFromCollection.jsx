@@ -1,22 +1,20 @@
-import {useEffect } from 'react';
+import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../connection/firebase';
 
-const FetchFieldFromCollection = ({ collectionName, fieldName, onDataFetched }) => {
+const FetchDocumentNames = ({ collectionName, onDataFetched }) => {
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDocNames = async () => {
       const collectionRef = collection(db, collectionName);
       const snapshot = await getDocs(collectionRef);
-      const items = snapshot.docs.flatMap(doc => 
-        doc.data().items.map(item => item[fieldName])
-      );
-      onDataFetched(items);
+      const names = snapshot.docs.map(doc => doc.id);
+      onDataFetched(names);
     };
 
-    fetchData();
-  }, [collectionName, fieldName, onDataFetched]);
+    fetchDocNames();
+  }, [collectionName, onDataFetched]);
 
   return null;
 };
 
-export default FetchFieldFromCollection;
+export default FetchDocumentNames;

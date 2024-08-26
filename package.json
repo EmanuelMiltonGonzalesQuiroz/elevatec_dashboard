@@ -4,8 +4,12 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@react-pdf-viewer/core": "^3.12.0",
     "@types/react-router-dom": "^5.3.3",
     "firebase": "^9.0.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "pdf-viewer-reactjs": "^2.2.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^5.3.0",

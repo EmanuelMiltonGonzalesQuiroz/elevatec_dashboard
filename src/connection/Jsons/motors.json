@@ -3,6 +3,7 @@
     "clase": "2m/s",
     "items": [
       {
+        "clase": "2m/s",
         "index": 1,
         "personas": 4,
         "gearlessPotencia": 0,
@@ -13,6 +14,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "2m/s",
         "index": 2,
         "personas": 6,
         "gearlessPotencia": 8.4,
@@ -23,6 +25,7 @@
         "conReducCanales": 8
       },
       {
+        "clase": "2m/s",
         "index": 3,
         "personas": 8,
         "gearlessPotencia": 8.4,
@@ -33,6 +36,7 @@
         "conReducCanales": 8
       },
       {
+        "clase": "2m/s",
         "index": 4,
         "personas": 10,
         "gearlessPotencia": 10.7,
@@ -43,6 +47,7 @@
         "conReducCanales": 8
       },
       {
+        "clase": "2m/s",
         "index": 5,
         "personas": 13,
         "gearlessPotencia": 13.3,
@@ -53,6 +58,7 @@
         "conReducCanales": 8
       },
       {
+        "clase": "2m/s",
         "index": 6,
         "personas": 15,
         "gearlessPotencia": 16,
@@ -63,6 +69,7 @@
         "conReducCanales": 8
       },
       {
+        "clase": "2m/s",
         "index": 7,
         "personas": 20,
         "gearlessPotencia": 21.3,
@@ -78,6 +85,7 @@
     "clase": "1.5m/s",
     "items": [
       {
+        "clase": "1.5m/s",
         "index": 1,
         "personas": 4,
         "gearlessPotencia": 0,
@@ -88,6 +96,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.5m/s",
         "index": 2,
         "personas": 6,
         "gearlessPotencia": 4.5,
@@ -98,6 +107,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1.5m/s",
         "index": 3,
         "personas": 8,
         "gearlessPotencia": 6.3,
@@ -108,6 +118,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1.5m/s",
         "index": 4,
         "personas": 10,
         "gearlessPotencia": 8,
@@ -118,6 +129,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1.5m/s",
         "index": 5,
         "personas": 13,
         "gearlessPotencia": 10,
@@ -128,6 +140,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1.5m/s",
         "index": 6,
         "personas": 15,
         "gearlessPotencia": 12,
@@ -138,6 +151,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1.5m/s",
         "index": 7,
         "personas": 20,
         "gearlessPotencia": 10.7,
@@ -153,6 +167,7 @@
     "clase": "1.75m/s",
     "items": [
       {
+        "clase": "1.75m/s",
         "index": 1,
         "personas": 4,
         "gearlessPotencia": 0,
@@ -163,6 +178,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 2,
         "personas": 6,
         "gearlessPotencia": 5.3,
@@ -173,6 +189,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 3,
         "personas": 8,
         "gearlessPotencia": 7.4,
@@ -183,6 +200,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 4,
         "personas": 10,
         "gearlessPotencia": 9.3,
@@ -193,6 +211,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 5,
         "personas": 13,
         "gearlessPotencia": 11.7,
@@ -203,6 +222,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 6,
         "personas": 15,
         "gearlessPotencia": 14,
@@ -213,6 +233,7 @@
         "conReducCanales": 0
       },
       {
+        "clase": "1.75m/s",
         "index": 7,
         "personas": 20,
         "gearlessPotencia": 18.7,
@@ -228,6 +249,7 @@
     "clase": "1m/s",
     "items": [
       {
+        "clase": "1m/s",
         "index": 1,
         "personas": 4,
         "gearlessPotencia": 3.3,
@@ -238,6 +260,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 2,
         "personas": 6,
         "gearlessPotencia": 3.3,
@@ -248,6 +271,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 3,
         "personas": 8,
         "gearlessPotencia": 4.2,
@@ -258,6 +282,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 4,
         "personas": 10,
         "gearlessPotencia": 5.3,
@@ -268,6 +293,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 5,
         "personas": 13,
         "gearlessPotencia": 6.7,
@@ -278,6 +304,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 6,
         "personas": 15,
         "gearlessPotencia": 8,
@@ -288,6 +315,7 @@
         "conReducCanales": 5
       },
       {
+        "clase": "1m/s",
         "index": 7,
         "personas": 20,
         "gearlessPotencia": 10.7,

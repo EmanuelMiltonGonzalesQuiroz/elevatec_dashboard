@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
+import { useUpdateFormData } from '../../../hooks/useUpdateFormData';
 import NewClientModal from './NewClientModal';
 
-const ClientColumn = ({ clientName, setClientName, handleReset }) => {
+const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleReset, onReset }) => {
+  const { updateFormData } = useUpdateFormData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
+  const [showMessage, setShowMessage] = useState('');
+
+  useEffect(() => {
+    if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
+      setSelectedClient({ label: formData['02_CLIENTE'] });
+    }
+  }, [formData, selectedClient]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -16,8 +25,30 @@ const ClientColumn = ({ clientName, setClientName, handleReset }) => {
   };
 
   const handleClientChange = (selectedOption) => {
-    setSelectedClient(selectedOption);
-    setClientName(selectedOption ? selectedOption.label : '');
+    if (selectedOption && selectedOption.label !== formData['02_CLIENTE']) {
+      setSelectedClient(selectedOption);
+      updateFormData({ field: '02_CLIENTE', value: selectedOption.label }, formData, setFormData);
+    }
+  };
+
+  const handleResetClient = () => {
+    setSelectedClient(null);
+    console.log('Formulario reseteado.');
+  };
+
+  const handleResetAll = () => {
+    handleReset();
+    handleResetClient();
+    if (onReset) {
+      onReset();  // Enviar señal a MainFormColumn1
+    }
+  };
+
+  const handleShowMessage = (message) => {
+    setShowMessage(message);
+    setTimeout(() => {
+      setShowMessage('');
+    }, 3000);
   };
 
   return (
@@ -41,24 +72,34 @@ const ClientColumn = ({ clientName, setClientName, handleReset }) => {
                 height: '39px',
                 borderRadius: '0 4px 4px 0',
                 marginLeft: '-2px',
-              }} // Ajuste para igualar la altura y pegar el botón
+              }}
             >
               +
             </button>
           </div>
         </div>
         <div className="flex flex-col">
-          <button className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition">
+          <button
+            onClick={() => handleGenerateQuotation(handleShowMessage)}
+            className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition"
+          >
             {homeText.generateQuotation}
           </button>
           <button
-            onClick={handleReset}
+            onClick={handleResetAll} // Aquí llamamos a la función que manejará el reset para todos los componentes
             className="bg-red-500 text-white py-2 w-full rounded hover:bg-red-700 transition"
           >
             {homeText.resetData}
           </button>
         </div>
       </div>
+
+      {showMessage && (
+        <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
+          {showMessage}
+        </div>
+      )}
+
       {isModalOpen && <NewClientModal onClose={handleCloseModal} />}
     </div>
   );

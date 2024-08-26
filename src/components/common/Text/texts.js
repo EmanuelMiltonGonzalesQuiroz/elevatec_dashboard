@@ -163,20 +163,67 @@ export const motorsText = {
   actions: "Acciones",
   type: "Tipo: "
 };
+
+export const ConfigurableTableText = {
+  Actions: "Acciones",
+  edit: "Editar",
+}
+
+const redAsterisk = <span style={{ color: 'red' }}>*</span>;
+
+export const mainFormColumn1Text = {
+  persons: <>{redAsterisk} Personas</>,
+  client: <>{redAsterisk} Cliente</>,
+  stops: <>{redAsterisk} Paradas</>,
+  recorrido: <>{redAsterisk} Recorrido (m)</>,
+  numberDoors: <>{redAsterisk} Número de puertas</>,
+  inoxDoors: <>{redAsterisk} Inox</>,
+  epoxiDoors: <>{redAsterisk} Epoxi</>,
+  vidrioDoors: <>{redAsterisk} Vidrio</>,
+  assignStop: <>{redAsterisk} Asignar Parada</>,
+  floorsToAttend: <>{redAsterisk} Pisos a atender</>,
+  front: <>{redAsterisk} Frente (mm)</>,
+  depth: <>{redAsterisk} Profundidad (mm)</>,
+  pit: <>{redAsterisk} Foso (mm)</>,
+  height: <>{redAsterisk} Huida (mm)</>,
+  numElevators: <>{redAsterisk} Número de ascensores</>,
+  doorError: "La suma de las puertas debe ser igual a las paradas",
+};
+
+
+export const mainFormColumn2Text = {
+  cabin: <>{redAsterisk} Cabina</>,
+  city: <>{redAsterisk} Ciudad</>,
+  embark: <>{redAsterisk} Embarque</>,
+  electricity: <>{redAsterisk} Energía Eléctrica</>,
+  cabinIndicator: <>{redAsterisk} Indicador de cabina/piso</>,
+  floorIndicator: <>{redAsterisk} Indicador de piso con botón Integrado</>,
+  tractionMachine: <>{redAsterisk} Máquina de tracción</>,
+  traction: <>{redAsterisk} Tracción</>,
+  speed: <>{redAsterisk} Velocidad</>,
+  note: <>{redAsterisk} Nota:</>,
+  noteDetails: [
+    "* Edificios < a 8 pisos velocidad 1m/s",
+    "* Edificios entre 7 y 15 pisos velocidad 1.5m/s",
+    "* Edificios > 15 pisos velocidad 1.75m/s",
+    "* Edificios > 25 pisos velocidad 2m/s",
+  ],
+};
+
 export const advancedOptionsText = {
   title: "Opciones avanzadas",
-  doors: "Puertas",
-  ard: "ARD",
-  cabinFinish: "Acabado puerta de cabina",
-  additionalMirror: "Espejo Adicional",
-  horizontalFloorIndicator: "Indicador de piso horizontal",
-  cardReader: "Lector de tarjetas",
-  additionalHandrail: "Pasamanos adicional",
-  floor: "Piso",
-  subCeiling: "SubTecho",
-  type: "Tipo",
-  controlPanel: "Tipo de botonera",
-  cabinButtons: "Tipo de botones en cabina",
-  floorButtons: "Tipo de botones en piso",
-  locks: "Llavines con llave",
+  doors: <>{redAsterisk} Puertas</>,
+  ard: <>{redAsterisk} ARD</>,
+  cabinFinish: <>{redAsterisk} Acabado puerta de cabina</>,
+  additionalMirror: <>{redAsterisk} Espejo Adicional</>,
+  horizontalFloorIndicator: <>{redAsterisk} Indicador de piso horizontal</>,
+  cardReader: <>{redAsterisk} Lector de tarjetas</>,
+  additionalHandrail: <>{redAsterisk} Pasamanos adicional</>,
+  floor: <>{redAsterisk} Piso</>,
+  subCeiling: <>{redAsterisk} SubTecho</>,
+  type: <>{redAsterisk} Tipo</>,
+  controlPanel: <>{redAsterisk} Tipo de botonera</>,
+  cabinButtons: <>{redAsterisk} Tipo de botones en cabina</>,
+  floorButtons: <>{redAsterisk} Tipo de botones en piso</>,
+  locks: <>{redAsterisk} Llavines con llave</>,
 };

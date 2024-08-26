@@ -1,4 +1,5 @@
 import React from 'react';
+import { ConfigurableTableText } from '../../components/common/Text/texts';
 
 const ConfigurableTable = ({ data, onEdit, columns }) => {
   return (
@@ -11,7 +12,7 @@ const ConfigurableTable = ({ data, onEdit, columns }) => {
               {columns.headers.map((header, index) => (
                 <th key={index} className="border px-2 py-2 text-center">{header}</th>
               ))}
-              <th className="border px-2 py-2 text-center w-24">Acciones</th>
+              <th className="border px-2 py-2 text-center w-24">{ConfigurableTableText.Actions}</th>
             </tr>
           </thead>
           <tbody>
@@ -26,7 +27,7 @@ const ConfigurableTable = ({ data, onEdit, columns }) => {
                       className="bg-yellow-500 text-white w-full h-full rounded hover:bg-yellow-700 transition"
                       onClick={() => onEdit(item)}
                     >
-                      Editar
+                      {ConfigurableTableText.edit}
                     </button>
                   </div>
                 </td>
