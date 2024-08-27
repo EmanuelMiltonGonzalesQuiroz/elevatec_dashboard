@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import calculateValues from './Calculation/calculateValues';
-import RenderCalculatedValuesTable from './Calculation/RenderCalculatedValuesTable';
-import RenderFormDataFieldsTable from './Calculation/RenderFormDataFieldsTable';
-import RenderComplexFieldsTable from './Calculation/RenderComplexFieldsTable';
-import areStringsSimilar from './Calculation/areStringsSimilar';
-import updateGrupo1 from './Calculation/updateGrupo1';
-import updateGrupo2 from './Calculation/updateGrupo2';
-import updateGrupo3 from './Calculation/updateGrupo3';
-import updateGrupo4 from './Calculation/updateGrupo4';
-import updateGrupo5 from './Calculation/updateGrupo5';
-import updateGrupo6 from './Calculation/updateGrupo6';
-import updateGrupo7 from './Calculation/updateGrupo7';
-import updateGrupo8 from './Calculation/updateGrupo8';
+import calculateValues from './calculateValues';
+import RenderCalculatedValuesTable from './RenderCalculatedValuesTable';
+import RenderFormDataFieldsTable from './RenderFormDataFieldsTable';
+import RenderComplexFieldsTable from './RenderComplexFieldsTable';
+import areStringsSimilar from './areStringsSimilar';
 
 const Calculation = ({ formData, allData, setFormData }) => {
   const [previousFormData, setPreviousFormData] = useState(null);
@@ -21,9 +13,8 @@ const Calculation = ({ formData, allData, setFormData }) => {
       const priceTableItems = allData.price_table["price table"].items;
       const formDataKeys = Object.keys(formData);
 
-      let updatedFormData = { ...formData }; // Hacemos una copia del formData
+      const updatedFormData = { ...formData }; // Hacemos una copia del formData
 
-      // Actualiza los datos basados en la tabla de precios
       priceTableItems.forEach(item => {
         const key = formDataKeys.find(key => areStringsSimilar(key, item.name));
         if (key) {
@@ -34,19 +25,6 @@ const Calculation = ({ formData, allData, setFormData }) => {
           };
         }
       });
-
-      const calculatedValues = calculateValues(updatedFormData);
-      const valor3 = calculatedValues.valor3;
-
-      // Aplica los cálculos para cada grupo
-      updatedFormData = updateGrupo1(updatedFormData, valor3);
-      updatedFormData = updateGrupo2(updatedFormData, valor3);
-      updatedFormData = updateGrupo3(updatedFormData, valor3);
-      updatedFormData = updateGrupo4(updatedFormData, valor3);
-      updatedFormData = updateGrupo5(updatedFormData, valor3);
-      updatedFormData = updateGrupo6(updatedFormData, valor3);
-      updatedFormData = updateGrupo7(updatedFormData, valor3);
-      updatedFormData = updateGrupo8(updatedFormData, valor3);
 
       if (JSON.stringify(updatedFormData) !== JSON.stringify(previousFormData)) {
         setFormData(updatedFormData); // Solo actualiza si hay cambios

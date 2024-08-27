@@ -77,7 +77,9 @@ const QuotationForm = () => {
           {formData.isGenerated && (
             <Validate
               formData={formData}
+              setFormData={setFormData}
               onShowMessage={handleShowMessage}
+              allData={allData} 
             />
           )}
         </>

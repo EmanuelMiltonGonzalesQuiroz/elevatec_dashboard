@@ -26,7 +26,7 @@ const useInitializeVariables = () => {
       "07_Huida": 0,
       "08_Número de ascensores": 0,
       "09_PISOS A ANTENDER": "",
-      RAMPUS: initializeVariable(),
+      Ramplus: initializeVariable(),
       Brakets: initializeVariable(),
       Pernos_brakets: initializeVariable(),
       Pernos_empalme_braket: initializeVariable(),
@@ -85,10 +85,7 @@ const useInitializeVariables = () => {
       Mano_de_obra_instalaciones: initializeVariable(),
       Costo_de_seguridad_agencias_transportes_internos: initializeVariable(),
       Comision_del_banco_intermediario: initializeVariable(),
-
-      // Nuevas variables
       Ciudad: [],
-      Embarque: [],
       EnergiaElectrica: [],
       IndicadorCabinaPiso: [],
       IndicadorPisoBoton: [],

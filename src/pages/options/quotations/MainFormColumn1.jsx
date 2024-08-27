@@ -47,7 +47,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
       '03_PERSONAS': localPersons,
       '01_PARADAS': localStops,
       '03_RECORRIDO': localRecorrido,
-      Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localInoxDoors-localEpoxiDoors-localVidrioDoors },
+      Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localInoxDoors },
       Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localEpoxiDoors },
       Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localVidrioDoors },
       '09_PISOS A ANTENDER': floorAssignments.join('-'),
