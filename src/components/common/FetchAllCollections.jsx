@@ -1,11 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../connection/firebase';
 
 const FetchAllCollections = ({ onDataFetched }) => {
+  const [lastFetchTime, setLastFetchTime] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
-      console.log('Fetching data from Firestore...'); // Añade este log para verificar consultas a la BD
+      const currentTime = Date.now();
+      if (currentTime - lastFetchTime < 5000) { 
+        console.log('Skipping fetch, waiting for cooldown period.');
+        return;
+      }
+
+      console.log('Fetching data from Firestore...'); // Log para verificar consultas a la BD
 
       const collections = [
         'basic_config',
@@ -20,7 +28,11 @@ const FetchAllCollections = ({ onDataFetched }) => {
       const dataPromises = collections.map(async (collectionName) => {
         const collectionRef = collection(db, collectionName);
         const snapshot = await getDocs(collectionRef);
-        return snapshot.docs.map(doc => doc.data());
+        const data = {};
+        snapshot.forEach((doc) => {
+          data[doc.id] = doc.data(); // Usa el ID del documento como la clave en lugar de un índice
+        });
+        return data;
       });
 
       const results = await Promise.all(dataPromises);
@@ -36,10 +48,12 @@ const FetchAllCollections = ({ onDataFetched }) => {
         motors: motors,
         price_table: priceTable,
       });
+
+      setLastFetchTime(currentTime); // Actualiza el tiempo del último fetch
     };
 
     fetchData();
-  }, [onDataFetched]);
+  }, [onDataFetched, lastFetchTime]);
 
   return null;
 };

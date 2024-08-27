@@ -71,8 +71,8 @@ const QuotationForm = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg shadow-lg flex-grow max-h-[60vh] overflow-y-auto">
             <MainFormColumn1 formData={formData} setFormData={setFormData} handleReset={handleReset} />
-            <MainFormColumn2 formData={formData} setFormData={setFormData} />
-            <AdvancedOptionsColumn formData={formData} setFormData={setFormData} />
+            <MainFormColumn2 formData={formData} setFormData={setFormData}allData={allData} />
+            <AdvancedOptionsColumn formData={formData} setFormData={setFormData} allData={allData}  />
           </div>
           {formData.isGenerated && (
             <Validate
