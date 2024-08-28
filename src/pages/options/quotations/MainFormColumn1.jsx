@@ -2,88 +2,62 @@ import React, { useState, useEffect } from 'react';
 import { mainFormColumn1Text } from '../../../components/common/Text/texts';
 
 const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
-  const persons = formData?.['03_PERSONAS'] || 0;
-  const stops = formData?.['01_PARADAS'] || 0;
-  const recorrido = formData?.['03_RECORRIDO'] || 0;
-  const inoxDoors = formData?.Puertas_en_inoxidable?.UNIDADES || 0;
-  const epoxiDoors = formData?.Puertas_En_Epoxi?.UNIDADES || 0;
-  const vidrioDoors = formData?.Puertas_En_Vidrio?.UNIDADES || 0;
-  const front = formData?.['04_Frente'] || 0;
-  const depth = formData?.['05_ProfundidadR'] || 0;
-  const pit = formData?.['06_Foso'] || 0;
-  const height = formData?.['07_Huida'] || 0;
-  const numElevators = formData?.['08_Número de ascensores'] || 0;
+  const initialFieldState = (field, defaultValue = 0) => formData?.[field] || defaultValue;
 
-  const [localPersons, setLocalPersons] = useState(persons);
-  const [localStops, setLocalStops] = useState(stops);
-  const [localRecorrido, setLocalRecorrido] = useState(recorrido);
-  const [localInoxDoors, setLocalInoxDoors] = useState(inoxDoors);
-  const [localEpoxiDoors, setLocalEpoxiDoors] = useState(epoxiDoors);
-  const [localVidrioDoors, setLocalVidrioDoors] = useState(vidrioDoors);
-  const [localFront, setLocalFront] = useState(front);
-  const [localDepth, setLocalDepth] = useState(depth);
-  const [localPit, setLocalPit] = useState(pit);
-  const [localHeight, setLocalHeight] = useState(height);
-  const [localNumElevators, setLocalNumElevators] = useState(numElevators);
-  const [floorAssignments, setFloorAssignments] = useState(Array(localStops).fill(''));
-  const [doorError, setDoorError] = useState('');
+  const [localFields, setLocalFields] = useState({
+    persons: initialFieldState('03_PERSONAS'),
+    stops: initialFieldState('01_PARADAS'),
+    recorrido: initialFieldState('03_RECORRIDO'),
+    inoxDoors: initialFieldState('Puertas_en_inoxidable', {}).UNIDADES || 0,
+    epoxiDoors: initialFieldState('Puertas_En_Epoxi', {}).UNIDADES || 0,
+    vidrioDoors: initialFieldState('Puertas_En_Vidrio', {}).UNIDADES || 0,
+    front: initialFieldState('04_Frente'),
+    depth: initialFieldState('05_ProfundidadR'),
+    pit: initialFieldState('06_Foso'),
+    height: initialFieldState('07_Huida'),
+    numElevators: initialFieldState('08_Número de ascensores'),
+  });
+
+  const initializeFloorAssignments = (stops) => {
+    return Array.from({ length: stops }, (_, i) => {
+      return i < 2 ? `Piso ${i + 1}` : 'Seleccionar opción';
+    });
+  };
+
+  const [floorAssignments, setFloorAssignments] = useState(initializeFloorAssignments(localFields.stops));
+  const [doorError] = useState('');
   const [floorAssignmentError, setFloorAssignmentError] = useState('');
 
-  const floorOptions = [
+  const floorOptions = (index) => [
     'Seleccionar opción',
+    ...Array.from({ length: localFields.stops }, (_, i) => `Piso ${i + 1}`),
     'Subsuelo',
     'Garaje',
     'Mezanine',
     'Terraza',
     'Planta baja',
-    ...Array.from({ length: localStops }, (_, i) => `Piso ${i + 1}`),
     'Otro',
   ];
 
-  // Actualiza formData cada vez que cambian los valores locales
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      '03_PERSONAS': localPersons,
-      '01_PARADAS': localStops,
-      '03_RECORRIDO': localRecorrido,
-      Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localInoxDoors },
-      Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localEpoxiDoors },
-      Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localVidrioDoors },
-      '09_PISOS A ANTENDER': floorAssignments.join('-'),
-      '04_Frente': localFront,
-      '05_ProfundidadR': localDepth,
-      '06_Foso': localPit,
-      '07_Huida': localHeight,
-      '08_Número de ascensores': localNumElevators,
-    }));
-  }, [
-    localPersons,
-    localStops,
-    localRecorrido,
-    localInoxDoors,
-    localEpoxiDoors,
-    localVidrioDoors,
-    floorAssignments,
-    localFront,
-    localDepth,
-    localPit,
-    localHeight,
-    localNumElevators,
-    setFormData,
-  ]);
+        '03_PERSONAS': localFields.persons,
+        '01_PARADAS': localFields.stops,
+        '03_RECORRIDO': localFields.recorrido,
+        Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localFields.inoxDoors },
+        Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localFields.epoxiDoors },
+        Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localFields.vidrioDoors },
+        '09_PISOS A ANTENDER': floorAssignments.join('-'),
+        '04_Frente': localFields.front,
+        '05_ProfundidadR': localFields.depth,
+        '06_Foso': localFields.pit,
+        '07_Huida': localFields.height,
+        '08_Número de ascensores': localFields.numElevators,
+      }));
+  }, [localFields, floorAssignments, setFormData]);
 
-  // Validación del número de puertas vs paradas
-  useEffect(() => {
-    const totalDoors = localInoxDoors + localEpoxiDoors + localVidrioDoors;
-    if (localStops > 0 && totalDoors !== localStops) {
-      setDoorError(mainFormColumn1Text.doorError);
-    } else {
-      setDoorError('');
-    }
-  }, [localStops, localInoxDoors, localEpoxiDoors, localVidrioDoors]);
 
-  // Validación de asignaciones de paradas únicas
   useEffect(() => {
     const uniqueAssignments = new Set(floorAssignments.filter(assignment => assignment !== 'Seleccionar opción'));
     if (uniqueAssignments.size !== floorAssignments.length) {
@@ -93,38 +67,37 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     }
   }, [floorAssignments]);
 
-  // Maneja el reset
   useEffect(() => {
     if (onReset) {
-      setLocalPersons(0);
-      setLocalStops(0);
-      setLocalRecorrido(0);
-      setLocalInoxDoors(0);
-      setLocalEpoxiDoors(0);
-      setLocalVidrioDoors(0);
-      setLocalFront(0);
-      setLocalDepth(0);
-      setLocalPit(0);
-      setLocalHeight(0);
-      setLocalNumElevators(0);
-      setFloorAssignments([]);
+      setLocalFields({
+        persons: 0,
+        stops: 0,
+        recorrido: 0,
+        inoxDoors: 0,
+        epoxiDoors: 0,
+        vidrioDoors: 0,
+        front: 0,
+        depth: 0,
+        pit: 0,
+        height: 0,
+        numElevators: 0,
+      });
+      setFloorAssignments(initializeFloorAssignments(0));
     }
   }, [onReset]);
 
-  // Maneja cambios en los campos
-  const handlePersonsChange = (e) => setLocalPersons(parseInt(e.target.value, 10) || 0);
-  const handleStopsChange = (e) => {
-    const value = parseInt(e.target.value, 10) || 0;
-    setLocalStops(value);
-    setLocalRecorrido(value * 3.6);
-    setFloorAssignments(Array(value).fill(''));
+  const handleChange = (field, value) => {
+    setLocalFields(prev => ({
+      ...prev,
+      [field]: value,
+    }));
   };
-  const handleRecorridoChange = (e) => setLocalRecorrido(parseFloat(e.target.value) || 0);
-  const handleFrontChange = (e) => setLocalFront(parseFloat(e.target.value) || 0);
-  const handleDepthChange = (e) => setLocalDepth(parseFloat(e.target.value) || 0);
-  const handlePitChange = (e) => setLocalPit(parseFloat(e.target.value) || 0);
-  const handleHeightChange = (e) => setLocalHeight(parseFloat(e.target.value) || 0);
-  const handleNumElevatorsChange = (e) => setLocalNumElevators(parseInt(e.target.value, 10) || 0);
+
+  const handleStopsChange = (value) => {
+    handleChange('stops', value);
+    handleChange('recorrido', value * 3.6);
+    setFloorAssignments(initializeFloorAssignments(value));
+  };
 
   const handleFloorAssignmentChange = (index, newValue) => {
     const updatedAssignments = [...floorAssignments];
@@ -132,9 +105,22 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     setFloorAssignments(updatedAssignments);
   };
 
-  const handleInoxDoorsChange = (e) => setLocalInoxDoors(parseInt(e.target.value, 10) || 0);
-  const handleEpoxiDoorsChange = (e) => setLocalEpoxiDoors(parseInt(e.target.value, 10) || 0);
-  const handleVidrioDoorsChange = (e) => setLocalVidrioDoors(parseInt(e.target.value, 10) || 0);
+  const renderInputField = (id, label, value, onChangeHandler, placeholder = '0') => (
+    <div>
+      <label htmlFor={id} className="block mb-2 font-semibold text-black">
+        {label}
+      </label>
+      <input
+        type="number"
+        id={id}
+        value={value}
+        onChange={onChangeHandler}
+        className="p-2 border rounded focus:outline-none w-full"
+        placeholder={placeholder}
+        onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
+      />
+    </div>
+  );
 
   return (
     <div className="gap-1 text-black overflow-y-auto p-4">
@@ -144,8 +130,8 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
         </label>
         <select
           id="persons"
-          value={localPersons}
-          onChange={handlePersonsChange}
+          value={localFields.persons}
+          onChange={(e) => handleChange('persons', parseInt(e.target.value, 10) || 0)}
           className="p-2 border rounded focus:outline-none w-full"
         >
           <option value="">{mainFormColumn1Text.selectOption}</option>
@@ -166,13 +152,14 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
           id="stops"
           min="0"
           max="99"
-          value={localStops}
-          onChange={handleStopsChange}
+          value={localFields.stops}
+          onChange={(e) => handleStopsChange(parseInt(e.target.value, 10) || 0)}
           className="p-2 border rounded focus:outline-none w-full"
+          onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
         />
       </div>
 
-      {localStops > 0 && (
+      {localFields.stops > 0 && (
         <>
           <div className="border p-4 rounded bg-gray-100 mb-4">
             <div className="mb-4">
@@ -182,9 +169,10 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
               <input
                 type="number"
                 id="recorrido"
-                value={localRecorrido}
-                onChange={handleRecorridoChange}
+                value={localFields.recorrido}
+                onChange={(e) => handleChange('recorrido', parseFloat(e.target.value) || 0)}
                 className="p-2 border rounded focus:outline-none w/full"
+                onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
               />
             </div>
 
@@ -193,45 +181,9 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
                 {mainFormColumn1Text.numberDoors}
               </label>
               <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="inox" className="block text-sm font-bold">
-                    {mainFormColumn1Text.inoxDoors}
-                  </label>
-                  <input
-                    type="number"
-                    id="inox"
-                    value={localInoxDoors}
-                    onChange={handleInoxDoorsChange}
-                    min="0"
-                    className="p-2 border rounded focus:outline-none w/full"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="epoxi" className="block text-sm font-bold">
-                    {mainFormColumn1Text.epoxiDoors}
-                  </label>
-                  <input
-                    type="number"
-                    id="epoxi"
-                    value={localEpoxiDoors}
-                    onChange={handleEpoxiDoorsChange}
-                    min="0"
-                    className="p-2 border rounded focus:outline-none w/full"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="vidrio" className="block text-sm font-bold">
-                    {mainFormColumn1Text.vidrioDoors}
-                  </label>
-                  <input
-                    type="number"
-                    id="vidrio"
-                    value={localVidrioDoors}
-                    onChange={handleVidrioDoorsChange}
-                    min="0"
-                    className="p-2 border rounded focus:outline-none w/full"
-                  />
-                </div>
+                {renderInputField('inox', mainFormColumn1Text.inoxDoors, localFields.inoxDoors, (e) => handleChange('inoxDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField('epoxi', mainFormColumn1Text.epoxiDoors, localFields.epoxiDoors, (e) => handleChange('epoxiDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField('vidrio', mainFormColumn1Text.vidrioDoors, localFields.vidrioDoors, (e) => handleChange('vidrioDoors', parseInt(e.target.value, 10) || 0))}
               </div>
             </div>
 
@@ -253,7 +205,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
                   value={assignment}
                   onChange={(e) => handleFloorAssignmentChange(index, e.target.value)}
                 >
-                  {floorOptions.map((floor, i) => (
+                  {floorOptions(index).map((floor, i) => (
                     <option key={i} value={floor}>
                       {floor}
                     </option>
@@ -272,76 +224,20 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
       )}
 
       <div className="mb-4">
-        <label htmlFor="front" className="block mb-2 font-semibold text-black">
-          {mainFormColumn1Text.front}
-        </label>
-        <input
-          type="number"
-          id="front"
-          value={localFront}
-          onChange={handleFrontChange}
-          className="p-2 border rounded focus:outline-none w/full"
-          placeholder="0"
-        />
-      </div>
+        <h3 className="font-semibold text-lg mb-2">Pozo (mm)</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {renderInputField('front', mainFormColumn1Text.front, localFields.front, (e) => handleChange('front', parseFloat(e.target.value) || 0))}
+          {renderInputField('depth', mainFormColumn1Text.depth, localFields.depth, (e) => handleChange('depth', parseFloat(e.target.value) || 0))}
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-4 mb-4">
-        <div>
-          <label htmlFor="depth" className="block mb-2 font-semibold text-black">
-            {mainFormColumn1Text.depth}
-          </label>
-          <input
-            type="number"
-            id="depth"
-            value={localDepth}
-            onChange={handleDepthChange}
-            className="p-2 border rounded focus:outline-none w/full"
-            placeholder="0"
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          {renderInputField('pit', mainFormColumn1Text.pit, localFields.pit, (e) => handleChange('pit', parseFloat(e.target.value) || 0))}
+          {renderInputField('height', mainFormColumn1Text.height, localFields.height, (e) => handleChange('height', parseFloat(e.target.value) || 0))}
         </div>
-        <div>
-          <label htmlFor="pit" className="block mb-2 font-semibold text-black">
-            {mainFormColumn1Text.pit}
-          </label>
-          <input
-            type="number"
-            id="pit"
-            value={localPit}
-            onChange={handlePitChange}
-            className="p-2 border rounded focus:outline-none w/full"
-            placeholder="0"
-          />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-4 mb-4">
-        <div>
-          <label htmlFor="height" className="block mb-2 font-semibold text-black">
-            {mainFormColumn1Text.height}
-          </label>
-          <input
-            type="number"
-            id="height"
-            value={localHeight}
-            onChange={handleHeightChange}
-            className="p-2 border rounded focus:outline-none w/full"
-            placeholder="0"
-          />
-        </div>
-        <div>
-          <label htmlFor="numElevators" className="block mb-2 font-semibold text-black">
-            {mainFormColumn1Text.numElevators}
-          </label>
-          <input
-            type="number"
-            id="numElevators"
-            value={localNumElevators}
-            onChange={handleNumElevatorsChange}
-            min="1"
-            max="99"
-            className="p-2 border rounded focus:outline-none w/full"
-            placeholder="1"
-          />
+        <div className="mt-4">
+          {renderInputField('numElevators', mainFormColumn1Text.numElevators, localFields.numElevators, (e) => handleChange('numElevators', parseInt(e.target.value, 10) || 0))}
         </div>
       </div>
     </div>

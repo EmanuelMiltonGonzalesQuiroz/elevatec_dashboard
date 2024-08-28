@@ -182,6 +182,7 @@ export const mainFormColumn1Text = {
   vidrioDoors: <>{redAsterisk} Vidrio</>,
   assignStop: <>{redAsterisk} Asignar Parada</>,
   floorsToAttend: <>{redAsterisk} Pisos a atender</>,
+  pozo: <>{redAsterisk} Pozo (mm)</>,
   front: <>{redAsterisk} Frente (mm)</>,
   depth: <>{redAsterisk} Profundidad (mm)</>,
   pit: <>{redAsterisk} Foso (mm)</>,
