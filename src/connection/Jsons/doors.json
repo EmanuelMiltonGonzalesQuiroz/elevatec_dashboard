@@ -5,8 +5,9 @@
       {
         "index": 1,
         "medida": "600mm",
-        "cabina": 630,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 630,
+        "c_epoxi": 580,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 354,
         "p_epoxi": 258
@@ -14,8 +15,9 @@
       {
         "index": 2,
         "medida": "650mm",
-        "cabina": 630,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 630,
+        "c_epoxi": 580,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 354,
         "p_epoxi": 258
@@ -23,8 +25,9 @@
       {
         "index": 3,
         "medida": "700mm",
-        "cabina": 630,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 630,
+        "c_epoxi": 580,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 354,
         "p_epoxi": 258
@@ -32,8 +35,9 @@
       {
         "index": 4,
         "medida": "750mm",
-        "cabina": 630,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 630,
+        "c_epoxi": 580,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 354,
         "p_epoxi": 258
@@ -41,8 +45,9 @@
       {
         "index": 5,
         "medida": "800mm",
-        "cabina": 630,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 630,
+        "c_epoxi": 580,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 354,
         "p_epoxi": 258
@@ -50,8 +55,9 @@
       {
         "index": 6,
         "medida": "900mm",
-        "cabina": 680,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 680,
+        "c_epoxi": 630,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 404,
         "p_epoxi": 308
@@ -59,8 +65,9 @@
       {
         "index": 7,
         "medida": "1000mm",
-        "cabina": 830,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 830,
+        "c_epoxi": 780,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 554,
         "p_epoxi": 458
@@ -68,8 +75,9 @@
       {
         "index": 8,
         "medida": "1100mm",
-        "cabina": 980,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 980,
+        "c_epoxi": 930,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 704,
         "p_epoxi": 608
@@ -82,8 +90,9 @@
       {
         "index": 1,
         "medida": "600mm",
-        "cabina": 482,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 482,
+        "c_epoxi": 432,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 261,
         "p_epoxi": 170
@@ -91,8 +100,9 @@
       {
         "index": 2,
         "medida": "650mm",
-        "cabina": 482,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 482,
+        "c_epoxi": 432,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 261,
         "p_epoxi": 170
@@ -100,8 +110,9 @@
       {
         "index": 3,
         "medida": "700mm",
-        "cabina": 482,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 482,
+        "c_epoxi": 432,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 261,
         "p_epoxi": 170
@@ -109,8 +120,9 @@
       {
         "index": 4,
         "medida": "750mm",
-        "cabina": 482,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 482,
+        "c_epoxi": 432,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 261,
         "p_epoxi": 170
@@ -118,8 +130,9 @@
       {
         "index": 5,
         "medida": "800mm",
-        "cabina": 482,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 482,
+        "c_epoxi": 432,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 261,
         "p_epoxi": 170
@@ -127,8 +140,9 @@
       {
         "index": 6,
         "medida": "900mm",
-        "cabina": 497,
-        "c_de_vidrio": 729,
+        "c_inoxidable": 497,
+        "c_epoxi": 447,
+        "c_vidrio": 729,
         "p_de_vidrio": 476,
         "p_inox": 278,
         "p_epoxi": 181
@@ -136,8 +150,9 @@
       {
         "index": 7,
         "medida": "1000mm",
-        "cabina": 597,
-        "c_de_vidrio": 879,
+        "c_inoxidable": 597,
+        "c_epoxi": 547,
+        "c_vidrio": 879,
         "p_de_vidrio": 546,
         "p_inox": 450,
         "p_epoxi": 205
@@ -145,8 +160,9 @@
       {
         "index": 8,
         "medida": "1100mm",
-        "cabina": 697,
-        "c_de_vidrio": 979,
+        "c_inoxidable": 697,
+        "c_epoxi": 647,
+        "c_vidrio": 979,
         "p_de_vidrio": 616,
         "p_inox": 500,
         "p_epoxi": 255
@@ -159,8 +175,9 @@
       {
         "index": 1,
         "medida": "600mm",
-        "cabina": 625,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 625,
+        "c_epoxi": 575,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 355,
         "p_epoxi": 255
@@ -168,8 +185,9 @@
       {
         "index": 2,
         "medida": "650mm",
-        "cabina": 625,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 625,
+        "c_epoxi": 575,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 355,
         "p_epoxi": 255
@@ -177,8 +195,9 @@
       {
         "index": 3,
         "medida": "700mm",
-        "cabina": 625,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 625,
+        "c_epoxi": 575,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 355,
         "p_epoxi": 255
@@ -186,8 +205,9 @@
       {
         "index": 4,
         "medida": "750mm",
-        "cabina": 625,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 625,
+        "c_epoxi": 575,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 355,
         "p_epoxi": 255
@@ -195,8 +215,9 @@
       {
         "index": 5,
         "medida": "800mm",
-        "cabina": 625,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 625,
+        "c_epoxi": 575,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 355,
         "p_epoxi": 255
@@ -204,8 +225,9 @@
       {
         "index": 6,
         "medida": "900mm",
-        "cabina": 675,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 675,
+        "c_epoxi": 625,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 405,
         "p_epoxi": 305
@@ -213,8 +235,9 @@
       {
         "index": 7,
         "medida": "1000mm",
-        "cabina": 690,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 690,
+        "c_epoxi": 640,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 555,
         "p_epoxi": 455
@@ -222,8 +245,9 @@
       {
         "index": 8,
         "medida": "1100mm",
-        "cabina": 705,
-        "c_de_vidrio": 0,
+        "c_inoxidable": 705,
+        "c_epoxi": 655,
+        "c_vidrio": 0,
         "p_de_vidrio": 0,
         "p_inox": 705,
         "p_epoxi": 605

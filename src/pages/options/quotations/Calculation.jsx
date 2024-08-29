@@ -44,8 +44,8 @@ const Calculation = ({ formData, allData, setFormData }) => {
         updatedFormData = updateGrupo1(updatedFormData, valor3);
         updatedFormData = updateGrupo2(updatedFormData, valor3);
         updatedFormData = updateGrupo3(updatedFormData, valor3);
-        updatedFormData = updateGrupo4(updatedFormData, valor3);
-        updatedFormData = updateGrupo5(updatedFormData, valor3);
+        updatedFormData = updateGrupo4(updatedFormData, valor3, allData);
+        updatedFormData = updateGrupo5(updatedFormData, valor3, allData);
         updatedFormData = updateGrupo6(updatedFormData, valor3);
         updatedFormData = updateGrupo7(updatedFormData, valor3, allData);
         updatedFormData = updateGrupo8(updatedFormData, valor3, allData);

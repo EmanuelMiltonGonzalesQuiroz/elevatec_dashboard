@@ -1,5 +1,3 @@
-// Archivo: Calculation/updateGrupo1.js
-
 const updateGrupo1 = (formData, valor3) => {
 
   const descriptions = [
@@ -11,7 +9,7 @@ const updateGrupo1 = (formData, valor3) => {
     "Hormigones",
     "Estructura_de_motor",
     "Piso",
-    "ciudad",
+    "Transporte_interno",
     "Comision_INTERNA_EMPRESA",
     "Mano_de_obra_produccion",
     "Mano_de_obra_instalaciones",
@@ -32,12 +30,38 @@ const updateGrupo1 = (formData, valor3) => {
         unidades = 15;
       }
 
+      let precioUnitario = formData[key].PRECIO_UNITARIO || formData[key].valor || 0;
+
+      // Asegurar que el valor de 'Piso' se utilice como PRECIO_UNITARIO
+      let aduana =0;
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = 0; // No se calcula aduana para este grupo
-      const costoFinal = aduana + transporte + ((formData[key].PRECIO_UNITARIO || formData[key].valor || 0) * unidades);
+      if (description.toLowerCase() === 'piso') {
+        precioUnitario = formData['Piso'].valor || 0;
+        aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      }
+      
+
+
+      // Calcular aduana y actualizar precio unitario para Transporte_interno
+      if (["Transporte_interno", "Comision_INTERNA_EMPRESA", "Mano_de_obra_produccion", "Mano_de_obra_instalaciones", "Costo_de_seguridad_agencias_transportes_internos", "Comision_del_banco_intermediario"].includes(key)) {
+        if (description === 'Transporte_interno') {
+          // Obtener el precio unitario de formData['Ciudad'].valor
+          precioUnitario = formData['Ciudad'].valor || precioUnitario;
+
+          // Forzar las unidades a 1 para Transporte_interno
+          unidades = 1;
+          
+        }
+        
+      aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      }
+
+      
+      const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       formData[key].UNIDADES = unidades;
+      formData[key].PRECIO_UNITARIO = precioUnitario;
       formData[key].VOLUMEN_TOTAL_M3 = volumenTotalM3;
       formData[key].TRANSPORTE = transporte;
       formData[key].ADUANA = aduana;

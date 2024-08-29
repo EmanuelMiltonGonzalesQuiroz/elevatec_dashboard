@@ -1,57 +1,56 @@
 [
-    {
+  {
       "clase": "elements",
       "items": [
-        {
-          "index": 1,
-          "name": "Aire acondicionado",
-          "value": 2800,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 2,
-          "name": "Indicador de solo botón",
-          "value": 20,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 3,
-          "name": "Pesacarga",
-          "value": 300,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 4,
-          "name": "Pre Apertura de puertas",
-          "value": 200,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 5,
-          "name": "Regenerador de energía",
-          "value": 500,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 6,
-          "name": "Sistema de monitoreo",
-          "value": 350,
-          "type": "AVANZADA",
-          "description": "S/D"
-        },
-        {
-          "index": 7,
-          "name": "Ventilación",
-          "value": 100,
-          "type": "AVANZADA",
-          "description": "S/D"
-        }
+          {
+              "index": 1,
+              "name": "Aire acondicionado",
+              "value": 2800,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 2,
+              "name": "Indicador de solo botón",
+              "value": 20,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 3,
+              "name": "Pesacarga",
+              "value": 75,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 4,
+              "name": "Pre Apertura de puertas",
+              "value": 200,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 5,
+              "name": "Regenerador de energía",
+              "value": 500,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 6,
+              "name": "Sistema de monitoreo",
+              "value": 350,
+              "type": "AVANZADA",
+              "description": "S/D"
+          },
+          {
+              "index": 7,
+              "name": "Ventilación",
+              "value": 100,
+              "type": "AVANZADA",
+              "description": "S/D"
+          }
       ]
-    }
-  ]
-  
+  }
+]

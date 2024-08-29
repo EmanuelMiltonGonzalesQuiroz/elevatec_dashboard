@@ -8,7 +8,7 @@ const updateGrupo2 = (formData, valor3) => {
     "Pernos_empalme_braket",
     "Pernos_de_empalmes"
   ];
-
+ 
   descriptions.forEach((description) => {
     const key = Object.keys(formData).find(
       key => key.toLowerCase() === description.toLowerCase()

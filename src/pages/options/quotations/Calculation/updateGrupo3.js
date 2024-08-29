@@ -12,12 +12,12 @@ const updateGrupo3 = (formData, valor3) => {
     );
 
     if (key && formData[key]) {
-      const recorrido = formData['03_RECORRIDO'] || 0;
+      const recorrido = formData['03_RECORRIDO'] || 0; 
       const unidades = Math.ceil(recorrido / 5) * 2;
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * (formData[key].PRECIO_UNITUARIO || 0)) + transporte) * 0.3;
-      const costoFinal = aduana + transporte + ((formData[key].PRECIO_UNITUARIO || 0) * unidades);
+      const aduana = ((unidades * (formData[key].PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+      const costoFinal = aduana + transporte + ((formData[key].PRECIO_UNITARIO || 0) * unidades);
 
       formData[key].UNIDADES = unidades;
       formData[key].VOLUMEN_TOTAL_M3 = volumenTotalM3;
