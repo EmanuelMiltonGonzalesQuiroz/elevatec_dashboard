@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { validateUserCredentials } from '../../services/auth';
 import { loginText } from '../../components/common/Text/texts';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar los íconos
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -12,13 +13,13 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     setError('');
-    if (username === '' || password === '') {
+    if (email === '' || password === '') {
       setError(loginText.validationError);
       return;
     }
 
     try {
-      const { success, userData } = await validateUserCredentials(username, password);
+      const { success, userData } = await validateUserCredentials(email, password);
       if (success && userData) {
         login(userData); // Guardar los datos del usuario
         window.location.href = '/dashboard';
@@ -45,8 +46,8 @@ const LoginForm = () => {
       <div className="w-full max-w-xs p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">{loginText.title}</h2>
         <LoginFields
-          username={username}
-          setUsername={setUsername}
+          email={email}
+          setEmail={setEmail}
           password={password}
           setPassword={setPassword}
           showPassword={showPassword}
@@ -61,8 +62,8 @@ const LoginForm = () => {
 };
 
 const LoginFields = ({
-  username,
-  setUsername,
+  email,
+  setEmail,
   password,
   setPassword,
   showPassword,
@@ -77,10 +78,10 @@ const LoginFields = ({
     <>
       <div className="mb-4">
         <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder={loginText.usernamePlaceholder}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={loginText.emailPlaceholder}
           className="w-full p-3 border rounded bg-gray-100 text-black focus:outline-none"
           onKeyDown={(e) => handleKeyDown(e, passwordInputRef)} // Pasar la referencia al campo de contraseña
         />
@@ -100,7 +101,7 @@ const LoginFields = ({
           onClick={() => setShowPassword(!showPassword)}
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
         >
-          {showPassword ? '🙈' : '👁️'}
+          {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Usar íconos de React Icons */}
         </button>
       </div>
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}

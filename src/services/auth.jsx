@@ -1,14 +1,14 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from '../connection/firebase';
 
-export async function validateUserCredentials(username, password) {
+export async function validateUserCredentials(email, password) {
     try {
         const usersRef = collection(db, "login firebase");
-        const q = query(usersRef, where("username", "==", username));
+        const q = query(usersRef, where("email", "==", email));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            console.log("No se encontró el username en Firestore.");
+            console.log("No se encontró el email en Firestore.");
             return { success: false };
         } else {
             let userDoc;

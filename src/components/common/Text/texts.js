@@ -8,7 +8,7 @@ export const welcomeText = {
 
 export const loginText = {
   title: "Iniciar Sesión",
-  usernamePlaceholder: "Nombre de usuario",
+  emailPlaceholder: "Email",
   passwordPlaceholder: "Contraseña",
   button: "Iniciar sesión",
   validationError: "Por favor, complete todos los campos.",

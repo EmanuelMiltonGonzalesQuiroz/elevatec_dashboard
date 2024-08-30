@@ -1,4 +1,4 @@
-import React, { useState/*, useEffect*/ } from 'react';
+import React, { useState, /*useEffect*/ } from 'react';
 import Quotations from './../options/quotations/Quotations';
 import Users from '../options/Users/Users';
 import Clients from '../options/Clients/Clients';
@@ -34,6 +34,9 @@ const Home = () => {
     return null;
   }
 
+  // Obtener el rol del usuario desde el currentUser o localStorage
+  const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header fijo con altura del 10% de la pantalla */}
@@ -45,9 +48,10 @@ const Home = () => {
           {/* Contenido con restricciones de tamaño y scrolls si es necesario */}
           <div className="max-w-[85vw] max-h-[80vh] overflow-auto">
             {activeContent === 'Cotizaciones' && <Quotations />}
-            {activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Usuarios' && <Users />}
-            {activeContent === 'Ajustes' && <Settings />}
+            {/* Mostrar solo si el rol es diferente de 'Usuario' */}
+            {userRole !== 'Usuario' && activeContent === 'Clientes' && <Clients />}
+            {userRole !== 'Usuario' && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

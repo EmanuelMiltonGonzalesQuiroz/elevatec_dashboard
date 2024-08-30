@@ -3,6 +3,8 @@ import calculateValues from './Calculation/calculateValues';
 import RenderCalculatedValuesTable from './Calculation/RenderCalculatedValuesTable';
 import RenderFormDataFieldsTable from './Calculation/RenderFormDataFieldsTable';
 import RenderComplexFieldsTable from './Calculation/RenderComplexFieldsTable';
+import Modal from './Calculation/Modal';
+import ActionModal from './Calculation/ActionModal';
 import areStringsSimilar from './Calculation/areStringsSimilar';
 import updateGrupo1 from './Calculation/updateGrupo1';
 import updateGrupo2 from './Calculation/updateGrupo2';
@@ -16,6 +18,9 @@ import updateGrupoCustom from './Calculation/updateGrupoCustom';
 
 const Calculation = ({ formData, allData, setFormData }) => {
   const [previousFormData, setPreviousFormData] = useState(JSON.stringify(formData));
+  const [showActionModal, setShowActionModal] = useState(true); // Mostrar el modal de acciones al inicio
+  const [showProcedureModal, setShowProcedureModal] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
   useEffect(() => {
     try {
@@ -58,28 +63,69 @@ const Calculation = ({ formData, allData, setFormData }) => {
           setPreviousFormData(updatedFormDataString); // Guarda el formData actualizado para futuras comparaciones
         }
       }
+      setShowActionModal(true)
     } catch (error) {
       console.error("Error al calcular valores:", error);
     }
-  }, [allData, formData, previousFormData, setFormData]); // Eliminamos previousFormData como dependencia
+  }, [allData, formData, previousFormData, setFormData]);
 
-  const calculatedValues = calculateValues(formData);
-  const specificFields = [
-    '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
-    '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',
-    '08_Número de ascensores', '09_PISOS A ANTENDER'
-  ];
+  const handleConfirm = () => {
+    // Lógica para confirmar la acción
+    console.log("Confirmar");
+    setShowActionModal(false);
+  };
+
+  const handleCancel = () => {
+    // Lógica para cancelar la acción
+    console.log("Cancelar");
+    setShowActionModal(false);
+  };
+
+  const handleViewPDF = () => {
+    // Mostrar el modal con contenido para ver PDF
+    setModalContent(<div>Contenido de PDF</div>);
+    setShowProcedureModal(true);
+  };
+
+  const handleViewProcedure = () => {
+    // Mostrar las tablas dentro del modal al hacer clic en "Ver Procedimiento"
+    setModalContent(
+      <div>
+        <h2 className="text-xl font-bold">Valores Calculados</h2>
+        <RenderCalculatedValuesTable calculatedValues={calculateValues(formData)} />
+
+        <h2 className="text-xl font-bold">Campos Específicos de FormData</h2>
+        <RenderFormDataFieldsTable formData={formData} fields={[
+          '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
+          '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',
+          '08_Número de ascensores', '09_PISOS A ANTENDER'
+        ]} />
+
+        <h2 className="text-xl font-bold">Campos Complejos</h2>
+        <RenderComplexFieldsTable formData={formData} />
+      </div>
+    );
+    setShowProcedureModal(true);
+  };
+
+  const closeProcedureModal = () => {
+    setShowProcedureModal(false);
+  };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold">Valores Calculados</h2>
-      <RenderCalculatedValuesTable calculatedValues={calculatedValues} />
+    <div className="flex flex-col items-center justify-center h-full">
+      <ActionModal
+        show={showActionModal}
+        onClose={() => setShowActionModal(false)}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        onViewPDF={handleViewPDF}
+        onViewProcedure={handleViewProcedure}
+      />
 
-      <h2 className="text-xl font-bold">Campos Específicos de FormData</h2>
-      <RenderFormDataFieldsTable formData={formData} fields={specificFields} />
-
-      <h2 className="text-xl font-bold">Campos Complejos</h2>
-      <RenderComplexFieldsTable formData={formData} />
+      <Modal show={showProcedureModal} onClose={closeProcedureModal}>
+        {modalContent}
+      </Modal>
     </div>
   );
 };

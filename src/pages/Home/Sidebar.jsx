@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { homeText } from '../../components/common/Text/texts';
-import { FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers, FaFileInvoiceDollar} from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers, FaFileInvoiceDollar } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
+import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = ({ activeContent, setActiveContent }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    // Automáticamente minimizar el Sidebar si la pantalla es pequeña (ej. celular)
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsMinimized(true);
@@ -25,6 +26,9 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
   const handleToggleSidebar = () => {
     setIsMinimized(!isMinimized);
   };
+
+  // Obtener el rol del usuario desde el currentUser o localStorage
+  const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
 
   return (
     <div
@@ -48,26 +52,31 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
             {!isMinimized && <span className="ml-4">{homeText.quotations}</span>}
           </li>
           <li
-            className={`p-4 cursor-pointer flex items-center ${activeContent === 'Clientes' ? 'bg-orange-500' : ''}`}
-            onClick={() => setActiveContent('Clientes')}
-          >
-            <FaUsers />
-            {!isMinimized && <span className="ml-4">{homeText.clients}</span>}
-          </li>
-          <li
             className={`p-4 cursor-pointer flex items-center ${activeContent === 'Usuarios' ? 'bg-orange-500' : ''}`}
             onClick={() => setActiveContent('Usuarios')}
           >
             <FaUser />
             {!isMinimized && <span className="ml-4">{homeText.users}</span>}
           </li>
-          <li
-            className={`p-4 cursor-pointer flex items-center ${activeContent === 'Ajustes' ? 'bg-orange-500' : ''}`}
-            onClick={() => setActiveContent('Ajustes')}
-          >
-            <FaCog />
-            {!isMinimized && <span className="ml-4">{homeText.settings}</span>}
-          </li>
+          {/* Mostrar solo si el rol es diferente de 'Usuario' */}
+          {userRole !== 'Usuario' && (
+            <>
+              <li
+                className={`p-4 cursor-pointer flex items-center ${activeContent === 'Clientes' ? 'bg-orange-500' : ''}`}
+                onClick={() => setActiveContent('Clientes')}
+              >
+                <FaUsers />
+                {!isMinimized && <span className="ml-4">{homeText.clients}</span>}
+              </li>
+              <li
+                className={`p-4 cursor-pointer flex items-center ${activeContent === 'Ajustes' ? 'bg-orange-500' : ''}`}
+                onClick={() => setActiveContent('Ajustes')}
+              >
+                <FaCog />
+                {!isMinimized && <span className="ml-4">{homeText.settings}</span>}
+              </li>
+            </>
+          )}
           <li
             className={`p-4 cursor-pointer flex items-center ${activeContent === 'Perfil' ? 'bg-orange-500' : ''}`}
             onClick={() => setActiveContent('Perfil')}

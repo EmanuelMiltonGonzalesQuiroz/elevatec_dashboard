@@ -12,12 +12,10 @@ const QuotationForm = () => {
   const [message, setMessage] = useState('');
   const [allData, setAllData] = useState(null);
   const [fetching, setFetching] = useState(false);
-  const lastFetchTime = useRef(0); // Ref to store the last fetch time
+  const lastFetchTime = useRef(0);
 
-  // Inicializar las variables utilizando el hook personalizado
   const initializedVariables = useInitializeVariables();
 
-  // Solo inicializar formData una vez cuando allData cambia
   useEffect(() => {
     if (allData && Object.keys(formData).length === 0) {
       setFormData({ ...initializedVariables });
@@ -46,9 +44,9 @@ const QuotationForm = () => {
   const handleDataFetched = (fetchedData) => {
     const currentTime = Date.now();
 
-    if (!fetching && currentTime - lastFetchTime.current > 60000) { // 60000 ms = 1 minute
+    if (!fetching && currentTime - lastFetchTime.current > 60000) { 
       setFetching(true);
-      lastFetchTime.current = currentTime; // Update the last fetch time
+      lastFetchTime.current = currentTime; 
       setAllData(fetchedData);
       setFetching(false);
     } else {
@@ -71,7 +69,7 @@ const QuotationForm = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg shadow-lg flex-grow max-h-[60vh] overflow-y-auto">
             <MainFormColumn1 formData={formData} setFormData={setFormData} handleReset={handleReset} />
-            <MainFormColumn2 formData={formData} setFormData={setFormData}allData={allData} />
+            <MainFormColumn2 formData={formData} setFormData={setFormData} allData={allData} />
             <AdvancedOptionsColumn formData={formData} setFormData={setFormData} allData={allData}  />
           </div>
           {formData.isGenerated && (
