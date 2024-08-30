@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { advancedOptionsText } from '../../../components/common/Text/texts';
+import InfoButton from '../../../components/common/InfoButton';
 
 const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
   const [options, setOptions] = useState({
@@ -116,14 +117,14 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
     }));
   };
 
-  const renderSelectForGroup = (fieldName, label, options, className) => (
-    <div key={fieldName}>
+  const renderSelectForGroup = (fieldName, label, concept, options, className) => (
+    <div key={fieldName} className="mb-4">
       <label htmlFor={fieldName} className="mb-2 font-semibold text-black">
-        {label}
+        <InfoButton title={label} concept={concept} />
       </label>
       <select
         id={fieldName}
-        className="p-2 border rounded focus:outline-none w-full mb-4"
+        className="p-2 border rounded focus:outline-none w-full"
         value={formData[fieldName]?.nombre || ''}
         onChange={(e) => handleSelectChange(fieldName, className, options, e)}
       >
@@ -138,9 +139,9 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
   );
 
   const renderCheckboxForElements = () => (
-    <div>
+    <div className="mb-4">
       {options.elements.map((element, index) => (
-        <div key={index}>
+        <div key={index} className="flex items-center mb-2">
           <input
             type="checkbox"
             id={element.name}
@@ -154,28 +155,28 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
   );
 
   return (
-    <div className="col-span-1 grid grid-cols-1 gap-4 overflow-y-auto max-h-full text-black">
+    <div className="col-span-1 grid grid-cols-1 gap-4 overflow-y-auto max-h-full text-black" style={{ alignItems: 'start' }}>
       <label className="text-black font-bold">{advancedOptionsText.title}</label>
 
       {renderCheckboxForElements()}
 
-      {renderSelectForGroup('doors', advancedOptionsText.doors, options.doors, 'Puertas')}
-      {renderSelectForGroup('ARD', advancedOptionsText.ard, options.ARD, 'ARD')}
-      {renderSelectForGroup('AcabadoPuertaCabina', advancedOptionsText.cabinFinish, options.AcabadoPuertaCabina, 'Acabado puerta de cabina')}
-      {renderSelectForGroup('EspejoAdicional', advancedOptionsText.additionalMirror, options.EspejoAdicional, 'Espejo Adicional')}
-      {renderSelectForGroup('IndicadorPisoHorizontal', advancedOptionsText.horizontalFloorIndicator, options.IndicadorPisoHorizontal, 'Indicador de piso horizontal')}
-      {renderSelectForGroup('LectorTarjetas', advancedOptionsText.cardReader, options.LectorTarjetas, 'Lector de tarjetas')}
-      {renderSelectForGroup('PasamanosAdicional', advancedOptionsText.additionalHandrail, options.PasamanosAdicional, 'Pasamanos adicional')}
-      {renderSelectForGroup('Piso', advancedOptionsText.floor, options.Piso, 'Piso')}
-      {renderSelectForGroup('SubTecho', advancedOptionsText.subCeiling, options.SubTecho, 'SubTecho')}
-      {renderSelectForGroup('Tipo', advancedOptionsText.type, options.Tipo, 'Tipo')}
-      {renderSelectForGroup('TipoBotonera', advancedOptionsText.controlPanel, options.TipoBotonera, 'Tipo de botonera')}
-      {renderSelectForGroup('BotonesCabina', advancedOptionsText.cabinButtons, options.BotonesCabina, 'Tipo de botones en cabina')}
-      {renderSelectForGroup('BotonesPiso', advancedOptionsText.floorButtons, options.BotonesPiso, 'Tipo de botones en piso')}
+      {renderSelectForGroup('doors', advancedOptionsText.doors, advancedOptionsText.doorsConcept, options.doors, 'Puertas')}
+      {renderSelectForGroup('ARD', advancedOptionsText.ard, advancedOptionsText.ardConcept, options.ARD, 'ARD')}
+      {renderSelectForGroup('AcabadoPuertaCabina', advancedOptionsText.cabinFinish, advancedOptionsText.cabinFinishConcept, options.AcabadoPuertaCabina, 'Acabado puerta de cabina')}
+      {renderSelectForGroup('EspejoAdicional', advancedOptionsText.additionalMirror, advancedOptionsText.additionalMirrorConcept, options.EspejoAdicional, 'Espejo Adicional')}
+      {renderSelectForGroup('IndicadorPisoHorizontal', advancedOptionsText.horizontalFloorIndicator, advancedOptionsText.horizontalFloorIndicatorConcept, options.IndicadorPisoHorizontal, 'Indicador de piso horizontal')}
+      {renderSelectForGroup('LectorTarjetas', advancedOptionsText.cardReader, advancedOptionsText.cardReaderConcept, options.LectorTarjetas, 'Lector de tarjetas')}
+      {renderSelectForGroup('PasamanosAdicional', advancedOptionsText.additionalHandrail, advancedOptionsText.additionalHandrailConcept, options.PasamanosAdicional, 'Pasamanos adicional')}
+      {renderSelectForGroup('Piso', advancedOptionsText.floor, advancedOptionsText.floorConcept, options.Piso, 'Piso')}
+      {renderSelectForGroup('SubTecho', advancedOptionsText.subCeiling, advancedOptionsText.subCeilingConcept, options.SubTecho, 'SubTecho')}
+      {renderSelectForGroup('Tipo', advancedOptionsText.type, advancedOptionsText.typeConcept, options.Tipo, 'Tipo')}
+      {renderSelectForGroup('TipoBotonera', advancedOptionsText.controlPanel, advancedOptionsText.controlPanelConcept, options.TipoBotonera, 'Tipo de botonera')}
+      {renderSelectForGroup('BotonesCabina', advancedOptionsText.cabinButtons, advancedOptionsText.cabinButtonsConcept, options.BotonesCabina, 'Tipo de botones en cabina')}
+      {renderSelectForGroup('BotonesPiso', advancedOptionsText.floorButtons, advancedOptionsText.floorButtonsConcept, options.BotonesPiso, 'Tipo de botones en piso')}
       
       <div>
         <label htmlFor="locks" className="mb-2 font-semibold text-black">
-          {advancedOptionsText.locks}
+          <InfoButton title={advancedOptionsText.locks} concept={advancedOptionsText.locksConcept} />
         </label>
         <select
           id="locks"

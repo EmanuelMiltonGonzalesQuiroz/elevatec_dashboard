@@ -11,7 +11,7 @@ const Header = () => {
   
   // Convertir la cadena JSON a un objeto de JavaScript
   const user = storedUser ? JSON.parse(storedUser) : null;
-
+ 
   // Obtener el email del usuario
   const userEmail = user ? user.email : 'No email available';
   const handleLogout = () => {

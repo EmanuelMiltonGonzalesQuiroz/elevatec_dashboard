@@ -18,9 +18,15 @@ import updateGrupoCustom from './Calculation/updateGrupoCustom';
 
 const Calculation = ({ formData, allData, setFormData }) => {
   const [previousFormData, setPreviousFormData] = useState(JSON.stringify(formData));
-  const [showActionModal, setShowActionModal] = useState(true); // Mostrar el modal de acciones al inicio
+  const [showActionModal, setShowActionModal] = useState(true); 
   const [showProcedureModal, setShowProcedureModal] = useState(false);
   const [modalContent, setModalContent] = useState(null);
+  const [updatedFormData, setUpdatedFormData] = useState(formData);
+  const specificFields = [
+    '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
+    '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',
+    '08_Número de ascensores', '09_PISOS A ANTENDER'
+  ];
 
   useEffect(() => {
     try {
@@ -28,81 +34,74 @@ const Calculation = ({ formData, allData, setFormData }) => {
         const priceTableItems = allData.price_table["price table"].items;
         const formDataKeys = Object.keys(formData);
 
-        let updatedFormData = { ...formData }; // Hacemos una copia del formData
+        let updatedFormDataCopy = { ...formData }; // Hacemos una copia del formData
 
         // Actualiza los datos basados en la tabla de precios
         priceTableItems.forEach(item => {
           const key = formDataKeys.find(key => areStringsSimilar(key, item.name));
           if (key) {
-            updatedFormData[key] = {
-              ...updatedFormData[key],
+            updatedFormDataCopy[key] = {
+              ...updatedFormDataCopy[key],
               VOLUMEN_EN_M3_X_PIEZA: item.volumen_x_pieza_m3 || 0,
               PRECIO_UNITARIO: item.precio_unitario || 0,
             };
           }
         });
 
-        const calculatedValues = calculateValues(updatedFormData);
+        const calculatedValues = calculateValues(updatedFormDataCopy);
         const valor3 = calculatedValues.valor3 || 0;
 
         // Aplica los cálculos para los grupos
-        updatedFormData = updateGrupo1(updatedFormData, valor3);
-        updatedFormData = updateGrupo2(updatedFormData, valor3);
-        updatedFormData = updateGrupo3(updatedFormData, valor3);
-        updatedFormData = updateGrupo4(updatedFormData, valor3, allData);
-        updatedFormData = updateGrupo5(updatedFormData, valor3, allData);
-        updatedFormData = updateGrupo6(updatedFormData, valor3);
-        updatedFormData = updateGrupo7(updatedFormData, valor3, allData);
-        updatedFormData = updateGrupo8(updatedFormData, valor3, allData);
-        updatedFormData = updateGrupoCustom(updatedFormData, valor3, allData);
+        updatedFormDataCopy = updateGrupo1(updatedFormDataCopy, valor3);
+        updatedFormDataCopy = updateGrupo2(updatedFormDataCopy, valor3);
+        updatedFormDataCopy = updateGrupo3(updatedFormDataCopy, valor3);
+        updatedFormDataCopy = updateGrupo4(updatedFormDataCopy, valor3, allData);
+        updatedFormDataCopy = updateGrupo5(updatedFormDataCopy, valor3, allData);
+        updatedFormDataCopy = updateGrupo6(updatedFormDataCopy, valor3);
+        updatedFormDataCopy = updateGrupo7(updatedFormDataCopy, valor3, allData);
+        updatedFormDataCopy = updateGrupo8(updatedFormDataCopy, valor3, allData);
+        updatedFormDataCopy = updateGrupoCustom(updatedFormDataCopy, valor3, allData);
 
         // Compara el formData original con el actualizado para detectar cambios
-        const updatedFormDataString = JSON.stringify(updatedFormData);
+        const updatedFormDataString = JSON.stringify(updatedFormDataCopy);
         if (updatedFormDataString !== previousFormData) {
-          setFormData(updatedFormData);
+          setFormData(updatedFormDataCopy);
+          setUpdatedFormData(updatedFormDataCopy); // Actualiza el estado con el nuevo formData
           setPreviousFormData(updatedFormDataString); // Guarda el formData actualizado para futuras comparaciones
         }
       }
-      setShowActionModal(true)
+      setShowActionModal(true);
     } catch (error) {
       console.error("Error al calcular valores:", error);
     }
   }, [allData, formData, previousFormData, setFormData]);
 
   const handleConfirm = () => {
-    // Lógica para confirmar la acción
     console.log("Confirmar");
     setShowActionModal(false);
   };
 
   const handleCancel = () => {
-    // Lógica para cancelar la acción
     console.log("Cancelar");
     setShowActionModal(false);
   };
 
   const handleViewPDF = () => {
-    // Mostrar el modal con contenido para ver PDF
     setModalContent(<div>Contenido de PDF</div>);
     setShowProcedureModal(true);
   };
 
   const handleViewProcedure = () => {
-    // Mostrar las tablas dentro del modal al hacer clic en "Ver Procedimiento"
     setModalContent(
       <div>
         <h2 className="text-xl font-bold">Valores Calculados</h2>
-        <RenderCalculatedValuesTable calculatedValues={calculateValues(formData)} />
+        <RenderCalculatedValuesTable calculatedValues={calculateValues(updatedFormData)} />
 
         <h2 className="text-xl font-bold">Campos Específicos de FormData</h2>
-        <RenderFormDataFieldsTable formData={formData} fields={[
-          '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
-          '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',
-          '08_Número de ascensores', '09_PISOS A ANTENDER'
-        ]} />
+        <RenderFormDataFieldsTable formData={updatedFormData} fields={specificFields} />
 
         <h2 className="text-xl font-bold">Campos Complejos</h2>
-        <RenderComplexFieldsTable formData={formData} />
+        <RenderComplexFieldsTable formData={updatedFormData} />
       </div>
     );
     setShowProcedureModal(true);

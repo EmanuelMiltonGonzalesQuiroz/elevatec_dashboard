@@ -1,31 +1,4 @@
-const updateGrupo4 = (formData, valor3, allData) => {
-  
-
-  // Función para buscar el conReducPrecio según la clase de velocidad y el número de personas
-  const findConReducPrecio = (velocidadNombre, personas) => {
-    const motorData = allData.motors[velocidadNombre];
-    if (!motorData || !Array.isArray(motorData.items)) {
-      console.error("No se encontraron items para la velocidad especificada en motors.");
-      return 0; // Retornar 0 si no se encuentran datos
-    }
-
-    const motor = motorData.items.find(item => {
-      const personasRango = item.personas.toLowerCase();
-      const personasNumeros = personasRango.includes('-') 
-        ? personasRango.split('-').map(p => parseInt(p.trim(), 10))
-        : [parseInt(personasRango, 10), parseInt(personasRango, 10)];
-
-      return (
-        personas >= personasNumeros[0] && personas <= personasNumeros[1]
-      );
-    });
-
-    return motor ? motor.conReducPrecio : 0;
-  };
-
-  // Convertir la velocidad a la clave correspondiente en allData.motors
-  const velocidadClave = formData['Velocidad'].nombre.replace('/', '_').toLowerCase();
-  const personas = formData['03_PERSONAS'] || 0;
+const updateGrupo4 = (formData, valor3) => {
 
   const descriptions = {
     "Cable_de_traccion": () => {
@@ -64,14 +37,33 @@ const updateGrupo4 = (formData, valor3, allData) => {
     "Chumbadores": () => 10,
     "Poleas": () => {
       const traccion = formData['Traccion'] && formData['Traccion'].nombre.toLowerCase();
-      const conReducPrecio = findConReducPrecio(velocidadClave, personas);
+
+      let unidades;
       if (traccion.includes('1 a 1')) {
-        return 1; 
+        unidades = 1;
       } else if (traccion.includes('2 a 1')) {
-        formData['Poleas'].PRECIO_UNITARIO = conReducPrecio;
-        return 3;
+        unidades = 3;
+      } else {
+        unidades = 1; // Valor predeterminado
       }
-      return 1; // Valor predeterminado
+
+      // Calcular VOLUMEN_TOTAL_M3, TRANSPORTE, ADUANA y COSTO_FINAL para Poleas si hay datos relevantes
+      const volumenEnM3XPieza = formData['Poleas']?.VOLUMEN_EN_M3_X_PIEZA || 0;
+      const volumenTotalM3 = unidades * volumenEnM3XPieza;
+      const transporte = (valor3 || 0) * volumenTotalM3;
+      const aduana = ((unidades * (formData['Poleas']?.PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+      const costoFinal = aduana + transporte + ((formData['Poleas']?.PRECIO_UNITARIO || 0) * unidades);
+
+      formData['Poleas'] = {
+        ...formData['Poleas'],
+        UNIDADES: unidades,
+        VOLUMEN_TOTAL_M3: volumenTotalM3,
+        TRANSPORTE: transporte,
+        ADUANA: aduana,
+        COSTO_FINAL: costoFinal,
+      };
+
+      return unidades;
     },
     "Cable_de_8mm": () => {
       const recorrido = formData['03_RECORRIDO'] || 0;
@@ -92,7 +84,7 @@ const updateGrupo4 = (formData, valor3, allData) => {
     if (key && formData[key]) {
       const unidades = descriptions[description]();
 
-      // Solo recalcular VOLUMEN_TOTAL_M3, TRANSPORTE, ADUANA y COSTO_FINAL si no es Cable_de_traccion
+      // Recalcular VOLUMEN_TOTAL_M3, TRANSPORTE, ADUANA y COSTO_FINAL si no es Cable_de_traccion o Poleas
       if (description !== 'Cable_de_traccion') {
         const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
         const transporte = (valor3 || 0) * volumenTotalM3;

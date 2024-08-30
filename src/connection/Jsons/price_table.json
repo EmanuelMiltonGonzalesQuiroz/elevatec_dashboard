@@ -58,13 +58,13 @@
       },
       {
         "index": 10,
-        "name": "Estructura de foso",
+        "name": "estructura de foso",
         "volumen_x_pieza_m3": 0,
         "precio_unitario": 200
       },
       {
         "index": 11,
-        "name": "SubTecho",
+        "name": "Subtecho",
         "volumen_x_pieza_m3": 0,
         "precio_unitario": 0
       },
@@ -108,7 +108,7 @@
         "index": 18,
         "name": "Poleas",
         "volumen_x_pieza_m3": 0.0135,
-        "precio_unitario": 1185
+        "precio_unitario": 85
       },
       {
         "index": 19,
@@ -167,7 +167,7 @@
       {
         "index": 28,
         "name": "Cadena de compensacion",
-        "volumen_x_pieza_m3": 1,
+        "volumen_x_pieza_m3": 0.001,
         "precio_unitario": 6.38
       },
       {
@@ -180,7 +180,7 @@
         "index": 30,
         "name": "Maniobra",
         "volumen_x_pieza_m3": 2,
-        "precio_unitario": 1300
+        "precio_unitario": 900
       },
       {
         "index": 31,
@@ -190,7 +190,7 @@
       },
       {
         "index": 32,
-        "name": "Indicador de piso",
+        "name": "indicador de piso",
         "volumen_x_pieza_m3": 0.00675,
         "precio_unitario": 0
       },
@@ -252,7 +252,7 @@
         "index": 42,
         "name": "Regenerador de energia",
         "volumen_x_pieza_m3": 0.027,
-        "precio_unitario": 500
+        "precio_unitario": 0
       },
       {
         "index": 43,
@@ -262,27 +262,27 @@
       },
       {
         "index": 44,
-        "name": "Pasamanos adicional",
+        "name": "Pasamanos adional",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 70
+        "precio_unitario": 80
       },
       {
         "index": 45,
-        "name": "Espejo adicional",
+        "name": "espejo adicional",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 70
+        "precio_unitario": 80
       },
       {
         "index": 46,
         "name": "Sistema de monitoreo",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 140
+        "precio_unitario": 0
       },
       {
         "index": 47,
         "name": "Pre Apertura de puertas",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 200
+        "precio_unitario": 0
       },
       {
         "index": 48,
@@ -294,7 +294,7 @@
         "index": 49,
         "name": "AutoTransformador",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 500
+        "precio_unitario": 350
       },
       {
         "index": 50,

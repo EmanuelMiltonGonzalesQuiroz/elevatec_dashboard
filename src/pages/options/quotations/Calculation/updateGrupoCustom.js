@@ -1,5 +1,5 @@
-import areStringsSimilar from './areStringsSimilar.js';
 
+import areStringsSimilar from './areStringsSimilar.js';
 const updateGrupoCustom = (formData, valor3, allData) => {
   const elements = allData.elements?.items || [];
 
@@ -17,10 +17,7 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     }
 
     const motor = motorData.items.find(item => {
-      const personasRango = item.personas.toLowerCase();
-      const personasNumeros = personasRango.includes('-') 
-        ? personasRango.split('-').map(p => parseInt(p.trim(), 10))
-        : [parseInt(personasRango, 10), parseInt(personasRango, 10)];
+      const personasNumeros = [item.personas, item.personas]; // Cambiado para manejar `personas` como número
 
       return (
         personas >= personasNumeros[0] && personas <= personasNumeros[1]

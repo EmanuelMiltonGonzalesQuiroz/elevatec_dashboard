@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mainFormColumn1Text } from '../../../components/common/Text/texts';
+import InfoButton from '../../../components/common/InfoButton'; 
 
 const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
   const initialFieldState = (field, defaultValue = 0) => formData?.[field] || defaultValue;
@@ -42,21 +43,20 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-        '03_PERSONAS': localFields.persons,
-        '01_PARADAS': localFields.stops,
-        '03_RECORRIDO': localFields.recorrido,
-        Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localFields.inoxDoors },
-        Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localFields.epoxiDoors },
-        Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localFields.vidrioDoors },
-        '09_PISOS A ANTENDER': floorAssignments.join('-'),
-        '04_Frente': localFields.front,
-        '05_ProfundidadR': localFields.depth,
-        '06_Foso': localFields.pit,
-        '07_Huida': localFields.height,
-        '08_Número de ascensores': localFields.numElevators,
-      }));
+      '03_PERSONAS': localFields.persons,
+      '01_PARADAS': localFields.stops,
+      '03_RECORRIDO': localFields.recorrido,
+      Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localFields.inoxDoors },
+      Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localFields.epoxiDoors },
+      Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localFields.vidrioDoors },
+      '09_PISOS A ANTENDER': floorAssignments.join('-'),
+      '04_Frente': localFields.front,
+      '05_ProfundidadR': localFields.depth,
+      '06_Foso': localFields.pit,
+      '07_Huida': localFields.height,
+      '08_Número de ascensores': localFields.numElevators,
+    }));
   }, [localFields, floorAssignments, setFormData]);
-
 
   useEffect(() => {
     const uniqueAssignments = new Set(floorAssignments.filter(assignment => assignment !== 'Seleccionar opción'));
@@ -126,7 +126,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     <div className="gap-1 text-black overflow-y-auto p-4">
       <div className="mb-4">
         <label htmlFor="persons" className="mb-2 font-semibold text-black">
-          {mainFormColumn1Text.persons}
+          <InfoButton title={mainFormColumn1Text.persons} concept={mainFormColumn1Text.personsConcept}/>
         </label>
         <select
           id="persons"
@@ -145,7 +145,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
 
       <div className="mb-4">
         <label htmlFor="stops" className="mb-2 font-semibold text-black">
-          {mainFormColumn1Text.stops}
+          <InfoButton title={mainFormColumn1Text.stops} concept={mainFormColumn1Text.stopsConcept}/>
         </label>
         <input
           type="number"
@@ -164,7 +164,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
           <div className="border p-4 rounded bg-gray-100 mb-4">
             <div className="mb-4">
               <label htmlFor="recorrido" className="mb-2 font-semibold text-black">
-                {mainFormColumn1Text.recorrido}
+                <InfoButton title={mainFormColumn1Text.recorrido} concept={mainFormColumn1Text.recorridoConcept}/>
               </label>
               <input
                 type="number"
@@ -178,12 +178,12 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
 
             <div className="mb-4">
               <label className="mb-2 font-semibold text-black">
-                {mainFormColumn1Text.numberDoors}
+                <InfoButton title={mainFormColumn1Text.numberDoors} concept={mainFormColumn1Text.numberDoorsConcept}/>
               </label>
               <div className="grid grid-cols-3 gap-4">
-                {renderInputField('inox', mainFormColumn1Text.inoxDoors, localFields.inoxDoors, (e) => handleChange('inoxDoors', parseInt(e.target.value, 10) || 0))}
-                {renderInputField('epoxi', mainFormColumn1Text.epoxiDoors, localFields.epoxiDoors, (e) => handleChange('epoxiDoors', parseInt(e.target.value, 10) || 0))}
-                {renderInputField('vidrio', mainFormColumn1Text.vidrioDoors, localFields.vidrioDoors, (e) => handleChange('vidrioDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField('inox', <InfoButton title={mainFormColumn1Text.inoxDoors} concept={mainFormColumn1Text.inoxDoorsConcept}/>, localFields.inoxDoors, (e) => handleChange('inoxDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField('epoxi', <InfoButton title={mainFormColumn1Text.epoxiDoors} concept={mainFormColumn1Text.epoxiDoorsConcept}/>, localFields.epoxiDoors, (e) => handleChange('epoxiDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField('vidrio', <InfoButton title={mainFormColumn1Text.vidrioDoors} concept={mainFormColumn1Text.vidrioDoorsConcept}/>, localFields.vidrioDoors, (e) => handleChange('vidrioDoors', parseInt(e.target.value, 10) || 0))}
               </div>
             </div>
 
@@ -224,20 +224,30 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
       )}
 
       <div className="mb-4">
-        <h3 className="font-semibold text-lg mb-2">Pozo (mm)</h3>
+      <label 
+        htmlFor="persons" 
+        className="mb-2 font-semibold text-black"
+        style={{ fontSize: '1.2rem', margin: '40px 0' }}  // Aumenta el tamaño y agrega margen
+      >
+        <InfoButton 
+          title={mainFormColumn1Text.pozo} 
+          concept={mainFormColumn1Text.pozoConcept} 
+        />
+      </label>
+
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {renderInputField('front', mainFormColumn1Text.front, localFields.front, (e) => handleChange('front', parseFloat(e.target.value) || 0))}
-          {renderInputField('depth', mainFormColumn1Text.depth, localFields.depth, (e) => handleChange('depth', parseFloat(e.target.value) || 0))}
+          {renderInputField('front', <InfoButton title={mainFormColumn1Text.front} concept={mainFormColumn1Text.frontConcept}/>, localFields.front, (e) => handleChange('front', parseFloat(e.target.value) || 0))}
+          {renderInputField('depth', <InfoButton title={mainFormColumn1Text.depth} concept={mainFormColumn1Text.depthConcept}/>, localFields.depth, (e) => handleChange('depth', parseFloat(e.target.value) || 0))}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-          {renderInputField('pit', mainFormColumn1Text.pit, localFields.pit, (e) => handleChange('pit', parseFloat(e.target.value) || 0))}
-          {renderInputField('height', mainFormColumn1Text.height, localFields.height, (e) => handleChange('height', parseFloat(e.target.value) || 0))}
+          {renderInputField('pit', <InfoButton title={mainFormColumn1Text.pit} concept={mainFormColumn1Text.pitConcept}/>, localFields.pit, (e) => handleChange('pit', parseFloat(e.target.value) || 0))}
+          {renderInputField('height', <InfoButton title={mainFormColumn1Text.height} concept={mainFormColumn1Text.heightConcept}/>, localFields.height, (e) => handleChange('height', parseFloat(e.target.value) || 0))}
         </div>
 
         <div className="mt-4">
-          {renderInputField('numElevators', mainFormColumn1Text.numElevators, localFields.numElevators, (e) => handleChange('numElevators', parseInt(e.target.value, 10) || 0))}
+          {renderInputField('numElevators', <InfoButton title={mainFormColumn1Text.numElevators} concept={mainFormColumn1Text.numElevatorsConcept}/>, localFields.numElevators, (e) => handleChange('numElevators', parseInt(e.target.value, 10) || 0))}
         </div>
       </div>
     </div>

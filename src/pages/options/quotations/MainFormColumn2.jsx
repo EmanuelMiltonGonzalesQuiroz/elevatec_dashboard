@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { mainFormColumn2Text } from '../../../components/common/Text/texts';
+import InfoButton from '../../../components/common/InfoButton';
 
 const MainFormColumn2 = ({ formData, setFormData, allData }) => {
   const [options, setOptions] = useState({
@@ -63,10 +65,10 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
   };
 
   // Función para renderizar un select para cualquier grupo
-  const renderSelectForGroup = (fieldName, label, options, className) => (
+  const renderSelectForGroup = (fieldName, label, options, className, concept) => (
     <div key={fieldName}>
       <label htmlFor={fieldName} className="mb-2 font-semibold text-black">
-        {label}
+        <InfoButton title={label} concept={concept} />
       </label>
       <select
         id={fieldName}
@@ -86,16 +88,29 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
 
   return (
     <div className="col-span-1 gap-4 overflow-y-auto max-h-full">
-      {renderSelectForGroup('Cabina', 'Cabina', options.Cabina, 'Cabina')}
-      {renderSelectForGroup('Ciudad', 'Ciudad', options.Ciudad, 'Ciudad')}
-      {renderSelectForGroup('Embarque', 'Embarque', options.Embarque, 'Embarque')}
-      {renderSelectForGroup('EnergiaElectrica', 'Energía Eléctrica', options.EnergiaElectrica, 'Energia Electrica')}
-      {renderSelectForGroup('IndicadorCabinaPiso', 'Indicador de cabina/piso', options.IndicadorCabinaPiso, 'Indicador de cabina_piso')}
-      {renderSelectForGroup('IndicadorPisoBoton', 'Indicador de piso con botón Integrado', options.IndicadorPisoBoton, 'Indicador de piso con botón Integrado')}
-      {renderSelectForGroup('MaquinaTraccion', 'Máquina de tracción', options.MaquinaTraccion, 'Maquina de tracción')}
-      {renderSelectForGroup('Traccion', 'Tracción', options.Traccion, 'Traccion')}
-      {renderSelectForGroup('Velocidad', 'Velocidad', options.Velocidad.map(speed => ({ nombre: speed })), 'Velocidad')}
+      {renderSelectForGroup('Cabina', mainFormColumn2Text.cabin, options.Cabina, 'Cabina', mainFormColumn2Text.cabinConcept)}
+      {renderSelectForGroup('Ciudad', mainFormColumn2Text.city, options.Ciudad, 'Ciudad', mainFormColumn2Text.cityConcept)}
+      {renderSelectForGroup('Embarque', mainFormColumn2Text.embark, options.Embarque, 'Embarque', mainFormColumn2Text.embarkConcept)}
+      {renderSelectForGroup('EnergiaElectrica', mainFormColumn2Text.electricity, options.EnergiaElectrica, 'Energia Electrica', mainFormColumn2Text.electricityConcept)}
+      {renderSelectForGroup('IndicadorCabinaPiso', mainFormColumn2Text.cabinIndicator, options.IndicadorCabinaPiso, 'Indicador de cabina_piso', mainFormColumn2Text.cabinIndicatorConcept)}
+      {renderSelectForGroup('IndicadorPisoBoton', mainFormColumn2Text.floorIndicator, options.IndicadorPisoBoton, 'Indicador de piso con botón Integrado', mainFormColumn2Text.floorIndicatorConcept)}
+      {renderSelectForGroup('MaquinaTraccion', mainFormColumn2Text.tractionMachine, options.MaquinaTraccion, 'Maquina de tracción', mainFormColumn2Text.tractionMachineConcept)}
+      {renderSelectForGroup('Traccion', mainFormColumn2Text.traction, options.Traccion, 'Traccion', mainFormColumn2Text.tractionConcept)}
+      {renderSelectForGroup('Velocidad', mainFormColumn2Text.speed, options.Velocidad.map(speed => ({ nombre: speed })), 'Velocidad', mainFormColumn2Text.speedConcept)}
+
+      <div className="p-4 mt-6 rounded-md" style={{ backgroundColor: '#ADD8E6', color: '#000' }}>
+        <h3 className="font-semibold text-lg mb-2">{mainFormColumn2Text.note}</h3>
+        <ul className="list-disc pl-6">
+          {mainFormColumn2Text.noteDetails.map((detail, index) => (
+            <li key={index} className="mb-2">
+              {detail}
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
+    
   );
 };
 
