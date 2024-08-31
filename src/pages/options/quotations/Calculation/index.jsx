@@ -33,7 +33,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
     }
   }, [allData, formData, previousFormData, setFormData]);
 
-  const calculatedValues = calculateValues(formData);
+  const calculatedValues = calculateValues(formData,allData);
   const specificFields = [
     '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
     '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',

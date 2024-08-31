@@ -173,7 +173,7 @@ const redAsterisk = <span style={{ color: 'red' }}>*</span>;
 
 export const mainFormColumn1Text = {
   persons: <>{redAsterisk} Personas</>,
-  personsConcept: "",
+  personsConcept: "El numero de personas que como maximo usaran el ascensor",
   client: <>{redAsterisk} Cliente</>,
   clientConcept: "",
   stops: <>{redAsterisk} Paradas</>,

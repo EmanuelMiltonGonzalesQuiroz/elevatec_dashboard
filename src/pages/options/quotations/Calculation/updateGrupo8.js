@@ -1,8 +1,8 @@
 import areStringsSimilar from './areStringsSimilar.js';
 
-const updateGrupo8 = (formData, valor3) => {
+const updateGrupo8 = (formData, valor3, allData) => {
   const descriptions = {
-    "Embarque": () => {
+    "Embarque_Simple_Doble_Triple": () => {
       const nombreEmbarque = formData['Embarque']?.nombre?.toLowerCase() || '';
       if (nombreEmbarque.includes('simple')) return 0;
       if (nombreEmbarque.includes('doble 90')) return 1;
@@ -22,7 +22,14 @@ const updateGrupo8 = (formData, valor3) => {
 
     if (key && formData[key]) {
       let unidades = typeof descriptions[description] === 'function' ? descriptions[description]() : descriptions[description];
-      let precioUnitario = formData[key].PRECIO_UNITARIO || formData[key].valor || 0;
+      
+      // Para Embarque_Simple_Doble_Triple, se asegura que se usa formData['Embarque'].valor como precio unitario
+      let precioUnitario;
+      if (description === "Embarque_Simple_Doble_Triple") {
+        precioUnitario = formData['Embarque']?.valor || 0;
+      } else {
+        precioUnitario = formData[key].PRECIO_UNITARIO || formData[key].valor || 0;
+      }
 
       // Ajustar precio unitario para MRL_MR desde 'Tipo'
       if (description === "MRL_MR") {

@@ -5,6 +5,7 @@ import RenderFormDataFieldsTable from './Calculation/RenderFormDataFieldsTable';
 import RenderComplexFieldsTable from './Calculation/RenderComplexFieldsTable';
 import Modal from './Calculation/Modal';
 import ActionModal from './Calculation/ActionModal';
+import PDFContent from './PDFGenerator/PDFContent';
 import areStringsSimilar from './Calculation/areStringsSimilar';
 import updateGrupo1 from './Calculation/updateGrupo1';
 import updateGrupo2 from './Calculation/updateGrupo2';
@@ -22,6 +23,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
   const [showProcedureModal, setShowProcedureModal] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [updatedFormData, setUpdatedFormData] = useState(formData);
+
   const specificFields = [
     '02_CLIENTE', '03_PERSONAS', '01_PARADAS', '03_RECORRIDO',
     '06_Foso', '04_Frente', '05_ProfundidadR', '07_Huida',
@@ -48,7 +50,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
           }
         });
 
-        const calculatedValues = calculateValues(updatedFormDataCopy);
+        const calculatedValues = calculateValues(updatedFormDataCopy,allData);
         const valor3 = calculatedValues.valor3 || 0;
 
         // Aplica los cálculos para los grupos
@@ -77,25 +79,23 @@ const Calculation = ({ formData, allData, setFormData }) => {
   }, [allData, formData, previousFormData, setFormData]);
 
   const handleConfirm = () => {
-    console.log("Confirmar");
     setShowActionModal(false);
   };
 
   const handleCancel = () => {
-    console.log("Cancelar");
     setShowActionModal(false);
   };
 
   const handleViewPDF = () => {
-    setModalContent(<div>Contenido de PDF</div>);
+    setModalContent(<PDFContent formData={updatedFormData} />);
     setShowProcedureModal(true);
   };
-
+  
   const handleViewProcedure = () => {
     setModalContent(
       <div>
         <h2 className="text-xl font-bold">Valores Calculados</h2>
-        <RenderCalculatedValuesTable calculatedValues={calculateValues(updatedFormData)} />
+        <RenderCalculatedValuesTable calculatedValues={calculateValues(updatedFormData,allData)} />
 
         <h2 className="text-xl font-bold">Campos Específicos de FormData</h2>
         <RenderFormDataFieldsTable formData={updatedFormData} fields={specificFields} />

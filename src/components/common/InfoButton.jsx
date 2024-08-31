@@ -14,8 +14,21 @@ const InfoButton = ({ title, concept }) => {
         {title}
       </span>
       
-      <Tooltip id={tooltipId} place="top" effect="solid" clickable={true}>
-        <strong>{title}</strong>: {concept}
+      <Tooltip 
+        id={tooltipId} 
+        place="top" 
+        effect="solid" 
+        clickable={true}
+        style={{ 
+          textAlign: 'justify', 
+          maxWidth: '200px', 
+          minWidth: '100px' 
+        }}
+      >
+        <div>
+          <strong>{title}</strong>
+          <div>{concept}</div>
+        </div>
       </Tooltip>
     </div>
   );

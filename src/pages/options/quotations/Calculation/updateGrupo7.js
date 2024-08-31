@@ -1,20 +1,19 @@
 import areStringsSimilar from './areStringsSimilar.js';
 
 const updateGrupo7 = (formData, valor3, allData) => {
-  // Accediendo a los items dentro de "elements"
-  const elements = allData.elements && allData.elements["elements"] ? allData.elements["elements"].items : [];
+  // Accediendo a los items dentro de la tabla de precios
+  const priceTableItems = allData.price_table && allData.price_table["price table"] ? allData.price_table["price table"].items : [];
 
   const formDataKeys = Object.keys(formData);
 
-  const findElementValue = (name) => {
-    const element = elements.find(el => areStringsSimilar(el.name, name));
-    return element ? element.value : 0;
+  const findPriceTableItem = (name) => {
+    return priceTableItems.find(item => areStringsSimilar(item.name, name));
   };
 
   const descriptions = {
     "Llavines_con_llave": formData['Llavines_con_llave']?.UNIDADES || 0,
-    "Pasamanos_adicional": formData['Pasamanos_adicional']?.UNIDADES || 0,
-    "Espejo_adicional": formData['Espejo_adicional']?.UNIDADES || 0,
+    "Pasamanos_adicional": parseInt(formData['PasamanosAdicional']?.nombre || 0, 10),  // Cargar unidades desde nombre
+    "Espejo_adicional": parseInt(formData['EspejoAdicional']?.nombre || 0, 10),  // Cargar unidades desde nombre
     "Sistema_de_monitoreo": formData['Sistema_de_monitoreo']?.UNIDADES || 0,
     "Pre_Apertura_de_puertas": formData['Pre_Apertura_de_puertas']?.UNIDADES || 0,
     "Aire_acondicionado": formData['Aire_acondicionado']?.UNIDADES || 0,
@@ -29,13 +28,18 @@ const updateGrupo7 = (formData, valor3, allData) => {
 
     if (key && formData[key]) {
       let unidades = descriptions[description];
+      let precioUnitario = 0;
+      let volumenPorPieza = 0;
 
-      // Condiciones especiales para ARD y AutoTransformador
+      // Condiciones especiales para ARD
       if (description === "ARD") {
         if (formData['ARD']?.nombre?.includes("No requiere!")) {
           unidades = 0;
         }
-      } else if (description === "AutoTransformador") {
+      }
+
+      // Condiciones especiales para AutoTransformador
+      if (description === "AutoTransformador") {
         if (formData['EnergiaElectrica']?.nombre?.includes("220")) {
           unidades = 1;
         } else {
@@ -43,15 +47,20 @@ const updateGrupo7 = (formData, valor3, allData) => {
         }
       }
 
-      // Asignar unidades desde el valor nombre de PasamanosAdicional y EspejoAdicional
-      if (description === "Pasamanos_adicional") {
-        unidades = parseInt(formData['PasamanosAdicional']?.nombre || 0, 10);
-      } else if (description === "Espejo_adicional") {
-        unidades = parseInt(formData['EspejoAdicional']?.nombre || 0, 10);
+      // Para Pasamanos_adicional y Espejo_adicional, obtener precio_unitario y volumen_x_pieza_m3 desde la tabla de precios
+      if (description === "Pasamanos_adicional" || description === "Espejo_adicional") {
+        const itemData = findPriceTableItem(description === "Pasamanos_adicional" ? "Pasamanos adional" : "espejo adicional");
+        precioUnitario = itemData ? itemData.precio_unitario : 0;
+        volumenPorPieza = itemData ? itemData.volumen_x_pieza_m3 : 0;
+
+        // Mostrar en consola los valores obtenidos para Pasamanos_adicional y Espejo_adicional
+      } else {
+        // Otros elementos, usar lógica de búsqueda normal
+        precioUnitario = formData[key].PRECIO_UNITARIO || formData[key].valor || 0;
+        volumenPorPieza = formData[key].VOLUMEN_EN_M3_X_PIEZA || 0;
       }
 
-      const precioUnitario = findElementValue(description) || formData[key].PRECIO_UNITARIO || formData[key].valor || 0;
-      const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
+      const volumenTotalM3 = unidades * volumenPorPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
       const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
@@ -61,8 +70,19 @@ const updateGrupo7 = (formData, valor3, allData) => {
       formData[key].TRANSPORTE = transporte;
       formData[key].ADUANA = aduana;
       formData[key].COSTO_FINAL = costoFinal;
+
+      // Actualizar también las unidades y precio unitario en PasamanosAdicional y EspejoAdicional
+      if (description === "Pasamanos_adicional") {
+        formData['PasamanosAdicional'].UNIDADES = unidades;
+        formData['PasamanosAdicional'].PRECIO_UNITARIO = precioUnitario;
+      } else if (description === "Espejo_adicional") {
+        formData['EspejoAdicional'].UNIDADES = unidades;
+        formData['EspejoAdicional'].PRECIO_UNITARIO = precioUnitario;
+      }
     }
   });
+
+  // Mostrar resultados finales en consola
 
   return formData;
 };
