@@ -8,7 +8,6 @@ export const useUpdateFormData = () => {
         ...prevFormData,
         [newData.field]: newData.value,
       }));
-      //console.log(formData)
     }
   }, []);
 

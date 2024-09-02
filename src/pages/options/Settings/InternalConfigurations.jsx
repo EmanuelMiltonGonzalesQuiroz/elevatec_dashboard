@@ -13,8 +13,8 @@ const InternalConfigurations = () => {
           internalConfigurationsText.price,         // Precio
         ],
         keys: [
-          'index',                                  // #
-          'velocidad_m_s',                          // Velocidad (m/s)
+          'index',                                  // # 
+          'velocidad m/s',                          // Velocidad (m/s)
           'precio',                                 // Precio
         ],
         fields: {

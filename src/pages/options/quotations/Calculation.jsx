@@ -6,6 +6,7 @@ import RenderComplexFieldsTable from './Calculation/RenderComplexFieldsTable';
 import Modal from './Calculation/Modal';
 import ActionModal from './Calculation/ActionModal';
 import PDFContent from './PDFGenerator/PDFContent';
+import SaveClientData from './Calculation/SaveClientData';  // Importa el nuevo componente
 import areStringsSimilar from './Calculation/areStringsSimilar';
 import updateGrupo1 from './Calculation/updateGrupo1';
 import updateGrupo2 from './Calculation/updateGrupo2';
@@ -50,7 +51,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
           }
         });
 
-        const calculatedValues = calculateValues(updatedFormDataCopy,allData);
+        const calculatedValues = calculateValues(updatedFormDataCopy, allData);
         const valor3 = calculatedValues.valor3 || 0;
 
         // Aplica los cálculos para los grupos
@@ -79,6 +80,14 @@ const Calculation = ({ formData, allData, setFormData }) => {
   }, [allData, formData, previousFormData, setFormData]);
 
   const handleConfirm = () => {
+    const values = calculateValues(updatedFormData, allData);
+    setModalContent(
+      <SaveClientData 
+        formData={updatedFormData} 
+        additionalData={values} 
+      />
+    );
+    setShowProcedureModal(true);
     setShowActionModal(false);
   };
 
@@ -87,7 +96,8 @@ const Calculation = ({ formData, allData, setFormData }) => {
   };
 
   const handleViewPDF = () => {
-    setModalContent(<PDFContent formData={updatedFormData} />);
+    const values = calculateValues(updatedFormData, allData);
+    setModalContent(<PDFContent formData={updatedFormData} values={values} />);
     setShowProcedureModal(true);
   };
   

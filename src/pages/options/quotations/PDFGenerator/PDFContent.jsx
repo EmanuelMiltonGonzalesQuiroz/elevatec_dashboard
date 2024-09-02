@@ -1,9 +1,9 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import calculateValues from './../Calculation/calculateValues';
 
-const PDFContent = ({ formData }) => {
+const PDFContent = ({ formData, values }) => {
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -70,9 +70,6 @@ const PDFContent = ({ formData }) => {
         }
       });
     };
-
-    // Valores calculados
-    const calculatedValues = calculateValues(formData);
 
     // Generar el contenido del PDF
     addHeader();

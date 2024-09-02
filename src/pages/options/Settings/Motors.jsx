@@ -3,6 +3,15 @@ import GroupsConfigurations from '../../../components/UI/GroupsConfigurations';
 import { motorsText } from '../../../components/common/Text/texts';
 
 const Motors = () => {
+
+  const filterItems = (items) => {
+    return items.map(item => {
+      // Crear una nueva copia del objeto excluyendo la clave 'clase'
+      const { clase, ...filteredItem } = item;
+      return filteredItem;
+    });
+  };
+
   return (
     <GroupsConfigurations
       collectionName="motors"
@@ -20,9 +29,9 @@ const Motors = () => {
         keys: [
           'index',                       // #
           'personas',                    // Personas
-          'gearlessPotencia',            // Gearlees Potencia
-          'gearlessPrecio',              // Gearlees Precio
-          'gearlessCanales',             // Gearlees Canales
+          'gearleesPotencia',            // Gearlees Potencia
+          'gearleesPrecio',              // Gearlees Precio
+          'gearleesCanales',             // Gearlees Canales
           'conReducPotencia',            // Con Reduc. Potencia
           'conReducPrecio',              // Con Reduc. Precio
           'conReducCanales',             // Con Reduc. Canales
@@ -41,6 +50,7 @@ const Motors = () => {
         title: motorsText.title,
         type: motorsText.type, // El tipo se mostrará solo si existe
       }}
+      filterItems={filterItems} // Paso adicional para filtrar los items
     />
   );
 };

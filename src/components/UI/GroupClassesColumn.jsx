@@ -14,7 +14,7 @@ const GroupClassesColumn = ({ groups, selectedGroup, handleGroupClick, textConfi
               onClick={() => handleGroupClick(group)}
             >
               <h3 className="font-bold text-lg">{group.id}</h3>
-              {group.tipo && <p className="text-sm">{textConfig.type} {group.tipo}</p>}
+              {group.tipo && <p className="text-sm">{textConfig.type} {group.tipo.replace(/_/g, '/')}</p>} {/* Reemplaza _ por / */}
             </button>
           </div>
         ))}

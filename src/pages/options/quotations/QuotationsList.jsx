@@ -1,20 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
-import { getFirestore, collection, getDocs } from 'firebase/firestore'; // Asegúrate de tener Firebase configurado
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import Modal from './Calculation/Modal'; // Asegúrate de importar Modal
+import PDFContent from './PDFGenerator/PDFContent'; // Asegúrate de importar PDFContent
 
 const QuotationList = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [quotations, setQuotations] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedQuotation, setSelectedQuotation] = useState(null);
 
   useEffect(() => {
-    // Función para obtener datos de Firestore
     const fetchQuotations = async () => {
       const db = getFirestore();
       const quotationsCol = collection(db, 'list of quotations');
       const quotationSnapshot = await getDocs(quotationsCol);
-      const quotationList = quotationSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setQuotations(quotationList);
+
+      const quotationList = await Promise.all(
+        quotationSnapshot.docs.map(async (doc) => {
+          const data = doc.data();
+          const quotationDetails = data.quotationDetails || {};
+          const clientName = quotationDetails['02_CLIENTE'];
+
+          if (!clientName) {
+            return null; // Saltar cotizaciones que no tienen cliente
+          }
+
+          // Buscar los detalles del cliente en la colección 'clients'
+          const clientQuery = collection(db, 'clients');
+          const clientSnapshot = await getDocs(clientQuery);
+          const clientDoc = clientSnapshot.docs.find(
+            (clientDoc) => clientDoc.data().name === clientName
+          );
+
+          let clientData = {};
+          if (clientDoc) {
+            clientData = clientDoc.data();
+          }
+
+          return {
+            id: doc.id,
+            ...data,
+            clientName: clientName,
+            clientPhone: clientData.phone || 'N/A',
+            city: clientData.address || 'N/A',
+            quotedBy: 'Default Quoter', // Aquí puedes reemplazar con la información correcta
+            total: data.calculatedValues?.total || 'N/A',
+            date: quotationDetails?.date || 'N/A',
+          };
+        })
+      );
+
+      setQuotations(quotationList.filter(Boolean)); // Filtrar las cotizaciones nulas
     };
 
     fetchQuotations();
@@ -22,14 +60,17 @@ const QuotationList = () => {
 
   const handleClientChange = (selectedOption) => {
     setSelectedClient(selectedOption);
-    // Aquí podrías añadir lógica adicional si necesitas filtrar las cotizaciones por cliente seleccionado
+  };
+
+  const handleViewPDF = (quotation) => {
+    setSelectedQuotation(quotation);
+    setShowModal(true);
   };
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full text-black">
       <h1 className="text-xl font-bold mb-4">{homeText.listOfQuotations}</h1>
       
-      {/* Sección de selección de cliente */}
       <div className="mb-4">
         <label htmlFor="client" className="mr-2 text-black">{homeText.selectClient}</label>
         <CustomSelect
@@ -69,12 +110,23 @@ const QuotationList = () => {
               <td className="py-2 px-4 text-black">{quotation.total}</td>
               <td className="py-2 px-4 text-black">{quotation.date}</td>
               <td className="py-2 px-4">
-                <button className="bg-blue-500 text-white p-2 rounded">Generar PDF</button>
+                <button
+                  className="bg-blue-500 text-white p-2 rounded"
+                  onClick={() => handleViewPDF(quotation)}
+                >
+                  Generar PDF
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {showModal && (
+        <Modal show={showModal} onClose={() => setShowModal(false)}>
+          <PDFContent formData={selectedQuotation.quotationDetails} values={selectedQuotation.calculatedValues} />
+        </Modal>
+      )}
     </div>
   );
 };

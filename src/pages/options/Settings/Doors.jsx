@@ -19,8 +19,8 @@ const Doors = () => {
         keys: [
           'index',                    // #
           'medida',                   // Medida
-          'cabina',                   // Cabina
-          'c_de_vidrio',              // C. de vidrio
+          'c_inoxidable',                   // Cabina
+          'c_vidrio',              // C. de vidrio
           'p_de_vidrio',              // P. de vidrio
           'p_inox',                   // P. Inox
           'p_epoxi',                  // P. Epoxi

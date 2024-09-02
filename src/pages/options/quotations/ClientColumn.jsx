@@ -33,7 +33,6 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
 
   const handleResetClient = () => {
     setSelectedClient(null);
-    console.log('Formulario reseteado.');
   };
 
   const handleResetAll = () => {
