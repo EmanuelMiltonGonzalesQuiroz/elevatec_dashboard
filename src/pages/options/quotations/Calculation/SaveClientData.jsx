@@ -1,6 +1,27 @@
 import React, { useEffect } from 'react';
 import { db } from '../../../../connection/firebase.js';
-import { doc, setDoc, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
+
+const sanitizeDocId = (id) => {
+    return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
+};
+
+// Función para limpiar el objeto y eliminar propiedades con valores undefined o null
+const cleanData = (data) => {
+    if (Array.isArray(data)) {
+        return data.map(cleanData);
+    } else if (typeof data === 'object' && data !== null) {
+        const cleanedData = {};
+        Object.keys(data).forEach(key => {
+            const value = data[key];
+            if (value !== undefined && value !== null) {
+                cleanedData[key] = cleanData(value);
+            }
+        });
+        return cleanedData;
+    }
+    return data;
+};
 
 const SaveClientData = ({ formData, additionalData }) => {
   useEffect(() => {
@@ -18,44 +39,48 @@ const SaveClientData = ({ formData, additionalData }) => {
         const seconds = String(date.getSeconds()).padStart(2, '0');
 
         const timestamp = `${year}_${month}_${day}T${hours}_${minutes}_${seconds}Z`;
-        const docId = `${clientName}_${timestamp}`;
+        const docId = sanitizeDocId(`${clientName}_${timestamp}`);
         const quotationsCol = collection(db, 'list of quotations');
-        const newDocRef = doc(quotationsCol, docId);
 
-        // Verificar si existe una entrada reciente para el mismo cliente
-        const q = query(
-          quotationsCol,
-          where('quotationDetails.02_CLIENTE', '==', clientName),
-          orderBy('timestamp', 'desc'),
-          limit(1)
-        );
+        // Obtener todos los documentos del cliente
+        const querySnapshot = await getDocs(quotationsCol);
+        let tooClose = false;
 
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const lastDoc = querySnapshot.docs[0];
-          const lastTimestamp = lastDoc.data().timestamp;
+        querySnapshot.forEach((doc) => {
+          const docData = doc.data();
+          const docTimestamp = docData.timestamp || "";
+          const docClientName = docData.quotationDetails?.['02_CLIENTE'] || "";
 
-          // Convertir ambos timestamps a objetos Date
-          const lastDate = new Date(lastTimestamp.replace(/_/g, '-').replace('T', ' ').replace('Z', ''));
-          const currentDate = new Date(date.getTime());
+          if (docClientName === clientName) {
+            // Comparar los timestamps
+            const lastDate = new Date(docTimestamp.replace(/_/g, '-').replace('T', ' ').replace('Z', ''));
+            const currentDate = new Date(date.getTime());
+            const diffInSeconds = (currentDate - lastDate) / 1000;
 
-          const diffInSeconds = (currentDate - lastDate) / 1000;
-
-          // Si la diferencia es menor a 5 segundos, cancelar la operación
-          if (diffInSeconds < 5) {
-            console.log('Error: Guardado de la cotización cancelado por estar demasiado cerca de la última entrada.');
-            return;
+            if (diffInSeconds < 3) {
+              tooClose = true;
+            }
           }
+        });
+
+        // Si se encuentra una entrada muy cercana, cancelar la operación
+        if (tooClose) {
+          console.log('Error: Guardado de la cotización cancelado por estar demasiado cerca de la última entrada.');
+          return;
         }
+
+        // Limpiar los datos antes de guardarlos
+        const cleanedFormData = cleanData(formData);
+        const cleanedAdditionalData = cleanData(additionalData);
 
         // Guardar el timestamp en la base de datos para futuras verificaciones
         const dataToSave = {
           timestamp: timestamp,
-          quotationDetails: formData, // Guardar formData sin limpiar para mantener consistencia
-          calculatedValues: additionalData // Guardar additionalData sin limpiar para mantener consistencia
+          quotationDetails: cleanedFormData, // Guardar formData sin valores undefined o null
+          calculatedValues: cleanedAdditionalData // Guardar additionalData sin valores undefined o null
         };
 
-        await setDoc(newDocRef, dataToSave);
+        await setDoc(doc(quotationsCol, docId), dataToSave);
         console.log(`Quotation data for ${docId} saved in Firestore`);
       } catch (err) {
         console.error('Error saving quotation data', err);

@@ -140,7 +140,7 @@ const Clients = () => {
                 </button>
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-2"
-                  onClick={() => handleOpenQuotationsModal(client.id)}  // Cambia a abrir el modal de cotizaciones
+                  onClick={() => handleOpenQuotationsModal(client.name)}  // Usa el nombre del cliente como referencia
                 >
                   Info
                 </button>
@@ -231,6 +231,7 @@ const Clients = () => {
       {isQuotationsModalOpen && (
         <QuotationsModal 
           clientId={currentClientId} 
+          clientName={clients.find(client => client.id === currentClientId)?.name}
           onClose={handleCloseQuotationsModal} 
         />
       )}

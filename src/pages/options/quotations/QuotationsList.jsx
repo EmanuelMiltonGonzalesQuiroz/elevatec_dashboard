@@ -2,12 +2,31 @@ import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import Modal from './Calculation/Modal'; // Asegúrate de importar Modal
-import PDFContent from './PDFGenerator/PDFContent'; // Asegúrate de importar PDFContent
+import Modal from './Calculation/Modal'; 
+import PDFContent from './PDFGenerator/PDFContent';
+
+// Función para formatear la fecha a partir del ID del documento
+const formatDateFromDocId = (docId) => {
+  const parts = docId.split('_');
+  
+  if (parts.length < 4) return 'N/A';
+  
+  const year = parts[1];
+  const month = parts[2];
+  const day = parts[3].split('T')[0];
+  
+  const monthNames = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"];
+  const formattedMonth = monthNames[parseInt(month, 10) - 1];
+  const formattedDate = `${day}/${formattedMonth}/${year.slice(-2)}`;
+
+  return formattedDate;
+};
 
 const QuotationList = () => {
   const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [quotations, setQuotations] = useState([]);
+  const [filteredQuotations, setFilteredQuotations] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
 
@@ -39,6 +58,14 @@ const QuotationList = () => {
             clientData = clientDoc.data();
           }
 
+          // Extraer el total de calculatedValues y redondearlo a 2 decimales
+          const total = data.calculatedValues?.valor8
+            ? data.calculatedValues.valor8.toFixed(2)
+            : 'N/A';
+
+          // Formatear la fecha desde el ID del documento
+          const date = formatDateFromDocId(doc.id);
+
           return {
             id: doc.id,
             ...data,
@@ -46,25 +73,54 @@ const QuotationList = () => {
             clientPhone: clientData.phone || 'N/A',
             city: clientData.address || 'N/A',
             quotedBy: 'Default Quoter', // Aquí puedes reemplazar con la información correcta
-            total: data.calculatedValues?.total || 'N/A',
-            date: quotationDetails?.date || 'N/A',
+            total: total,
+            date: date,
           };
         })
       );
 
       setQuotations(quotationList.filter(Boolean)); // Filtrar las cotizaciones nulas
+      setFilteredQuotations(quotationList.filter(Boolean)); // Inicialmente mostrar todas
     };
 
     fetchQuotations();
   }, []);
 
+  useEffect(() => {
+    // Filtrar cotizaciones basadas en el cliente seleccionado y la fecha
+    const filtered = quotations.filter((quotation) => {
+      const matchesClient = selectedClient
+        ? quotation.clientName === selectedClient.label
+        : true;
+      const matchesDate = selectedDate
+        ? quotation.date === formatDate(selectedDate)
+        : true;
+      return matchesClient && matchesDate;
+    });
+    setFilteredQuotations(filtered);
+  }, [selectedClient, selectedDate, quotations]);
+
   const handleClientChange = (selectedOption) => {
     setSelectedClient(selectedOption);
+  };
+
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
   };
 
   const handleViewPDF = (quotation) => {
     setSelectedQuotation(quotation);
     setShowModal(true);
+  };
+
+  // Formatear la fecha en el formato correcto para comparación
+  const formatDate = (dateString) => {
+    const dateObj = new Date(dateString);
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = dateObj.getMonth();
+    const year = String(dateObj.getFullYear()).slice(-2);
+    const monthNames = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"];
+    return `${day}/${monthNames[month]}/${year}`;
   };
 
   return (
@@ -83,7 +139,12 @@ const QuotationList = () => {
       
       <div className="mb-4">
         <label htmlFor="date" className="mr-2 text-black">{homeText.selectDate}</label>
-        <input type="date" id="date" className="p-2 border rounded" />
+        <input
+          type="date"
+          id="date"
+          className="p-2 border rounded"
+          onChange={handleDateChange}
+        />
       </div>
 
       <table className="min-w-full bg-white">
@@ -100,7 +161,7 @@ const QuotationList = () => {
           </tr>
         </thead>
         <tbody>
-          {quotations.map((quotation, index) => (
+          {filteredQuotations.map((quotation, index) => (
             <tr key={quotation.id} className="bg-gray-100">
               <td className="py-2 px-4 text-black">{index + 1}</td>
               <td className="py-2 px-4 text-black">{quotation.clientName}</td>
@@ -114,7 +175,7 @@ const QuotationList = () => {
                   className="bg-blue-500 text-white p-2 rounded"
                   onClick={() => handleViewPDF(quotation)}
                 >
-                  Generar PDF
+                  Ver PDF
                 </button>
               </td>
             </tr>
