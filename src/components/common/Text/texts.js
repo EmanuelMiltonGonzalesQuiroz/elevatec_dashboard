@@ -42,6 +42,12 @@ export const homeText = {
   tabQuotations: "Cotizar",
   tabQuotationsList: "Lista de cotizaciones",
 };
+export const clientColumnText = {
+  searchClient: "Buscar cliente",
+  searchSolicitante: "Solicitante",
+  generateQuotation: "Generar Cotización",
+  resetData: "Resetear datos",
+};
 
 export const usersText = {
   title: "Gestión de Usuarios",

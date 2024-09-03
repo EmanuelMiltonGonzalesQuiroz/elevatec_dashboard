@@ -3,24 +3,24 @@ import { db } from '../../../../connection/firebase.js';
 import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 
 const sanitizeDocId = (id) => {
-    return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
+  return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
 };
 
 // Función para limpiar el objeto y eliminar propiedades con valores undefined o null
 const cleanData = (data) => {
-    if (Array.isArray(data)) {
-        return data.map(cleanData);
-    } else if (typeof data === 'object' && data !== null) {
-        const cleanedData = {};
-        Object.keys(data).forEach(key => {
-            const value = data[key];
-            if (value !== undefined && value !== null) {
-                cleanedData[key] = cleanData(value);
-            }
-        });
-        return cleanedData;
-    }
-    return data;
+  if (Array.isArray(data)) {
+    return data.map(cleanData);
+  } else if (typeof data === 'object' && data !== null) {
+    const cleanedData = {};
+    Object.keys(data).forEach(key => {
+      const value = data[key];
+      if (value !== undefined && value !== null) {
+        cleanedData[key] = cleanData(value);
+      }
+    });
+    return cleanedData;
+  }
+  return data;
 };
 
 const SaveClientData = ({ formData, additionalData }) => {
@@ -80,10 +80,22 @@ const SaveClientData = ({ formData, additionalData }) => {
           calculatedValues: cleanedAdditionalData // Guardar additionalData sin valores undefined o null
         };
 
+        // Guardar la cotización en la colección 'list of quotations'
         await setDoc(doc(quotationsCol, docId), dataToSave);
         console.log(`Quotation data for ${docId} saved in Firestore`);
+
+        // Guardar la ubicación en la colección 'locations'
+        const locationsCol = collection(db, 'locations');
+        const locationData = {
+          location: cleanedFormData['Ubicacion'], // Latitud y Longitud de la ubicación
+          state: 'pendiente', // Estado inicial
+          client: clientName, // Nombre del cliente
+        };
+        await setDoc(doc(locationsCol, docId), locationData);
+        console.log(`Location data for ${docId} saved in Firestore`);
+
       } catch (err) {
-        console.error('Error saving quotation data', err);
+        console.error('Error saving quotation data or location data', err);
       }
     };
 

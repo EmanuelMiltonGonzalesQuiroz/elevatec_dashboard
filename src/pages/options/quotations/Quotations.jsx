@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { quotationsText } from '../../../components/common/Text/texts';
 import QuotationForm from './QuotationForm';
 import QuotationList from './QuotationsList';
+import QuotationLocations from './QuotationLocations'; // Importar el nuevo componente
 
 const Quotations = () => {
   const [activeTab, setActiveTab] = useState('form');
@@ -21,10 +22,17 @@ const Quotations = () => {
         >
           <i className="fas fa-list"></i> {quotationsText.tabQuotationsList}
         </button>
+        <button
+          className={`p-2 ${activeTab === 'locations' ? 'text-black font-bold' : 'text-blue-600'}`}
+          onClick={() => setActiveTab('locations')} // Nueva pestaña para QuotationLocations
+        >
+          <i className="fas fa-map-marker-alt"></i> Ubicaciones
+        </button>
       </div>
       <div className="flex-grow mt-4">
         {activeTab === 'form' && <QuotationForm />}
         {activeTab === 'list' && <QuotationList />}
+        {activeTab === 'locations' && <QuotationLocations />}
       </div>
     </div>
   );
