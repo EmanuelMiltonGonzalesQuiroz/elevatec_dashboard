@@ -1,6 +1,7 @@
 import areStringsSimilar from './areStringsSimilar.js';
 
 const updateGrupo8 = (formData, valor3, allData) => {
+  
   const descriptions = {
     "Embarque_Simple_Doble_Triple": () => {
       const nombreEmbarque = formData['Embarque']?.nombre?.toLowerCase() || '';
@@ -12,7 +13,12 @@ const updateGrupo8 = (formData, valor3, allData) => {
     },
     "MRL_MR": formData['Tipo']?.UNIDADES || 0,
     "Pesacarga": formData['Pesacarga']?.UNIDADES || 1, 
-    "Regenerador_de_energia": formData['Regenerador_de_energia']?.UNIDADES || 1
+    "Regenerador_de_energia": () => {
+  // Si formData['Regenerador_de_energía'] no existe o su valor es 0, unidades = 0
+      return formData['Regenerador_de_energía'] && formData['Regenerador_de_energía'].valor !== 0 ? 1 : 0;
+    },
+
+    "Indicador_de_solo_botón": formData['Indicador_de_solo_botón']?.UNIDADES || 1 // Nueva adición
   };
 
   Object.keys(descriptions).forEach(description => {
@@ -36,6 +42,16 @@ const updateGrupo8 = (formData, valor3, allData) => {
         precioUnitario = formData['Tipo']?.valor || precioUnitario;
       }
 
+      // Para Indicador_de_solo_botón, asegurar que el precio unitario se toma de 'valor'
+      if (description === "Indicador_de_solo_botón") {
+        precioUnitario = formData['Indicador_de_solo_botón']?.valor || 0;
+      }
+
+      // Actualizar el precio unitario para Regenerador_de_energia
+      if (description === "Regenerador_de_energia") {
+        precioUnitario = formData['Regenerador_de_energía']?.valor || 0;
+      }
+
       // Para Pesacarga, establecer unidades temporalmente en 1 si son 0
       if (description === "Pesacarga" && unidades === 0) {
         unidades = 1;
@@ -45,11 +61,6 @@ const updateGrupo8 = (formData, valor3, allData) => {
       const transporte = (valor3 || 0) * volumenTotalM3;
       const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
-
-      // Restablecer unidades a 0 para Pesacarga antes de guardar
-      if (description === "Pesacarga") {
-        unidades = 0;
-      }
 
       // Guardar los valores calculados en formData[key]
       formData[key].UNIDADES = unidades;

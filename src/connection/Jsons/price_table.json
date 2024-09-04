@@ -78,7 +78,7 @@
         "index": 13,
         "name": "Hormigones",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 15
+        "precio_unitario": 30
       },
       {
         "index": 14,
@@ -161,7 +161,7 @@
       {
         "index": 27,
         "name": "Cable de 8mm",
-        "volumen_x_pieza_m3": 0,
+        "volumen_x_pieza_m3": 1,
         "precio_unitario": 0.7
       },
       {

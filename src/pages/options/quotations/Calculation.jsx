@@ -52,18 +52,18 @@ const Calculation = ({ formData, allData, setFormData }) => {
         });
 
         const calculatedValues = calculateValues(updatedFormDataCopy, allData);
-        const valor3 = calculatedValues.valor3 || 0;
+        const valor4 = calculatedValues.valor4 || 0;
 
         // Aplica los cálculos para los grupos
-        updatedFormDataCopy = updateGrupo1(updatedFormDataCopy, valor3);
-        updatedFormDataCopy = updateGrupo2(updatedFormDataCopy, valor3);
-        updatedFormDataCopy = updateGrupo3(updatedFormDataCopy, valor3);
-        updatedFormDataCopy = updateGrupo4(updatedFormDataCopy, valor3, allData);
-        updatedFormDataCopy = updateGrupo5(updatedFormDataCopy, valor3, allData);
-        updatedFormDataCopy = updateGrupo6(updatedFormDataCopy, valor3);
-        updatedFormDataCopy = updateGrupo7(updatedFormDataCopy, valor3, allData);
-        updatedFormDataCopy = updateGrupo8(updatedFormDataCopy, valor3, allData);
-        updatedFormDataCopy = updateGrupoCustom(updatedFormDataCopy, valor3, allData);
+        updatedFormDataCopy = updateGrupo1(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupo2(updatedFormDataCopy, valor4);
+        updatedFormDataCopy = updateGrupo3(updatedFormDataCopy, valor4);
+        updatedFormDataCopy = updateGrupo4(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupo5(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupo6(updatedFormDataCopy, valor4);
+        updatedFormDataCopy = updateGrupo7(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupo8(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupoCustom(updatedFormDataCopy, valor4, allData);
 
         // Compara el formData original con el actualizado para detectar cambios
         const updatedFormDataString = JSON.stringify(updatedFormDataCopy);

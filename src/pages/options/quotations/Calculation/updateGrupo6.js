@@ -2,7 +2,7 @@ const updateGrupo6 = (formData, valor3) => {
   const descriptions = {
     "Indicador_de_Cabina": 1,
     "Indicador_de_piso": formData['01_PARADAS'] || 1,
-    "Cableado_de_pisos": formData['03_RECORRIDO'] || 1, // Cambiado a RECORRIDO
+    "Cableado_de_pisos": formData['03_RECORRIDO']*2 || 1, 
     "LOP": formData['01_PARADAS'] || 1,
     "TipoBotonera": 1,
     "BotonesCabina": formData['01_PARADAS'] || 1,

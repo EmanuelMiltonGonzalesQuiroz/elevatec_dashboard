@@ -13,6 +13,18 @@ const updateGrupo5 = (formData, valor3, allData) => {
     return item ? item[keyword] || 0 : 0;
   };
 
+  // Función para buscar precios en `internal_config` según la velocidad
+  const findInternalConfigPrice = (configKey, velocidadNombre) => {
+    const configData = allData.internal_config[configKey]?.items || [];
+    
+    // Convertir `velocidadNombre` a número y asegurarnos de que `item["velocidad m/s"]` también sea un número
+    const velocidadNumero = parseFloat(velocidadNombre.replace('m/s', '').trim());
+    
+    const configItem = configData.find(item => parseFloat(item["velocidad m/s"]) === velocidadNumero);
+
+    return configItem ? configItem.precio : 0;
+  };
+
   // Obtener el tipo y medida de la puerta del formData
   const tipoPuerta = formData['doors'].nombre.split(' - ')[0];
   const medidaPuerta = formData['doors'].nombre.split(' - ')[1];
@@ -22,7 +34,7 @@ const updateGrupo5 = (formData, valor3, allData) => {
   const precioPuertaCabina = getPrecioUnitario(
     tipoPuerta,
     medidaPuerta,
-    'c_'+acabadoCabina.toLowerCase()
+    'c_' + acabadoCabina.toLowerCase()
   );
 
   // Puertas en inoxidable
@@ -41,19 +53,19 @@ const updateGrupo5 = (formData, valor3, allData) => {
 
   // Puertas en vidrio
   const precioPuertasVidrio = getPrecioUnitario(
-    tipoPuerta,
+    tipoPuerta, 
     medidaPuerta,
     'p_de_vidrio'
   );
 
-
+  // Descripciones para las unidades
   const descriptions = {
     "Puerta_de_cabina": 1,
     "Puertas_en_inoxidable": formData['Puertas_en_inoxidable'].UNIDADES || 0,
     "Puertas_En_Epoxi": formData['Puertas_En_Epoxi'].UNIDADES || 0,
     "Puertas_En_Vidrio": formData['Puertas_En_Vidrio'].UNIDADES || 0,
-    "Regulador_de_velocidad": 1,
-    "Freno": 1
+    "Regulador_de_velocidad": 1, // Agregamos aquí la búsqueda de precio
+    "Freno": 1 // Agregamos aquí la búsqueda de precio
   };
 
   Object.keys(descriptions).forEach(description => {
@@ -63,7 +75,7 @@ const updateGrupo5 = (formData, valor3, allData) => {
 
     if (key && formData[key]) {
       const unidades = descriptions[description];
-
+      
       let precioUnitario;
       switch (description) {
         case 'Puerta_de_cabina':
@@ -77,6 +89,14 @@ const updateGrupo5 = (formData, valor3, allData) => {
           break;
         case 'Puertas_En_Vidrio':
           precioUnitario = precioPuertasVidrio;
+          break;
+        case 'Regulador_de_velocidad':
+          // Buscar el precio en `internal_config` según la velocidad
+          precioUnitario = findInternalConfigPrice("regulador de velocidad", formData['Velocidad'].nombre);
+          break;
+        case 'Freno':
+          // Buscar el precio en `internal_config` según la velocidad
+          precioUnitario = findInternalConfigPrice("freno", formData['Velocidad'].nombre);
           break;
         default:
           precioUnitario = formData[key].PRECIO_UNITARIO;

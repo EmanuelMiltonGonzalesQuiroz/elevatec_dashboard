@@ -1,4 +1,16 @@
-const updateGrupo1 = (formData, valor3) => {
+const updateGrupo1 = (formData, valor3, allData) => {
+  const getValorPesoPersona = (allData) => {
+    const items = allData.basic_config["basic config"].items;
+  
+    // Buscar el objeto que tiene el name 'Peso persona'
+    const pesoPersonaItem = items.find(item => item.name === 'Peso persona');
+  
+    // Si se encuentra el objeto, retornar su valor, de lo contrario retornar undefined
+    return pesoPersonaItem ? pesoPersonaItem.valor : undefined;
+  };
+  
+  // Ejemplo de uso:
+  
 
   const descriptions = [
     "Estructura_de_cabina",
@@ -27,7 +39,10 @@ const updateGrupo1 = (formData, valor3) => {
       
       // Asegurarse de que 'Hormigones' tenga 15 unidades
       if (description.toLowerCase() === 'hormigones') {
-        unidades = 15;
+        const peso_Persona = getValorPesoPersona(allData)
+        const potencia = peso_Persona*formData['03_PERSONAS']
+        unidades = Math.ceil((potencia * 1.5) / 30);
+
       }
 
       let precioUnitario = formData[key].PRECIO_UNITARIO || formData[key].valor || 0;

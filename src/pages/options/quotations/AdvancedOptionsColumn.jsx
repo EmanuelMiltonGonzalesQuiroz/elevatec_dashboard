@@ -10,6 +10,7 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
     AcabadoPuertaCabina: [],
     EspejoAdicional: [],
     IndicadorPisoHorizontal: [],
+    Indicador_de_solo_botón: [],
     LectorTarjetas: [],
     PasamanosAdicional: [],
     Piso: [],

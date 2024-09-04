@@ -79,12 +79,14 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
 
   return (
     <div className="flex flex-col items-center justify-center text-black font-bold h-full">
-      <div className="flex items-center mb-4">
-      <div className="flex flex-col mr-8 max-w-lg">
-        <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
-          {clientColumnText.searchSolicitante}
-        </label>
-        <div className="flex items-center">
+      {/* Contenedor principal que cambia según el tamaño de la pantalla */}
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        
+        {/* Sección de solicitante */}
+        <div className="flex flex-col h-min">
+          <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
+            {clientColumnText.searchSolicitante}
+          </label>
           <CustomSelect
             collectionName="login firebase"
             placeholder={clientColumnText.searchSolicitante}
@@ -92,9 +94,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             selectedValue={selectedSolicitante}
           />
         </div>
-      </div>
-
-        <div className="flex flex-col mr-4">
+  
+        {/* Sección de cliente */}
+        <div className="flex flex-col">
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
           </label>
@@ -117,48 +119,50 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               +
             </button>
           </div>
+          <div className="flex flex-col">
+            <button
+              onClick={() => handleGenerateQuotation(handleShowMessage)}
+              className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition"
+            >
+              {clientColumnText.generateQuotation}
+            </button>
+            <button
+              onClick={handleResetAll}
+              className="bg-red-500 text-white py-2 w-full rounded hover:bg-red-700 transition"
+            >
+              {clientColumnText.resetData}
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <button
-            onClick={() => handleGenerateQuotation(handleShowMessage)}
-            className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition"
-          >
-            {clientColumnText.generateQuotation}
-          </button>
-          <button
-            onClick={handleResetAll}
-            className="bg-red-500 text-white py-2 w-full rounded hover:bg-red-700 transition"
-          >
-            {clientColumnText.resetData}
-          </button>
+  
+        {/* Mapa de Google */}
+        <div className="w-full h-64">
+          <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
+            <GoogleMap
+              mapContainerStyle={{ width: '100%', height: '100%' }}
+              center={mapCenter}
+              zoom={10}
+              onClick={handleMapClick}
+            >
+              <MarkerF position={markerPosition} />
+            </GoogleMap>
+          </LoadScript>
         </div>
       </div>
-
+  
       {/* Mensaje de notificación */}
       {showMessage && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {showMessage}
         </div>
       )}
-
+  
       {/* Modal de nuevo cliente */}
       {isModalOpen && <NewClientModal onClose={handleCloseModal} />}
-
-      {/* Mapa de Google para seleccionar ubicación */}
-      <div className="w-full h-64 mt-4">
-        <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={mapCenter}
-            zoom={10}
-            onClick={handleMapClick} // Maneja el clic en el mapa
-          >
-            <MarkerF position={markerPosition} /> {/* Muestra el marcador en la ubicación seleccionada */}
-          </GoogleMap>
-        </LoadScript>
-      </div>
     </div>
   );
+  
+  
 };
 
 export default ClientColumn;

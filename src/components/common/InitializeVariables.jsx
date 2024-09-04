@@ -13,7 +13,7 @@ const initializeVariable = () => ({
 
 const useInitializeVariables = () => {
   const [variables, setVariables] = useState({});
-
+ 
   useEffect(() => {
     const initVars = {
       "01_PARADAS": 0,
@@ -70,6 +70,7 @@ const useInitializeVariables = () => {
       MRL_MR: initializeVariable(),
       Pesacarga: initializeVariable(),
       Regenerador_de_energia: initializeVariable(),
+      Indicador_de_solo_boton: initializeVariable(),
       Llavines_con_llave: initializeVariable(),
       Pasamanos_adicional: initializeVariable(),
       Espejo_adicional: initializeVariable(),
