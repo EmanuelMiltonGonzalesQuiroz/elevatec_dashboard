@@ -7,6 +7,9 @@ import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import Profile from '../options/Profile/Profile';
 import Settings from '../options/Settings/Settings';
+import Location from '../options/Location/Locations';
+import Maintenance from '../options/Maintenance/Maintenance';
+import MaintenanceSettings from '../options/MaintenanceSettings/MaintenanceSettings';
 //import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
 
 const Home = () => {
@@ -47,11 +50,13 @@ const Home = () => {
         <main className="flex-grow bg-gray-100 p-6">
           {/* Contenido con restricciones de tamaño y scrolls si es necesario */}
           <div className="max-w-[85vw] max-h-[80vh] overflow-auto">
+            {activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
-            {activeContent === 'Usuarios' && <Users />}
-            {/* Mostrar solo si el rol es diferente de 'Usuario' */}
-            {userRole !== 'Usuario' && activeContent === 'Clientes' && <Clients />}
             {userRole !== 'Usuario' && activeContent === 'Ajustes' && <Settings />}
+            {activeContent === 'Mantenimiento' && <Maintenance />}
+            {userRole !== 'Usuario' && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
+            {activeContent === 'Usuarios' && <Users />}
+            {userRole !== 'Usuario' && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

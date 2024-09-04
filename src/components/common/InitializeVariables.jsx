@@ -28,6 +28,8 @@ const useInitializeVariables = () => {
       "09_PISOS A ANTENDER": "",
       'Solicitante':[],
       "Ubicacion":[],
+      "Ubicacion_nombre":[],
+      'Vendedor':[],
       Ramplus: initializeVariable(),
       Brakets: initializeVariable(),
       Pernos_brakets: initializeVariable(),

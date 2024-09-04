@@ -1,10 +1,6 @@
 // src/components/common/Text/texts.js
 
-export const welcomeText = {
-  title: "Bienvenido al Sistema",
-  description: "Accede a tu cuenta para comenzar a gestionar tus proyectos.",
-  button: "Iniciar Sesión",
-};
+
 
 export const loginText = {
   title: "Iniciar Sesión",
@@ -41,10 +37,16 @@ export const homeText = {
   actions: "Acciones",
   tabQuotations: "Cotizar",
   tabQuotationsList: "Lista de cotizaciones",
+  maintenance: "Mantenimiento",
+  maintenanceSettings: "Ajustes de Mantenimiento",
+  location:"Ubicación",
+  company:"ELEVATEC"
+
 };
 export const clientColumnText = {
   searchClient: "Buscar cliente",
   searchSolicitante: "Solicitante",
+  seller: "Vendedor",
   generateQuotation: "Generar Cotización",
   resetData: "Resetear datos",
 };

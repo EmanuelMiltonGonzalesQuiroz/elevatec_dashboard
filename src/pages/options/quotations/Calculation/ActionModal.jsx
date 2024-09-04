@@ -16,12 +16,12 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
             >
               Ver PDF
             </button>
-            <button
+            {/*<button
               className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition"
               onClick={onViewProcedure}
             >
               Ver Procedimiento
-            </button>
+            </button>*/}
           </div>
 
           <div className="flex justify-between w-full mt-4">

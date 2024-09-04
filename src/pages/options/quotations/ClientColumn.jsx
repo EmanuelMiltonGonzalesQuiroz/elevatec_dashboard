@@ -10,16 +10,16 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSolicitante, setSelectedSolicitante] = useState(null);
+  const [selectedVendedor, setSelectedVendedor] = useState(null);
   const [showMessage, setShowMessage] = useState('');
   const [mapCenter] = useState({ lat: -16.495543, lng: -68.133543 }); // Centro inicial en La Paz, Bolivia
   const [markerPosition, setMarkerPosition] = useState(mapCenter);
+  const [locationName, setLocationName] = useState(''); // Agregado para manejar el nombre de la ubicación
 
   useEffect(() => {
-    // Actualiza el cliente seleccionado en el estado si cambia en formData
     if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
       setSelectedClient({ label: formData['02_CLIENTE'] });
     }
-    // Actualiza el solicitante seleccionado en el estado si cambia en formData
     if (formData['Solicitante'] && formData['Solicitante'] !== (selectedSolicitante && selectedSolicitante.label)) {
       setSelectedSolicitante({ label: formData['Solicitante'] });
     }
@@ -47,16 +47,24 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     }
   };
 
+  const handleVendedorChange = (selectedOption) => {
+    if (selectedOption && selectedOption.label !== formData['Vendedor']) {
+      setSelectedVendedor(selectedOption);
+      updateFormData({ field: 'Vendedor', value: selectedOption.label }, formData, setFormData);
+    }
+  };
+
   const handleResetClient = () => {
     setSelectedClient(null);
     setSelectedSolicitante(null);
+    setSelectedVendedor(null);
   };
 
   const handleResetAll = () => {
     handleReset();
     handleResetClient();
     if (onReset) {
-      onReset();  // Enviar señal a MainFormColumn1
+      onReset(); // Enviar señal a MainFormColumn1
     }
   };
 
@@ -67,7 +75,6 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     }, 3000);
   };
 
-  // Maneja el clic en el mapa para seleccionar una ubicación
   const handleMapClick = (event) => {
     const location = {
       lat: event.latLng.lat(),
@@ -77,12 +84,15 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     updateFormData({ field: 'Ubicacion', value: location }, formData, setFormData); // Actualiza formData con la nueva ubicación
   };
 
+  const handleLocationNameChange = (e) => {
+    const newName = e.target.value;
+    setLocationName(newName);
+    updateFormData({ field: 'Ubicacion_nombre', value: newName }, formData, setFormData);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center text-black font-bold h-full">
-      {/* Contenedor principal que cambia según el tamaño de la pantalla */}
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        
-        {/* Sección de solicitante */}
         <div className="flex flex-col h-min">
           <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchSolicitante}
@@ -93,9 +103,18 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             onChange={handleSolicitanteChange}
             selectedValue={selectedSolicitante}
           />
+
+          <label htmlFor="vendedorName" className="mb-2 font-semibold text-black">
+            {clientColumnText.seller}
+          </label>
+          <CustomSelect
+            collectionName="sellers"
+            placeholder={clientColumnText.seller}
+            onChange={handleVendedorChange}
+            selectedValue={selectedVendedor}
+          />
         </div>
-  
-        {/* Sección de cliente */}
+
         <div className="flex flex-col">
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
@@ -134,12 +153,11 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </button>
           </div>
         </div>
-  
-        {/* Mapa de Google */}
-        <div className="w-full h-64">
+
+        <div className="w-full h-64"> 
           <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
             <GoogleMap
-              mapContainerStyle={{ width: '100%', height: '100%' }}
+              mapContainerStyle={{ width: '100%', height: '80%' }}
               center={mapCenter}
               zoom={10}
               onClick={handleMapClick}
@@ -147,22 +165,26 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               <MarkerF position={markerPosition} />
             </GoogleMap>
           </LoadScript>
+          <label htmlFor="locationName" className="mt-2 font-semibold text-black">Nombre de la ubicación:</label>
+          <input
+            type="text"
+            id="locationName"
+            value={locationName}
+            onChange={handleLocationNameChange}
+            className="mt-1 p-1 border rounded w-full"
+          />
         </div>
       </div>
-  
-      {/* Mensaje de notificación */}
+
       {showMessage && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {showMessage}
         </div>
       )}
-  
-      {/* Modal de nuevo cliente */}
+
       {isModalOpen && <NewClientModal onClose={handleCloseModal} />}
     </div>
   );
-  
-  
 };
 
 export default ClientColumn;

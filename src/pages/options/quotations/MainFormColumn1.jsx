@@ -17,6 +17,8 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     pit: initialFieldState('06_Foso'),
     height: initialFieldState('07_Huida'),
     numElevators: initialFieldState('08_Número de ascensores'),
+    supportChains: initialFieldState(1),// Inicializa a 1 si no hay cadenas adicionales
+    addSupportChains: 'no', // Por defecto es 'no'
   });
 
   const initializeFloorAssignments = (stops) => {
@@ -39,6 +41,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     'Planta baja',
     'Otro',
   ];
+  
 
   useEffect(() => {
     setFormData(prev => ({
@@ -66,6 +69,16 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
       setFloorAssignmentError('');
     }
   }, [floorAssignments]);
+  useEffect(() => {
+    // Actualizar el número de cadenas de compensación basado en si es "si" o "no" y el número de apoyo adicional.
+    const totalChains = localFields.addSupportChains === 'si' ? localFields.supportChains + 2 : 2;
+  
+    setFormData(prev => ({
+      ...prev,
+      Cadena_de_compensacion: { ...prev.Cadena_de_compensacion, UNIDADES: totalChains }
+    }));
+  }, [localFields.supportChains, localFields.addSupportChains, setFormData]);
+  
 
   useEffect(() => {
     if (onReset) {
@@ -158,6 +171,44 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
           onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
         />
       </div>
+
+      {localFields.stops >= 10 && (
+        <div className="mb-4">
+          <label htmlFor="addSupportChains" className="mb-2 font-semibold text-black">
+            ¿Desea poner cadenas de apoyo?
+          </label>
+          <select
+            id="addSupportChains"
+            value={localFields.addSupportChains}
+            onChange={(e) => handleChange('addSupportChains', e.target.value)}
+            className="p-2 border rounded focus:outline-none w-full"
+          >
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+          </select>
+        </div>
+      )}
+
+      {localFields.stops >= 10 && localFields.addSupportChains === 'si' && (
+        <div className="mb-4">
+          <label htmlFor="supportChains" className="mb-2 font-semibold text-black">
+            ¿Cuántas cadenas de apoyo adicionales?
+          </label>
+          <input
+            type="number"
+            id="supportChains"
+            min="1"
+            value={localFields.supportChains}
+            onChange={(e) => {
+              const newValue = Math.max(1, parseInt(e.target.value, 10) || 1);  // Evitar que el valor sea menor a 1
+              handleChange('supportChains', newValue);
+            }}
+            className="p-2 border rounded focus:outline-none w-full"
+            onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
+          />
+        </div>
+      )}
+
 
       {localFields.stops > 0 && (
         <>

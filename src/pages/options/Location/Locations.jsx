@@ -3,7 +3,7 @@ import { db } from '../../../connection/firebase';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-const QuotationLocations = () => {
+const Location = () => {
   const [locations, setLocations] = useState([]);
   const [mapLocations, setMapLocations] = useState([]);
 
@@ -94,6 +94,24 @@ const QuotationLocations = () => {
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full h-full text-black">
       <h2 className="text-xl font-bold mb-4">Ubicaciones de Cotizaciones</h2>
+      <div className="w-full h-96">
+        <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
+          <GoogleMap
+            mapContainerStyle={{ width: '100%', height: '100%' }}
+            center={{ lat: -16.495543, lng: -68.133543 }} // Centro en La Paz, Bolivia
+            zoom={10}
+          >
+            {mapLocations.map((location) => (
+              <Marker
+                key={location.id}
+                position={{ lat: location.location.lat, lng: location.location.lng }}
+                icon={getMarkerColor(location.state)}
+                title={`${location.client}: ${location.address}`}
+              />
+            ))}
+          </GoogleMap>
+        </LoadScript>
+      </div>
       <table className="table-auto w-full mb-4">
         <thead>
           <tr>
@@ -125,28 +143,8 @@ const QuotationLocations = () => {
           ))}
         </tbody>
       </table>
-
-      {/* Mapa de Google para mostrar las ubicaciones */}
-      <div className="w-full h-96">
-        <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={{ lat: -16.495543, lng: -68.133543 }} // Centro en La Paz, Bolivia
-            zoom={10}
-          >
-            {mapLocations.map((location) => (
-              <Marker
-                key={location.id}
-                position={{ lat: location.location.lat, lng: location.location.lng }}
-                icon={getMarkerColor(location.state)}
-                title={`${location.client}: ${location.address}`}
-              />
-            ))}
-          </GoogleMap>
-        </LoadScript>
-      </div>
     </div>
   );
 };
 
-export default QuotationLocations;
+export default Location;
