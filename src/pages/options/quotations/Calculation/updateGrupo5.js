@@ -41,7 +41,7 @@ const updateGrupo5 = (formData, valor3, allData) => {
   const precioPuertasInoxidable = getPrecioUnitario(
     tipoPuerta,
     medidaPuerta,
-    'p_inox'
+    'p_inox' 
   );
 
   // Puertas en epoxi

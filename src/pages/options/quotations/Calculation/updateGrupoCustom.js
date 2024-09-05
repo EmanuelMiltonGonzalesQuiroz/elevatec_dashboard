@@ -7,7 +7,7 @@ const updateGrupoCustom = (formData, valor3, allData) => {
   const findElementValue = (name) => {
     const element = elements.find(el => areStringsSimilar(el.name, name));
     return element ? element.value : 0;
-  };
+  }; 
 
   // Función para buscar el gearleesPrecio según la clase de velocidad y el número de personas
   const findGearleesPrecio = (velocidadNombre, personas) => {

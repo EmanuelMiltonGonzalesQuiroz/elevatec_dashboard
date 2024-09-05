@@ -12,6 +12,7 @@ const Doors = () => {
           doorsText.measure,          // Medida
           doorsText.cabina,           // Cabina
           doorsText.cDeVidrio,        // C. de vidrio
+          doorsText.cDeEpoxi, 
           doorsText.pDeVidrio,        // P. de vidrio
           doorsText.pInox,            // P. Inox
           doorsText.pEpoxi,           // P. Epoxi
@@ -20,7 +21,8 @@ const Doors = () => {
           'index',                    // #
           'medida',                   // Medida
           'c_inoxidable',                   // Cabina
-          'c_vidrio',              // C. de vidrio
+          'c_vidrio',
+          'c_epoxi',              
           'p_de_vidrio',              // P. de vidrio
           'p_inox',                   // P. Inox
           'p_epoxi',                  // P. Epoxi
@@ -29,6 +31,7 @@ const Doors = () => {
           medida: doorsText.measure,          // Medida
           cabina: doorsText.cabina,           // Cabina
           c_de_vidrio: doorsText.cDeVidrio,   // C. de vidrio
+          c_de_epoxi: doorsText.cDeEpoxi,
           p_de_vidrio: doorsText.pDeVidrio,   // P. de vidrio
           p_inox: doorsText.pInox,            // P. Inox
           p_epoxi: doorsText.pEpoxi,          // P. Epoxi

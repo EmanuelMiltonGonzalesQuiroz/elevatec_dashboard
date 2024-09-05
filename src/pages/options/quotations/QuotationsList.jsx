@@ -185,7 +185,7 @@ const QuotationList = () => {
 
       {showModal && (
         <Modal show={showModal} onClose={() => setShowModal(false)}>
-          <PDFContent formData={selectedQuotation.quotationDetails} values={selectedQuotation.calculatedValues} />
+          <PDFContent formData={selectedQuotation.quotationDetails} values={selectedQuotation.calculatedValues}  timestamp={selectedQuotation.timestamp}/>
         </Modal>
       )}
     </div>
