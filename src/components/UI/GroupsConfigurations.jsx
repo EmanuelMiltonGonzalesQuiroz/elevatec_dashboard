@@ -59,7 +59,7 @@ const GroupsConfigurations = ({ collectionName, columnsConfig, textConfig }) => 
   };
 
   return (
-    <div className="p-4 bg-gray-100 text-black">
+    <div className="p-4 bg-gray-100 text-black ">
       <div className="flex">
         <GroupClassesColumn 
           groups={groups} 

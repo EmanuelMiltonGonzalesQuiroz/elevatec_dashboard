@@ -1,5 +1,3 @@
-// src/pages/Profile/Profile.jsx
-
 import React, { useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -23,7 +21,7 @@ const Profile = () => {
 
   return (
     <div className="p-6 bg-gray-100 text-black">
-      <h2 className="text-2xl font-bold mb-6">Perfil de usuario</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Perfil de usuario</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold">Mi Información</h3>
@@ -36,8 +34,8 @@ const Profile = () => {
             </button>
           )}
         </div>
-        <div className="space-y-4">
-          <div>
+        <div className="space-y-4 flex flex-col items-center text-center">
+          <div className="w-full max-w-md">
             <label className="font-semibold">Nombre:</label>
             {isEditing ? (
               <input
@@ -51,11 +49,11 @@ const Profile = () => {
               <p>{currentUser.username}</p>
             )}
           </div>
-          <div>
+          <div className="w-full max-w-md">
             <label className="font-semibold">Rol de Usuario:</label>
             <p>{currentUser.role}</p>
           </div>
-          <div>
+          <div className="w-full max-w-md">
             <label className="font-semibold">Correo electrónico:</label>
             {isEditing ? (
               <input
@@ -69,7 +67,7 @@ const Profile = () => {
               <p>{currentUser.email}</p>
             )}
           </div>
-          <div>
+          <div className="w-full max-w-md">
             <label className="font-semibold">Teléfono:</label>
             {isEditing ? (
               <input
@@ -93,7 +91,7 @@ const Profile = () => {
           )}
         </div>
         {!isEditing && (
-          <div className="mt-6">
+          <div className="mt-6 text-center">
             <h3 className="text-xl font-semibold mb-4">Administrar mi contraseña</h3>
             <button className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-700 transition">
               Cambiar Contraseña

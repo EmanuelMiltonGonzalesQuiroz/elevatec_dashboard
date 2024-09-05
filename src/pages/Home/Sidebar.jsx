@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { homeText } from '../../components/common/Text/texts';
 import {
   FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers,
-  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools
+  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools, FaSignOutAlt
 } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
 import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = ({ activeContent, setActiveContent }) => {
   const [isMinimized, setIsMinimized] = useState(false);
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,6 +22,11 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
 
   const handleToggleSidebar = () => {
     setIsMinimized(!isMinimized);
+  };
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/login';
   };
 
   const getUserRole = () => {
@@ -41,7 +46,8 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
   };
 
   return (
-    <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-screen ${isMinimized ? 'w-16' : 'w-[15%]'}`}>
+    <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-[93vh] ${isMinimized ? 'w-16 items-center justify-center' : 'w-[15%]'}`}>
+
       <div className="p-4 flex justify-between items-center">
         {!isMinimized && <span className="text-lg font-bold">{homeText.company}</span>}
         <button onClick={handleToggleSidebar} className="text-white">
@@ -60,6 +66,15 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
         </ul>
       </nav>
+      <div className="p-4">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition w-full flex items-center justify-center"
+        >
+          <FaSignOutAlt />
+          {!isMinimized && <span className="ml-2">{homeText.logoutButton}</span>}
+        </button>
+      </div>
     </div>
   );
 };

@@ -124,7 +124,7 @@ const QuotationList = () => {
   };
 
   return (
-    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full text-black">
+    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg max-h-[75vh] text-black">
       <h1 className="text-xl font-bold mb-4">{homeText.listOfQuotations}</h1>
       
       <div className="mb-4">
@@ -146,8 +146,8 @@ const QuotationList = () => {
           onChange={handleDateChange}
         />
       </div>
-
-      <table className="min-w-full bg-white">
+      <div className="overflow-auto">
+        <table className="bg-white">
         <thead>
           <tr>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.number}</th>
@@ -182,6 +182,8 @@ const QuotationList = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      
 
       {showModal && (
         <Modal show={showModal} onClose={() => setShowModal(false)}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
+import { FaTimes } from 'react-icons/fa'; // Importar el ícono de cierre
 import Modal from '../quotations/Calculation/Modal'; // Asegúrate de importar el componente Modal
 import PDFContent from '../quotations/PDFGenerator/PDFContent'; // Asegúrate de importar el componente PDFContent
 
@@ -26,14 +27,33 @@ const QuotationsModal = ({ clientId, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
 
+  // Función para obtener el teléfono del cliente de la colección 'clients'
+  const loadClientPhone = useCallback(async (clientName) => {
+    try {
+      const clientQuery = query(collection(db, 'clients'), where('name', '==', clientName));
+      const clientSnapshot = await getDocs(clientQuery);
+
+      if (!clientSnapshot.empty) {
+        const clientData = clientSnapshot.docs[0].data();
+        return clientData.phone || 'N/A';
+      }
+    } catch (error) {
+      console.error('Error al obtener el teléfono del cliente: ', error);
+    }
+    return 'N/A'; // Si no se encuentra o hay error, devolver 'N/A'
+  }, []);
+
   const loadQuotations = useCallback(async () => {
     try {
       const quotationsSnapshot = await getDocs(collection(db, 'list of quotations'));
 
-      const quotationsList = quotationsSnapshot.docs
+      const quotationsList = await Promise.all(quotationsSnapshot.docs
         .filter(doc => doc.id.startsWith(clientId))  // Filtra los documentos que comiencen con el ID del cliente
-        .map((doc, index) => {
+        .map(async (doc, index) => {
           const data = doc.data();
+          const clientName = data.quotationDetails?.['02_CLIENTE'] || 'N/A';
+          const clientPhone = await loadClientPhone(clientName); // Busca el teléfono del cliente
+
           const total = data.calculatedValues?.valor8
             ? data.calculatedValues.valor8.toFixed(2)
             : 'N/A';
@@ -42,22 +62,23 @@ const QuotationsModal = ({ clientId, onClose }) => {
           return {
             id: doc.id,
             index: index + 1,
-            clientName: data.quotationDetails?.['02_CLIENTE'] || 'N/A',
-            clientPhone: data.quotationDetails?.['02_TELÉFONO'] || 'N/A',
-            city: data.quotationDetails?.['02_CIUDAD'] || 'N/A',
-            quotedBy: 'Default Quoter', // Ajusta según sea necesario
+            clientName: clientName,
+            clientPhone: clientPhone, // Asigna el teléfono obtenido
+            city: data.quotationDetails?.['Ciudad'].nombre || 'N/A',
+            quotedBy: data.quotationDetails?.['Solicitante'] ||'Default Quoter', // Ajusta según sea necesario
             total: total,
             date: date,
             quotationDetails: data.quotationDetails,
             calculatedValues: data.calculatedValues,
           };
-        });
+        })
+      );
 
       setQuotations(quotationsList);
     } catch (error) {
       console.error('Error al cargar las cotizaciones: ', error);
     }
-  }, [clientId]);
+  }, [clientId, loadClientPhone]);
 
   useEffect(() => {
     loadQuotations();
@@ -70,14 +91,14 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-xl font-bold mb-4">Lista de Cotizaciones para {clientId}</h2>
+      <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
         <button
           onClick={onClose}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition absolute top-2 right-2"
+          className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition"
         >
-          Cerrar
+          <FaTimes size={24} /> {/* Aquí está el ícono de cierre */}
         </button>
+        <h2 className="text-xl font-bold mb-4">Lista de Cotizaciones para {clientId}</h2>
         <table className="min-w-full bg-white border mt-4">
           <thead>
             <tr className='text-black font-bold'>

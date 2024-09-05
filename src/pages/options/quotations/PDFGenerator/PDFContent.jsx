@@ -47,33 +47,39 @@ const PDFContent = ({ formData, values, timestamp }) => {
       proposalTitle: proposalTitle
     };
 
-    // Depuración: Imprimir valores para verificar
+    let startY = 20; // Posición inicial
 
-    // Página 1
+    // Página 1: Cabecera y contenido principal
     Header({ doc, config, formData, values });
-    MainContent({ doc, config, formData, values }); 
-    Footer({ doc, config, pageNumber: doc.internal.getNumberOfPages() });
+    MainContent({ doc, config, formData, values });
 
-    
-    // Descomentar si necesitas más páginas
-    // Página 2
-    doc.addPage();
-    TechnicalSpecifications({ doc, formData, values });
-    Footer({ doc, config, pageNumber: doc.internal.getNumberOfPages() });
-    // Página 3
-    doc.addPage();
-    TechnicalDetails({ doc, formData, values });
-    Footer({ doc, config, pageNumber: doc.internal.getNumberOfPages() });
+    // Ajustar la posición para el siguiente contenido
+    startY = doc.lastAutoTable?.finalY + 10 || 90;
 
-    doc.addPage();
-    TableComponent({ doc, formData, values });
-    Footer({ doc, config, pageNumber: doc.internal.getNumberOfPages() });
+    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
 
-    doc.addPage();
-    Final( { doc, config })
-    Footer({ doc, config, pageNumber: doc.internal.getNumberOfPages() });
-    
-    
+    // Especificaciones técnicas
+    startY = doc.lastAutoTable?.finalY + 20; // Asegurar que no haya sobreposición
+    TechnicalSpecifications({ doc, formData, startY });
+    startY = doc.lastAutoTable?.finalY + 20; // Obtener la posición final de la tabla
+    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+
+    // Detalles técnicos
+    startY = doc.lastAutoTable?.finalY + 20;
+    TechnicalDetails({ doc, formData, startY });
+    startY = doc.lastAutoTable?.finalY + 20;
+    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+
+    // Tabla de componentes finales
+    startY = doc.lastAutoTable?.finalY + 20;
+    TableComponent({ doc, formData, values, startY });
+    startY = doc.lastAutoTable?.finalY + 20;
+    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+
+    // Sección final
+    startY = doc.lastAutoTable?.finalY + 20;
+    Final({ doc, config, startY });
+    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
 
     const pdfBlob = doc.output('blob');
     return URL.createObjectURL(pdfBlob);

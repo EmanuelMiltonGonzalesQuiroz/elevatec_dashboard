@@ -57,7 +57,9 @@ const Settings = () => {
           {settingsText.internalConfigurations}
         </button>
       </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
+      
+      {/* Aquí definimos la altura fija del 60% de la pantalla */}
+      <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: '75vh'}}>
         {activeTab === 'Groups' && <Groups />}
         {activeTab === 'Elements' && <Elements />}
         {activeTab === 'Motors' && <Motors />}

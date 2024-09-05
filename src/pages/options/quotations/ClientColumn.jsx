@@ -91,7 +91,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-black font-bold h-full">
+    <div className="flex flex-col items-center justify-center text-black font-bold h-full overflow-x-auto">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
         <div className="flex flex-col h-min">
           <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
@@ -151,28 +151,28 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             >
               {clientColumnText.resetData}
             </button>
+            <label htmlFor="locationName" className="mt-2 font-semibold text-black text-lg">Nombre de la ubicación:</label>
+            <input
+              type="text"
+              id="locationName"
+              value={locationName}
+              onChange={handleLocationNameChange}
+              className="mt-1 p-3 border-2 border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+            />
           </div>
         </div>
 
-        <div className="w-full h-64"> 
-          <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
-            <GoogleMap
-              mapContainerStyle={{ width: '100%', height: '80%' }}
-              center={mapCenter}
-              zoom={10}
-              onClick={handleMapClick}
-            >
-              <MarkerF position={markerPosition} />
-            </GoogleMap>
-          </LoadScript>
-          <label htmlFor="locationName" className="mt-2 font-semibold text-black">Nombre de la ubicación:</label>
-          <input
-            type="text"
-            id="locationName"
-            value={locationName}
-            onChange={handleLocationNameChange}
-            className="mt-1 p-1 border rounded w-full"
-          />
+        <div className="w-full"> 
+            <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
+              <GoogleMap
+                mapContainerStyle={{ width: '100%', height: '100%' }}
+                center={mapCenter}
+                zoom={10}
+                onClick={handleMapClick}
+              >
+                <MarkerF position={markerPosition} />
+              </GoogleMap>
+            </LoadScript>
         </div>
       </div>
 
