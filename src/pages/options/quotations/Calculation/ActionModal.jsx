@@ -14,14 +14,21 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
             className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full"
             onClick={onViewPDF}
           >
-            Ver PDF sin membretado
+            Ver PDF sin membretado 
           </button>
 
           <button
             className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full"
             onClick={onViewPDFWithHeader}
           >
-            Ver PDF con membretado
+            Ver PDF con membretado  Halmeco
+          </button>
+
+          <button
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full"
+            onClick={onViewPDFWithHeader}
+          >
+            Ver PDF con membretado Elevatec
           </button>
 
           {/* Uncommented: Ver Procedimiento 

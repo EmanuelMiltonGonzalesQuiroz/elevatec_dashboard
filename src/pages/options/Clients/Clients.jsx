@@ -132,18 +132,22 @@ const Clients = () => {
               <td className="border px-4 py-2">{client.email}</td>
               <td className="border px-4 py-2">{client.address}</td>
               <td className="border px-4 py-2">
-                <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2"
-                  onClick={() => handleOpenModal(client)}
-                >
-                  Editar
-                </button>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-2"
-                  onClick={() => handleOpenQuotationsModal(client.name)}  // Usa el nombre del cliente como referencia
-                >
-                  Info
-                </button>
+              <td className="border px-4 py-2">
+                  <div className="flex justify-center items-center">
+                    <button
+                      className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mx-2"
+                      onClick={() => handleOpenModal(client)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-2"
+                      onClick={() => handleOpenQuotationsModal(client.name)}
+                    >
+                      Información
+                    </button>
+                  </div>
+                </td>
               </td>
             </tr>
           ))}

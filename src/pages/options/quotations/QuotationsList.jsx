@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import Modal from './Calculation/Modal'; 
 import PDFContent from './PDFGenerator/PDFContent';
+import CustomModal from '../../../components/UI/CustomModal';
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -29,6 +29,7 @@ const QuotationList = () => {
   const [filteredQuotations, setFilteredQuotations] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
+  const [selectedPDFOption, setSelectedPDFOption] = useState(null);
 
   useEffect(() => {
     const fetchQuotations = async () => {
@@ -43,10 +44,9 @@ const QuotationList = () => {
           const clientName = quotationDetails['02_CLIENTE'];
 
           if (!clientName) {
-            return null; // Saltar cotizaciones que no tienen cliente
+            return null;
           }
 
-          // Buscar los detalles del cliente en la colección 'clients'
           const clientQuery = collection(db, 'clients');
           const clientSnapshot = await getDocs(clientQuery);
           const clientDoc = clientSnapshot.docs.find(
@@ -58,12 +58,10 @@ const QuotationList = () => {
             clientData = clientDoc.data();
           }
 
-          // Extraer el total de calculatedValues y redondearlo a 2 decimales
           const total = data.calculatedValues?.valor8
             ? data.calculatedValues.valor8.toFixed(2)
             : 'N/A';
 
-          // Formatear la fecha desde el ID del documento
           const date = formatDateFromDocId(doc.id);
 
           return {
@@ -72,22 +70,21 @@ const QuotationList = () => {
             clientName: clientName,
             clientPhone: clientData.phone || 'N/A',
             city: clientData.address || 'N/A',
-            quotedBy: 'Default Quoter', // Aquí puedes reemplazar con la información correcta
+            quotedBy: 'Default Quoter',
             total: total,
             date: date,
           };
         })
       );
 
-      setQuotations(quotationList.filter(Boolean)); // Filtrar las cotizaciones nulas
-      setFilteredQuotations(quotationList.filter(Boolean)); // Inicialmente mostrar todas
+      setQuotations(quotationList.filter(Boolean));
+      setFilteredQuotations(quotationList.filter(Boolean));
     };
 
     fetchQuotations();
   }, []);
 
   useEffect(() => {
-    // Filtrar cotizaciones basadas en el cliente seleccionado y la fecha
     const filtered = quotations.filter((quotation) => {
       const matchesClient = selectedClient
         ? quotation.clientName === selectedClient.label
@@ -113,7 +110,12 @@ const QuotationList = () => {
     setShowModal(true);
   };
 
-  // Formatear la fecha en el formato correcto para comparación
+  const handlePDFOption = (option) => {
+    setSelectedPDFOption(option);
+    console.log(`Generar PDF opción: ${option}`);
+    setShowModal(false); // Cerrar el modal al seleccionar una opción
+  };
+
   const formatDate = (dateString) => {
     const dateObj = new Date(dateString);
     const day = String(dateObj.getDate()).padStart(2, '0');
@@ -183,15 +185,45 @@ const QuotationList = () => {
         </tbody>
       </table>
       </div>
-      
 
       {showModal && (
-        <Modal show={showModal} onClose={() => setShowModal(false)}>
-          <PDFContent formData={selectedQuotation.quotationDetails} values={selectedQuotation.calculatedValues}  timestamp={selectedQuotation.timestamp}/>
-        </Modal>
-      )}
-    </div>
-  );
-};
-
-export default QuotationList;
+        <CustomModal show={showModal} onClose={() => setShowModal(false)}>
+          <div className="max-w-[180px] mx-auto">
+            <h2 className="text-xl font-bold mb-4">Selecciona una opción de PDF</h2>
+            
+            <button
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              onClick={() => handlePDFOption('sin_membretado')}
+              >
+                Ver PDF sin membretado
+              </button>
+  
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+                onClick={() => handlePDFOption('con_membretado_halmeco')}
+              >
+                Ver PDF con membretado Halmeco
+              </button>
+  
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+                onClick={() => handlePDFOption('con_membretado_elevatec')}
+              >
+                Ver PDF con membretado Elevatec
+              </button>
+  
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
+                onClick={() => setShowModal(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </CustomModal>
+        )}
+      </div>
+    );
+  };
+  
+  export default QuotationList;
+  

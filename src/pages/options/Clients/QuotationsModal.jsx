@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
-import { FaTimes } from 'react-icons/fa'; // Importar el ícono de cierre
-import Modal from '../quotations/Calculation/Modal'; // Asegúrate de importar el componente Modal
-import PDFContent from '../quotations/PDFGenerator/PDFContent'; // Asegúrate de importar el componente PDFContent
+import { FaTimes } from 'react-icons/fa'; 
+import PDFContent from '../quotations/PDFGenerator/PDFContent'; 
+import CustomModal from '../../../components/UI/CustomModal'; // Asegúrate de importar el modal personalizado
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -27,7 +27,6 @@ const QuotationsModal = ({ clientId, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
 
-  // Función para obtener el teléfono del cliente de la colección 'clients'
   const loadClientPhone = useCallback(async (clientName) => {
     try {
       const clientQuery = query(collection(db, 'clients'), where('name', '==', clientName));
@@ -40,7 +39,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
     } catch (error) {
       console.error('Error al obtener el teléfono del cliente: ', error);
     }
-    return 'N/A'; // Si no se encuentra o hay error, devolver 'N/A'
+    return 'N/A';
   }, []);
 
   const loadQuotations = useCallback(async () => {
@@ -48,11 +47,11 @@ const QuotationsModal = ({ clientId, onClose }) => {
       const quotationsSnapshot = await getDocs(collection(db, 'list of quotations'));
 
       const quotationsList = await Promise.all(quotationsSnapshot.docs
-        .filter(doc => doc.id.startsWith(clientId))  // Filtra los documentos que comiencen con el ID del cliente
+        .filter(doc => doc.id.startsWith(clientId))
         .map(async (doc, index) => {
           const data = doc.data();
           const clientName = data.quotationDetails?.['02_CLIENTE'] || 'N/A';
-          const clientPhone = await loadClientPhone(clientName); // Busca el teléfono del cliente
+          const clientPhone = await loadClientPhone(clientName);
 
           const total = data.calculatedValues?.valor8
             ? data.calculatedValues.valor8.toFixed(2)
@@ -63,9 +62,9 @@ const QuotationsModal = ({ clientId, onClose }) => {
             id: doc.id,
             index: index + 1,
             clientName: clientName,
-            clientPhone: clientPhone, // Asigna el teléfono obtenido
+            clientPhone: clientPhone,
             city: data.quotationDetails?.['Ciudad'].nombre || 'N/A',
-            quotedBy: data.quotationDetails?.['Solicitante'] ||'Default Quoter', // Ajusta según sea necesario
+            quotedBy: data.quotationDetails?.['Solicitante'] || 'Default Quoter',
             total: total,
             date: date,
             quotationDetails: data.quotationDetails,
@@ -89,6 +88,11 @@ const QuotationsModal = ({ clientId, onClose }) => {
     setShowModal(true);
   };
 
+  const handlePDFOption = (option) => {
+    console.log(`Generar PDF opción: ${option}`);
+    setShowModal(false);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
       <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
@@ -96,7 +100,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
           onClick={onClose}
           className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition"
         >
-          <FaTimes size={24} /> {/* Aquí está el ícono de cierre */}
+          <FaTimes size={24} />
         </button>
         <h2 className="text-xl font-bold mb-4">Lista de Cotizaciones para {clientId}</h2>
         <table className="min-w-full bg-white border mt-4">
@@ -136,9 +140,39 @@ const QuotationsModal = ({ clientId, onClose }) => {
         </table>
 
         {showModal && (
-          <Modal show={showModal} onClose={() => setShowModal(false)}>
-            <PDFContent formData={selectedQuotation.quotationDetails} values={selectedQuotation.calculatedValues} />
-          </Modal>
+          <CustomModal show={showModal} onClose={() => setShowModal(false)}>
+            <div className="max-w-[180px] mx-auto">
+              <h2 className="text-xl font-bold mb-4">Selecciona una opción de PDF</h2>
+
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+                onClick={() => handlePDFOption('sin_membretado')}
+              >
+                Ver PDF sin membretado
+              </button>
+
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+                onClick={() => handlePDFOption('con_membretado_halmeco')}
+              >
+                Ver PDF con membretado Halmeco
+              </button>
+
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+                onClick={() => handlePDFOption('con_membretado_elevatec')}
+              >
+                Ver PDF con membretado Elevatec
+              </button>
+
+              <button
+                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
+                onClick={() => setShowModal(false)}
+              >
+                Cerrar
+              </button>
+            </div>
+          </CustomModal>
         )}
       </div>
     </div>
