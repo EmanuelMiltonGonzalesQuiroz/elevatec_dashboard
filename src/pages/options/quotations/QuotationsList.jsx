@@ -4,6 +4,7 @@ import { homeText } from '../../../components/common/Text/texts';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import PDFContent from './PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
+import Modal from './Calculation/Modal';
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -30,6 +31,7 @@ const QuotationList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [selectedPDFOption, setSelectedPDFOption] = useState(null);
+  const [showPDFModal, setShowPDFModal] = useState(false); // Estado para manejar el segundo modal de PDF
 
   useEffect(() => {
     const fetchQuotations = async () => {
@@ -66,11 +68,13 @@ const QuotationList = () => {
 
           return {
             id: doc.id,
+            data: data,
             ...data,
             clientName: clientName,
             clientPhone: clientData.phone || 'N/A',
-            city: clientData.address || 'N/A',
-            quotedBy: 'Default Quoter',
+            city: data.quotationDetails["Ciudad"].nombre || 'N/A',
+            address: data.quotationDetails["Ubicacion_nombre"] || 'N/A',
+            quotedBy: data.quotationDetails["Solicitante"],
             total: total,
             date: date,
           };
@@ -107,13 +111,14 @@ const QuotationList = () => {
 
   const handleViewPDF = (quotation) => {
     setSelectedQuotation(quotation);
-    setShowModal(true);
+    setShowModal(true); // Abrir el primer modal con opciones de PDF
   };
 
-  const handlePDFOption = (option) => {
-    setSelectedPDFOption(option);
-    console.log(`Generar PDF opción: ${option}`);
-    setShowModal(false); // Cerrar el modal al seleccionar una opción
+  const handlePDFOption = (quotationData, option) => {
+    // Guardar la opción seleccionada de PDF y cerrar el primer modal
+    setSelectedPDFOption({ data: quotationData, option });
+    setShowModal(false); // Cerrar el primer modal
+    setShowPDFModal(true); // Abrir el segundo modal para ver el PDF
   };
 
   const formatDate = (dateString) => {
@@ -156,6 +161,7 @@ const QuotationList = () => {
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.client}</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.clientPhone}</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.city}</th>
+            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.location}</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.quotedBy}</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.total}</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.date}</th>
@@ -169,7 +175,8 @@ const QuotationList = () => {
               <td className="py-2 px-4 text-black">{quotation.clientName}</td>
               <td className="py-2 px-4 text-black">{quotation.clientPhone}</td>
               <td className="py-2 px-4 text-black">{quotation.city}</td>
-              <td className="py-2 px-4 text-black">{quotation.quotedBy}</td>
+              <td className="py-2 px-4 text-black">{quotation.address}</td>
+              <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
               <td className="py-2 px-4 text-black">{quotation.total}</td>
               <td className="py-2 px-4 text-black">{quotation.date}</td>
               <td className="py-2 px-4">
@@ -186,6 +193,7 @@ const QuotationList = () => {
       </table>
       </div>
 
+      {/* Modal con opciones de PDF */}
       {showModal && (
         <CustomModal show={showModal} onClose={() => setShowModal(false)}>
           <div className="max-w-[180px] mx-auto">
@@ -193,37 +201,48 @@ const QuotationList = () => {
             
             <button
               className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-              onClick={() => handlePDFOption('sin_membretado')}
-              >
-                Ver PDF sin membretado
-              </button>
-  
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_halmeco')}
-              >
-                Ver PDF con membretado Halmeco
-              </button>
-  
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_elevatec')}
-              >
-                Ver PDF con membretado Elevatec
-              </button>
-  
-              <button
-                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
-                onClick={() => setShowModal(false)}
-              >
-                Cerrar
-              </button>
-            </div>
-          </CustomModal>
-        )}
-      </div>
-    );
-  };
-  
-  export default QuotationList;
-  
+              onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
+            >
+              Ver PDF sin membretado
+            </button>
+
+            <button
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
+            >
+              Ver PDF con membretado Jalmeco
+            </button>
+
+            <button
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
+            >
+              Ver PDF con membretado Tecnolift
+            </button>
+
+            <button
+              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
+              onClick={() => setShowModal(false)}
+            >
+              Cerrar
+            </button>
+          </div>
+        </CustomModal>
+      )}
+
+      {/* Modal para mostrar el PDF */}
+      {showPDFModal && (
+        <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
+          <PDFContent
+            formData={selectedPDFOption.data.quotationDetails}
+            values={selectedPDFOption.data.calculatedValues}
+            timestamp={selectedPDFOption.data.timestamp}
+            type={selectedPDFOption.option}
+          />
+        </Modal>
+      )}
+    </div>
+  );
+};
+
+export default QuotationList;

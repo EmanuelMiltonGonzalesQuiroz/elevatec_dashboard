@@ -4,7 +4,7 @@ import { groupsText } from '../../../components/common/Text/texts';
 
 const Groups = () => {
   return (
-    <GroupsConfigurations
+    <GroupsConfigurations 
       collectionName="groups"
       columnsConfig={{
         headers: [groupsText.number, groupsText.name, groupsText.value, groupsText.description],

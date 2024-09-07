@@ -1,31 +1,38 @@
 import 'jspdf-autotable';
 
-const TableComponent = ({ doc, formData, values  }) => {
+// Función para verificar si se necesita un salto de página
+const checkAddPage = (doc, currentY, additionalSpace = 20) => {
+  const pageHeight = doc.internal.pageSize.height;
+  if (currentY + additionalSpace > pageHeight) {
+    doc.addPage();
+    return 30; // Reinicia la posición Y en la nueva página
+  }
+  return currentY;
+};
+
+const TableComponent = ({ doc, formData, values, startY }) => {
   // Definir los datos principales
   const valorFormateado = parseFloat(values["VAR7"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-
 
   const tableData = [
     ["ITEM", "DESCRIPCIÓN", "CANT.", "VEL.", "CAP.", "PARADAS", "UNITARIO $us", "TOTAL $us"],
     ["10", "10", "10", "10", "10", "10", "10", "10"],
     [{ content: "Valor Total del Equipo Instalado y Funcionando", colSpan: 7, styles: { halign: 'center', fontStyle: 'bold' } }, valorFormateado || " "],
     [{ content: "TIPO DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }, ""],
-    [{ content: "Efectivo", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } },"",{ content: "Depósito", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } },"",{ content: "Dólar", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } },"",{ content: "Bolivianos", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } },""],
-        
+    [{ content: "Efectivo", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, "", { content: "Depósito", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, "", { content: "Dólar", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, "", { content: "Bolivianos", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, ""],
   ];
 
   // Añadir la tabla principal
-  doc.autoTable({ 
-
-    startY: 20,
+  doc.autoTable({
+    startY: startY, // Usar startY proporcionado para la posición inicial
     head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }]],
     body: tableData,
     theme: 'grid',
   });
 
   // Añadir texto adicional "Opcionales Incluidos"
-  const currentYPosition = doc.lastAutoTable.finalY + 10;
+  let currentYPosition = doc.lastAutoTable.finalY + 10;
+  currentYPosition = checkAddPage(doc, currentYPosition); // Verificar si se necesita nueva página
   doc.setFontSize(12).setFont("Helvetica", "bold").text("Opcionales Incluidos:", 20, currentYPosition);
   doc.setFontSize(12).setFont("Helvetica", "normal").text("* Pesacarga", 20, currentYPosition + 10);
   doc.text("* Ventilación", 20, currentYPosition + 20);
@@ -42,30 +49,39 @@ const TableComponent = ({ doc, formData, values  }) => {
   ];
 
   // Añadir la tabla de "FORMA DE PAGO"
+  currentYPosition = doc.lastAutoTable.finalY + 40;
+  currentYPosition = checkAddPage(doc, currentYPosition); // Verificar si se necesita nueva página
   doc.autoTable({
-    startY: currentYPosition + 40, // Debajo del texto "Opcionales Incluidos"
+    startY: currentYPosition, // Debajo del texto "Opcionales Incluidos"
     head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }]],
     body: paymentPlanData,
     theme: 'grid',
   });
 
-  // Añadir más textos después de la tabla
-  const finalYPosition = doc.lastAutoTable.finalY + 20;
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("TIEMPO DE ENTREGA:", 20, finalYPosition);
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("El equipo se entregará funcionando en seis (6) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", 20, finalYPosition + 10, { maxWidth: 170, align: "justify" });
+  // Añadir más textos después de la tabla con separación entre ellos y verificando espacio
+  currentYPosition = doc.lastAutoTable.finalY + 20;
+  currentYPosition = checkAddPage(doc, currentYPosition, 30); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("TIEMPO DE ENTREGA:", 20, currentYPosition);
+  currentYPosition += 10;
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("El equipo se entregará funcionando en seis (6) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", 20, currentYPosition, { maxWidth: 170, align: "justify" });
 
-  const warrantyYPosition = doc.lastAutoTable.finalY + 40;
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE EQUIPO O FABRICACIÓN", 20, warrantyYPosition);
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación, a partir de la puesta en funcionamiento de los ascensores. Quedan excluidos de la garantía los daños ocasionados por uso indebido, daños maliciosos ocasionados por terceros, daños por incidencias de agua, suministro de energía eléctrica deficiente, rayos o tormentas y otros no relacionados con defectos de fabricación.", 20, warrantyYPosition + 10, { maxWidth: 170, align: "justify" });
+  currentYPosition += 40;
+  currentYPosition = checkAddPage(doc, currentYPosition, 30); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE EQUIPO O FABRICACIÓN", 20, currentYPosition);
+  currentYPosition += 10;
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
 
-  const installationWarrantyYPosition = warrantyYPosition + 40;
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE INSTALACIÓN Y MONTAJE", 20, installationWarrantyYPosition);
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Jalmeco Ltda., responsable de la instalación y montaje, realizará el mantenimiento preventivo y correctivo de forma gratuita por seis (6) meses calendario, tiempo en el cual subsanará cualquier defecto en forma gratuita por el tiempo indicado.", 20, installationWarrantyYPosition + 10, { maxWidth: 170, align: "justify" });
+  currentYPosition += 40;
+  currentYPosition = checkAddPage(doc, currentYPosition, 30); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE INSTALACIÓN Y MONTAJE", 20, currentYPosition);
+  currentYPosition += 10;
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Jalmeco Ltda., responsable de la instalación y montaje...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
 
-  const obligationsYPosition = installationWarrantyYPosition + 40;
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("OBLIGACIONES DEL COMPRADOR", 20, obligationsYPosition);
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Todas las obras civiles adecuadas para la instalación de los ascensores, así como la instalación eléctrica hasta el cuadro de maniobra del Ascensor, serán realizadas por cuenta del comprador.", 20, obligationsYPosition + 10, { maxWidth: 170, align: "justify" });
-
+  currentYPosition += 40;
+  currentYPosition = checkAddPage(doc, currentYPosition, 30); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("OBLIGACIONES DEL COMPRADOR", 20, currentYPosition);
+  currentYPosition += 10;
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Todas las obras civiles adecuadas para la instalación de los ascensores...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
 };
 
 export default TableComponent;

@@ -153,16 +153,16 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
               <button
                 className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_halmeco')}
+                onClick={() => handlePDFOption('con_membretado_Jalmeco')}
               >
-                Ver PDF con membretado Halmeco
+                Ver PDF con membretado Jalmeco
               </button>
 
               <button
                 className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_elevatec')}
+                onClick={() => handlePDFOption('con_membretado_Tecnolift')}
               >
-                Ver PDF con membretado Elevatec
+                Ver PDF con membretado Tecnolift
               </button>
 
               <button

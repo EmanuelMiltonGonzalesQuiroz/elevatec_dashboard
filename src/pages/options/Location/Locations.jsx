@@ -9,6 +9,7 @@ import EditStatesModal from './EditStatesModal'; // Importar el modal para edita
 const Location = () => {
   const [locations, setLocations] = useState([]);
   const [mapLocations, setMapLocations] = useState([]);
+  const [stateColors, setStateColors] = useState({}); // Para guardar los colores de los estados
   const { currentUser } = useAuth(); 
   const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
   const [showEditModal, setShowEditModal] = useState(false); // Estado para el modal de editar estados
@@ -35,7 +36,21 @@ const Location = () => {
       setMapLocations(enrichedLocations);
     };
 
+    const fetchStateColors = async () => {
+      const statesCol = collection(db, 'locationStates');
+      const statesSnapshot = await getDocs(statesCol);
+
+      const stateData = {};
+      statesSnapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        stateData[doc.id] = data.color; // Guardar el color de cada estado
+      });
+
+      setStateColors(stateData); // Guardar colores en el estado
+    };
+
     fetchLocations();
+    fetchStateColors(); // Obtener colores de los estados desde la base de datos
   }, []);
 
   const handleChangeState = async (id, newState) => {
@@ -53,7 +68,7 @@ const Location = () => {
   };
 
   const getAddressFromLatLng = async (lat, lng) => {
-    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=YOUR_API_KEY`);
+    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_MAPS_API_KEY}`);
     const data = await response.json();
     if (data.status === 'OK') {
       return data.results[0]?.formatted_address || 'Dirección no disponible';
@@ -61,30 +76,16 @@ const Location = () => {
     return 'Dirección no disponible';
   };
 
+  // Obtener la clase CSS basada en el color de la base de datos
   const getStateClass = (state) => {
-    switch (state) {
-      case 'Pendiente':
-        return 'text-green-600';
-      case 'Perdida':
-        return 'text-gray-600';
-      case 'Concretada':
-        return 'text-blue-600';
-      default:
-        return 'text-black';
-    }
+    const color = stateColors[state] || 'black'; // Usar negro por defecto si no hay color en la BD
+    return `text-${color}-600`; // Clase de color dinámico
   };
 
+  // Obtener el ícono del marcador basado en el color de la base de datos
   const getMarkerColor = (state) => {
-    switch (state) {
-      case 'Pendiente':
-        return 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-      case 'Perdida':
-        return 'http://maps.google.com/mapfiles/ms/icons/gray-dot.png';
-      case 'Concretada':
-        return 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-      default:
-        return 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-    }
+    const color = stateColors[state] || 'red'; // Usar rojo por defecto si no hay color en la BD
+    return `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`;
   };
 
   return (
@@ -92,7 +93,7 @@ const Location = () => {
       <h2 className="text-xl font-bold mb-4">Ubicaciones de Cotizaciones</h2>
 
       <div className="w-full h-48">
-        <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
+        <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '100%' }}
             center={{ lat: -16.495543, lng: -68.133543 }} 
@@ -103,7 +104,7 @@ const Location = () => {
                 <Marker
                   key={location.id}
                   position={{ lat: location.location.lat, lng: location.location.lng }}
-                  icon={getMarkerColor(location.state)}
+                  icon={getMarkerColor(location.state)} // Usar color del estado desde la BD
                   title={`${location.client}: ${location.address}`}
                 />
               )
@@ -134,21 +135,23 @@ const Location = () => {
             </tr>
           </thead>
           <tbody>
-            {locations.map((location) => (
-              location.id !== 'locationStates' && (
-                <tr key={location.id}>
-                  <td className="border px-4 py-2">{location.client || 'Cliente no disponible'}</td> {/* Mostrar mensaje si no hay cliente */}
-                  <td className={`border px-4 py-2 ${getStateClass(location.state)}`}>
-                    {location.state}
-                  </td>
-                  <td className="border px-4 py-2">
-                    <LocationStates
-                      currentLocationState={location.state}
-                      onChangeState={(newState) => handleChangeState(location.id, newState)}
-                    />
-                  </td>
-                </tr>
-              )
+            {locations
+              .filter(location => location.client) // Filtrar solo ubicaciones con cliente
+              .map((location) => (
+                location.id !== 'locationStates' && (
+                  <tr key={location.id}>
+                    <td className="border px-4 py-2">{location.client}</td>
+                    <td className={`border px-4 py-2 ${getStateClass(location.state)}`}>
+                      {location.state}
+                    </td>
+                    <td className="border px-4 py-2">
+                      <LocationStates
+                        currentLocationState={location.state}
+                        onChangeState={(newState) => handleChangeState(location.id, newState)}
+                      />
+                    </td>
+                  </tr>
+                )
             ))}
           </tbody>
         </table>

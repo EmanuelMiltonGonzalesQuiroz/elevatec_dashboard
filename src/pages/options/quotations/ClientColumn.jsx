@@ -163,7 +163,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
         </div>
 
         <div className="w-full"> 
-            <LoadScript googleMapsApiKey="AIzaSyBDA9rFE18AAkAMtQUO0Un2Ai1kNXslUPQ">
+            <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
               <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
                 center={mapCenter}

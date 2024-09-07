@@ -1,14 +1,23 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
 import Header from './Header';
-import Footer from './Footer';
 import MainContent from './MainContent';
 import TechnicalSpecifications from './TechnicalSpecifications';
 import TechnicalDetails from './TechnicalDetails';
 import TableComponent from './TableComponent';
 import Final from './Final';
 
-const PDFContent = ({ formData, values, timestamp }) => {
+// Función para verificar si se necesita un salto de página
+const checkAddPage = (doc, currentY) => {
+  const pageHeight = doc.internal.pageSize.height; // Altura de la página
+  if (currentY + 20 > pageHeight) { // Ajusta según el tamaño del contenido
+    doc.addPage();
+    return 30; // Reinicia la posición Y en la nueva página
+  }
+  return currentY;
+};
+
+const PDFContent = ({ formData, values, timestamp, type }) => {
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -36,50 +45,45 @@ const PDFContent = ({ formData, values, timestamp }) => {
     // Generar el título de la propuesta dinámicamente
     const proposalTitle = `Presentación Propuesta Provisión e Instalación de ${cantidadAscensores} Ascensor${cantidadAscensores === 1 ? '' : 'es'}`;
 
+    // Verificar que los valores de `formData` existen antes de pasarlos al `config`
+    const city = formData['Ciudad']?.nombre || "Ciudad Desconocida";
+    const recipient = formData['02_CLIENTE'] || "Cliente Desconocido";
+
     const config = {
       leftMargin: 20,
       topMargin: 20,
       bottomMargin: 20,
-      city: formData['Ciudad']?.nombre || "Falta",
+      city: city, // Asegurarse de que no sea undefined o null
       date: formattedDate,
       refNumber: "COT-061/2021/SC.",
-      recipient: formData['02_CLIENTE'] || "Falta",
+      recipient: recipient, // Asegurarse de que no sea undefined o null
       proposalTitle: proposalTitle
     };
 
-    let startY = 20; // Posición inicial
+    // Inicializa correctamente startY
+    let startY = 30; // Cambié esto a 30 para evitar problemas de Y undefined
 
     // Página 1: Cabecera y contenido principal
-    Header({ doc, config, formData, values });
-    MainContent({ doc, config, formData, values });
+    startY = Header({ doc, config, startY });
 
-    // Ajustar la posición para el siguiente contenido
-    startY = doc.lastAutoTable?.finalY + 10 || 90;
+    // Usar el valor retornado por Header como startY para MainContent
+    startY = MainContent({ doc, config, formData, startY }); 
 
-    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+    // Especificaciones técnicas (habilitado)
+    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
+    startY = TechnicalSpecifications({ doc, formData, startY }); 
 
-    // Especificaciones técnicas
-    startY = doc.lastAutoTable?.finalY + 20; // Asegurar que no haya sobreposición
-    TechnicalSpecifications({ doc, formData, startY });
-    startY = doc.lastAutoTable?.finalY + 20; // Obtener la posición final de la tabla
-    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
-
-    // Detalles técnicos
-    startY = doc.lastAutoTable?.finalY + 20;
-    TechnicalDetails({ doc, formData, startY });
-    startY = doc.lastAutoTable?.finalY + 20;
-    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+    // Detalles técnicos (habilitado)
+    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
+    startY = TechnicalDetails({ doc, formData, startY });
 
     // Tabla de componentes finales
-    startY = doc.lastAutoTable?.finalY + 20;
-    TableComponent({ doc, formData, values, startY });
-    startY = doc.lastAutoTable?.finalY + 20;
-    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
+    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
+    startY = TableComponent({ doc, formData, values, startY });
 
     // Sección final
-    startY = doc.lastAutoTable?.finalY + 20;
+    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
     Final({ doc, config, startY });
-    Footer({ doc, pageNumber: doc.internal.getNumberOfPages() });
 
     const pdfBlob = doc.output('blob');
     return URL.createObjectURL(pdfBlob);

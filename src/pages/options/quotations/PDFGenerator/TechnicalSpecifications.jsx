@@ -1,6 +1,6 @@
 import 'jspdf-autotable';
 
-const TechnicalSpecifications = ({ doc, formData }) => {
+const TechnicalSpecifications = ({ doc, formData, startY }) => {
   const pisosAtender = formData['09_PISOS A ANTENDER']?.split('-') || [];
   
   // Generar filas dinámicas para pisos
@@ -29,11 +29,14 @@ const TechnicalSpecifications = ({ doc, formData }) => {
   ];
 
   doc.autoTable({
-    startY: 20,
+    startY: startY + 10, // Añadir 10 puntos a la posición inicial Y
     head: [[{ content: "ESPECIFICACIONES TÉCNICAS", colSpan: 2, styles: { halign: 'center', fillColor: [22, 160, 133] } }]],
     body: technicalSpecifications,
     theme: 'grid',
   });
+
+  // Retornar la nueva posición de Y
+  return doc.lastAutoTable.finalY + 10; // Devuelve la nueva posición Y actualizada
 };
 
 export default TechnicalSpecifications;

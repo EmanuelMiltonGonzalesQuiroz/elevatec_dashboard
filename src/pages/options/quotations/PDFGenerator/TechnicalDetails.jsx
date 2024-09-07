@@ -1,6 +1,6 @@
 import 'jspdf-autotable';
 
-const TechnicalDetails = ({ doc, formData }) => {
+const TechnicalDetails = ({ doc, formData, startY }) => {
   const technicalDetails = [
     [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
     ["FRENTE", formData['04_Frente'] || " ", "PROFUNDIDAD", formData['05_ProfundidadR'] || " "],
@@ -35,12 +35,12 @@ const TechnicalDetails = ({ doc, formData }) => {
     // SEÑALIZACION section
     [{ content: "SEÑALIZACIÓN", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, "CABINA", "PISOS"],
     [{ content: "Tipo pulsador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['TipoPulsadorCabina'] || " ", formData['TipoPulsadorPisos'] || " "],
-    [{ content: "Acabado botoneras", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['BotonesCabina'].nombre || " ", formData['BotonesPiso'].nombre || " "],
+    [{ content: "Acabado botoneras", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['BotonesCabina']?.nombre || " ", formData['BotonesPiso']?.nombre || " "],
     [{ content: "Indicadores", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['IndicadoresCabina'] || " ", formData['IndicadoresPisos'] || " "]
   ];
 
   doc.autoTable({
-    startY: 20,
+    startY: startY, // Usar startY proporcionado para la posición inicial
     head: [[{ content: "INFORMACIÓN TÉCNICA", colSpan: 4, styles: { halign: 'center', fillColor: [22, 160, 133] } }]],
     body: technicalDetails,
     theme: 'grid',
