@@ -1,21 +1,8 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
-import Header from './Header';
-import MainContent from './MainContent';
-import TechnicalSpecifications from './TechnicalSpecifications';
-import TechnicalDetails from './TechnicalDetails';
-import TableComponent from './TableComponent';
-import Final from './Final';
-
-// Función para verificar si se necesita un salto de página
-const checkAddPage = (doc, currentY) => {
-  const pageHeight = doc.internal.pageSize.height; // Altura de la página
-  if (currentY + 20 > pageHeight) { // Ajusta según el tamaño del contenido
-    doc.addPage();
-    return 30; // Reinicia la posición Y en la nueva página
-  }
-  return currentY;
-};
+import { generateJalmecoPDF } from './GenerateJalmecoPDF';
+import { generateTeknoPDF } from './GenerateTeknoPDF';
+import { generateBasePDF } from './GenerateBasePDF';
 
 const PDFContent = ({ formData, values, timestamp, type }) => {
   const generatePDF = () => {
@@ -35,17 +22,11 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       formattedDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // Obtener el número de ascensores, asegurándose de que es un número válido
+    // Obtener el número de ascensores
     const numAscensoresRaw = formData['08_Número de ascensores'];
     const numAscensores = parseInt(numAscensoresRaw, 10);
-
-    // Manejar casos donde numAscensores no es un número válido
     const cantidadAscensores = isNaN(numAscensores) || numAscensores < 1 ? 1 : numAscensores;
-
-    // Generar el título de la propuesta dinámicamente
     const proposalTitle = `Presentación Propuesta Provisión e Instalación de ${cantidadAscensores} Ascensor${cantidadAscensores === 1 ? '' : 'es'}`;
-
-    // Verificar que los valores de `formData` existen antes de pasarlos al `config`
     const city = formData['Ciudad']?.nombre || "Ciudad Desconocida";
     const recipient = formData['02_CLIENTE'] || "Cliente Desconocido";
 
@@ -53,37 +34,31 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       leftMargin: 20,
       topMargin: 20,
       bottomMargin: 20,
-      city: city, // Asegurarse de que no sea undefined o null
+      city: city,
       date: formattedDate,
       refNumber: "COT-061/2021/SC.",
-      recipient: recipient, // Asegurarse de que no sea undefined o null
+      recipient: recipient,
       proposalTitle: proposalTitle
     };
 
-    // Inicializa correctamente startY
-    let startY = 30; // Cambié esto a 30 para evitar problemas de Y undefined
+    // Lógica para elegir el tipo de PDF según `type`
+    if (type.toLowerCase().includes('jalmeco')) {
+      generateJalmecoPDF(doc, formData, values, config);
+    } else if (type.toLowerCase().includes('tekno') || type.toLowerCase().includes('tecno') ) {
+      generateTeknoPDF(doc, formData, values, config);
+    } else {
+      generateBasePDF(doc, formData, values, config);
+    }
 
-    // Página 1: Cabecera y contenido principal
-    startY = Header({ doc, config, startY });
+    // Total de páginas generadas
+    const totalPages = doc.getNumberOfPages();
 
-    // Usar el valor retornado por Header como startY para MainContent
-    startY = MainContent({ doc, config, formData, startY }); 
-
-    // Especificaciones técnicas (habilitado)
-    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-    startY = TechnicalSpecifications({ doc, formData, startY }); 
-
-    // Detalles técnicos (habilitado)
-    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-    startY = TechnicalDetails({ doc, formData, startY });
-
-    // Tabla de componentes finales
-    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-    startY = TableComponent({ doc, formData, values, startY });
-
-    // Sección final
-    startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-    Final({ doc, config, startY });
+    // Agregar el número de página en cada página al final del documento
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.text(`Página ${i} de ${totalPages}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, { align: 'right' });
+    }
 
     const pdfBlob = doc.output('blob');
     return URL.createObjectURL(pdfBlob);

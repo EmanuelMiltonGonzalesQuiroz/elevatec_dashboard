@@ -1,39 +1,39 @@
 import 'jspdf-autotable';
 
-// Función para verificar si se necesita un salto de página
-const checkAddPage = (doc, currentY) => {
+// Function to check if a page break is needed and add a new page if necessary
+const checkAddPage = (doc, currentY, additionalSpace = 20) => {
   const pageHeight = doc.internal.pageSize.height;
-  if (currentY + 20 > pageHeight) {
+  if (currentY + additionalSpace > pageHeight) {
     doc.addPage();
-    return 30; // Reinicia la posición Y en la nueva página
+    return 30; // Reset Y position on new page
   }
   return currentY;
 };
 
 const Final = ({ doc, config, startY }) => {
-  let currentY = startY || 30; // Valor por defecto si startY no está definido
-  const lineSpacing = 10; // Espaciado entre líneas
+  let currentY = startY || 30; // Default value if startY is not defined
+  const lineSpacing = 10; // Line spacing
 
-  // Verificar si hay espacio suficiente antes de agregar cada bloque de texto
+  // Check if enough space before adding each text block
   currentY = checkAddPage(doc, currentY);
 
-  // Sección "VALIDEZ DE LA OFERTA"
+  // Section "VALIDITY OF THE OFFER"
   doc.setFontSize(12).setFont("Helvetica", "bold").text("VALIDEZ DE LA OFERTA", config.leftMargin, currentY);
   currentY += lineSpacing;
 
   doc.setFontSize(12).setFont("Helvetica", "normal").text("Diez (10) días a partir de la fecha.", config.leftMargin, currentY, { maxWidth: 170, align: "justify" });
   currentY += lineSpacing * 2;
 
-  // Verificar si hay espacio antes de añadir la firma
+  // Check if enough space before adding signature section
   currentY = checkAddPage(doc, currentY);
 
-  // Espacio para la firma
-  const signatureSpaceY = currentY + 70; // Ajusta según el contenido previo
+  // Signature space
+  const signatureSpaceY = currentY + 70; // Adjust based on previous content
   doc.setFontSize(12).setFont("Helvetica", "normal").text("__________________________", config.leftMargin + 90, signatureSpaceY, { align: "center" });
   doc.setFontSize(12).setFont("Helvetica", "bold").text("Ing. Frank Jaldin Navia", config.leftMargin + 90, signatureSpaceY + 10, { align: "center" });
   doc.setFontSize(12).setFont("Helvetica", "bold").text("GERENTE REGIONAL", config.leftMargin + 90, signatureSpaceY + 15, { align: "center" });
 
-  // Devuelve la última posición Y actualizada
+  // Return the last updated Y position to ensure the document continues properly
   return signatureSpaceY + 25;
 };
 
