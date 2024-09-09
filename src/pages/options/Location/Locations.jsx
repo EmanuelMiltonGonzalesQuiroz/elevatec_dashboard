@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, addDoc } from 'firebase/firestore';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import LocationStates from './LocationStates';
 import { useAuth } from '../../../context/AuthContext';
-import EditStatesModal from './EditStatesModal'; // Importar el modal para editar estados
+import EditStatesModal from './EditStatesModal'; 
+import CustomSelect from '../../../components/UI/CustomSelect'; // Importar para seleccionar cliente
+import MapComponent from '../../../components/UI/MapComponent';
 
 const Location = () => {
   const [locations, setLocations] = useState([]);
   const [mapLocations, setMapLocations] = useState([]);
-  const [stateColors, setStateColors] = useState({}); // Para guardar los colores de los estados
-  const { currentUser } = useAuth(); 
+  const [stateColors, setStateColors] = useState({}); 
+  const { currentUser } = useAuth();
   const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
-  const [showEditModal, setShowEditModal] = useState(false); // Estado para el modal de editar estados
+  const [showEditModal, setShowEditModal] = useState(false); 
+  const [showAddModal, setShowAddModal] = useState(false); // Estado para el modal de agregar ubicación
+  const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); // Posición del marcador
+  const [selectedClient, setSelectedClient] = useState(null); // Cliente seleccionado
+  const [selectedState, setSelectedState] = useState('Pendiente'); // Estado seleccionado
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Estado para habilitar o deshabilitar el botón
+  console.log(userRole)
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -23,17 +31,8 @@ const Location = () => {
         ...doc.data(),
       }));
 
-      const enrichedLocations = await Promise.all(locationList.map(async (location) => {
-        if (location.location && location.location.lat && location.location.lng) {
-          const address = await getAddressFromLatLng(location.location.lat, location.location.lng);
-          return { ...location, address };
-        } else {
-          return { ...location, address: 'Ubicación no disponible' };
-        }
-      }));
-
-      setLocations(enrichedLocations);
-      setMapLocations(enrichedLocations);
+      setLocations(locationList);
+      setMapLocations(locationList);
     };
 
     const fetchStateColors = async () => {
@@ -43,14 +42,14 @@ const Location = () => {
       const stateData = {};
       statesSnapshot.docs.forEach((doc) => {
         const data = doc.data();
-        stateData[doc.id] = data.color; // Guardar el color de cada estado
+        stateData[doc.id] = data.color;
       });
 
-      setStateColors(stateData); // Guardar colores en el estado
+      setStateColors(stateData);
     };
 
     fetchLocations();
-    fetchStateColors(); // Obtener colores de los estados desde la base de datos
+    fetchStateColors();
   }, []);
 
   const handleChangeState = async (id, newState) => {
@@ -67,99 +66,158 @@ const Location = () => {
     }
   };
 
-  const getAddressFromLatLng = async (lat, lng) => {
-    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_MAPS_API_KEY}`);
-    const data = await response.json();
-    if (data.status === 'OK') {
-      return data.results[0]?.formatted_address || 'Dirección no disponible';
+  const handleAddLocation = async () => {
+    if (selectedClient && markerPosition) {
+      try {
+        await addDoc(collection(db, 'locations'), {
+          client: selectedClient.label,
+          location: markerPosition,
+          state: selectedState
+        });
+        setShowAddModal(false); // Cerrar el modal después de agregar la ubicación
+      } catch (error) {
+        console.error('Error al agregar la ubicación: ', error);
+      }
     }
-    return 'Dirección no disponible';
-  };
-
-  // Obtener la clase CSS basada en el color de la base de datos
-  const getStateClass = (state) => {
-    const color = stateColors[state] || 'black'; // Usar negro por defecto si no hay color en la BD
-    return `text-${color}-600`; // Clase de color dinámico
-  };
-
-  // Obtener el ícono del marcador basado en el color de la base de datos
-  const getMarkerColor = (state) => {
-    const color = stateColors[state] || 'red'; // Usar rojo por defecto si no hay color en la BD
-    return `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`;
   };
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full h-full text-black">
       <h2 className="text-xl font-bold mb-4">Ubicaciones de Cotizaciones</h2>
 
-      <div className="w-full h-48">
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={{ lat: -16.495543, lng: -68.133543 }} 
-            zoom={10}
-          >
-            {mapLocations.map((location) => (
-              location.location && location.location.lat && location.location.lng && (
-                <Marker
-                  key={location.id}
-                  position={{ lat: location.location.lat, lng: location.location.lng }}
-                  icon={getMarkerColor(location.state)} // Usar color del estado desde la BD
-                  title={`${location.client}: ${location.address}`}
-                />
-              )
-            ))}
-          </GoogleMap>
-        </LoadScript>
-      </div>
-
-      {userRole === 'Administrador' && (
+      {/* Botón para editar estados, visible solo para Administradores */}
+      {(userRole === 'Administrador' || userRole === 'Gerencia') && (
         <div className="mt-4">
           <button 
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            onClick={() => setShowEditModal(true)} // Mostrar el modal de editar estados
+            onClick={() => setShowEditModal(true)} 
           >
             Editar Estados
+          </button>
+          <button
+            className="bg-green-500 text-white px-4 py-2 ml-4 rounded hover:bg-green-700 transition"
+            onClick={() => setShowAddModal(true)} // Mostrar el modal de agregar ubicación
+          >
+            Agregar Ubicación
           </button>
         </div>
       )}
 
-      {/* Tabla de ubicaciones */}
-      <div className="w-full overflow-y-auto mt-4 max-h-[40vh]">
-        <table className="table-auto w-full mb-4">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Cliente</th>
-              <th className="px-4 py-2">Estado</th>
-              <th className="px-4 py-2">Cambiar Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {locations
-              .filter(location => location.client) // Filtrar solo ubicaciones con cliente
-              .map((location) => (
-                location.id !== 'locationStates' && (
-                  <tr key={location.id}>
-                    <td className="border px-4 py-2">{location.client}</td>
-                    <td className={`border px-4 py-2 ${getStateClass(location.state)}`}>
-                      {location.state}
-                    </td>
-                    <td className="border px-4 py-2">
-                      <LocationStates
-                        currentLocationState={location.state}
-                        onChangeState={(newState) => handleChangeState(location.id, newState)}
-                      />
-                    </td>
-                  </tr>
+      {/* Fila que contiene el mapa y la tabla */}
+      <div className="flex flex-row w-full mt-4">
+        {/* Mapa de Google ocupando el 60% */}
+        <div className="w-3/5 h-[68vh]">
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+            <GoogleMap
+              mapContainerStyle={{ width: '100%', height: '100%' }}
+              center={{ lat: -16.495543, lng: -68.133543 }} 
+              zoom={10}
+            >
+              {mapLocations.map((location) => (
+                location.location && location.location.lat && location.location.lng && (
+                  <Marker
+                    key={location.id}
+                    position={{ lat: location.location.lat, lng: location.location.lng }}
+                    icon={`http://maps.google.com/mapfiles/ms/icons/${stateColors[location.state] || 'red'}-dot.png`}
+                    title={`${location.client}: ${location.address}`}
+                  />
                 )
-            ))}
-          </tbody>
-        </table>
+              ))}
+            </GoogleMap>
+          </LoadScript>
+        </div>
+
+        {/* Tabla de ubicaciones ocupando el 40% */}
+        <div className="w-2/5 overflow-y-auto h-[68vh]">
+          <table className="table-auto w-full mb-4">
+            <thead>
+              <tr>
+                <th className="px-4 py-2">Cliente</th>
+                {userRole === 'Administrador' || userRole === 'Gerencia' ? (
+                  <th className="px-4 py-2">Cambiar Estado</th>
+                ) : (
+                  <th className="px-4 py-2">Estado</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {locations
+                .filter(location => location.client) 
+                .map((location) => (
+                  location.id !== 'locationStates' && (
+                    <tr key={location.id}>
+                      <td className="border px-4 py-2">{location.client}</td>
+                      {userRole === 'Administrador' || userRole === 'Gerencia' ? (
+                        <td className="border px-4 py-2">
+                          <LocationStates
+                            currentLocationState={location.state}
+                            onChangeState={(newState) => handleChangeState(location.id, newState)}
+                          />
+                        </td>
+                      ) : (
+                        <td className={`border px-4 py-2 text-${stateColors[location.state] || 'black'}-600`}>
+                          {location.state}
+                        </td>
+                      )}
+                    </tr>
+                  )
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* Modal para agregar ubicación */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[80%] text-black">
+            <h2 className="text-xl font-bold mb-4">Agregar Ubicación</h2>
+            <div className="flex flex-col space-y-4">
+              {/* Selección del cliente */}
+              <div>
+                <label htmlFor="clientName" className="mb-2 font-semibold text-black">Seleccionar Cliente</label>
+                <CustomSelect
+                  collectionName="login"
+                  placeholder="Seleccionar Cliente"
+                  onChange={(option) => setSelectedClient(option)}
+                  selectedValue={selectedClient}
+                />
+              </div>
+
+              {/* Selección del estado */}
+              <div>
+                <label htmlFor="state" className="mb-2 font-semibold text-black">Seleccionar Estado</label>
+                <LocationStates
+                  currentLocationState={selectedState}
+                  onChangeState={setSelectedState}
+                />
+              </div>
+
+              {/* Mapa para seleccionar ubicación */}
+              <div className="w-full h-[40vh]  border mt-4">
+                <MapComponent
+                  mapCenter={{ lat: -16.495543, lng: -68.133543 }}
+                  markerPosition={markerPosition}
+                  handleMapClick={(event) => setMarkerPosition({ lat: event.latLng.lat(), lng: event.latLng.lng() })}
+                  setButtonDisabled={setIsButtonDisabled}
+                />
+              </div>
+
+              <button
+                className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-700 transition"
+                onClick={handleAddLocation}
+                disabled={isButtonDisabled || !selectedClient} // Deshabilitar si no hay cliente o si el botón está deshabilitado
+              >
+                Guardar Ubicación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal para editar estados */}
       {showEditModal && (
-        <EditStatesModal onClose={() => setShowEditModal(false)} /> // Llamada al modal
+        <EditStatesModal onClose={() => setShowEditModal(false)} />
       )}
     </div>
   );

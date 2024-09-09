@@ -4,6 +4,7 @@ import { db } from '../../../connection/firebase';
 import { FaTimes } from 'react-icons/fa'; 
 import PDFContent from '../quotations/PDFGenerator/PDFContent'; 
 import CustomModal from '../../../components/UI/CustomModal'; // Asegúrate de importar el modal personalizado
+import Modal from '../quotations/Calculation/Modal';
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -26,6 +27,8 @@ const QuotationsModal = ({ clientId, onClose }) => {
   const [quotations, setQuotations] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
+  const [showPDFModal, setShowPDFModal] = useState(false);
+  const [selectedPDFOption, setSelectedPDFOption] = useState(null);
 
   const loadClientPhone = useCallback(async (clientName) => {
     try {
@@ -60,10 +63,12 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
           return {
             id: doc.id,
+            data: data,
             index: index + 1,
             clientName: clientName,
             clientPhone: clientPhone,
             city: data.quotationDetails?.['Ciudad'].nombre || 'N/A',
+            address: data.quotationDetails["Ubicacion_nombre"] || 'N/A',
             quotedBy: data.quotationDetails?.['Solicitante'] || 'Default Quoter',
             total: total,
             date: date,
@@ -88,9 +93,11 @@ const QuotationsModal = ({ clientId, onClose }) => {
     setShowModal(true);
   };
 
-  const handlePDFOption = (option) => {
-    console.log(`Generar PDF opción: ${option}`);
+  const handlePDFOption = (quotationData, option) => {
+    console.log(quotationData)
+    setSelectedPDFOption({ data: quotationData, option });
     setShowModal(false);
+    setShowPDFModal(true);
   };
 
   return (
@@ -103,6 +110,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
           <FaTimes size={24} />
         </button>
         <h2 className="text-xl font-bold mb-4">Lista de Cotizaciones para {clientId}</h2>
+        <div className="overflow-auto">
         <table className="min-w-full bg-white border mt-4">
           <thead>
             <tr className='text-black font-bold'>
@@ -110,6 +118,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
               <th className="border px-4 py-2">Cliente</th>
               <th className="border px-4 py-2">Tel. Cliente</th>
               <th className="border px-4 py-2">Ciudad</th>
+              <th className="border px-4 py-2">Ubicación</th>
               <th className="border px-4 py-2">Cotizado por</th>
               <th className="border px-4 py-2">Total</th>
               <th className="border px-4 py-2">Fecha</th>
@@ -123,6 +132,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
                 <td className="border px-4 py-2">{quotation.clientName}</td>
                 <td className="border px-4 py-2">{quotation.clientPhone}</td>
                 <td className="border px-4 py-2">{quotation.city}</td>
+                <td className="py-2 px-4 text-black">{quotation.address}</td>
                 <td className="border px-4 py-2">{quotation.quotedBy}</td>
                 <td className="border px-4 py-2">{quotation.total}</td>
                 <td className="border px-4 py-2">{quotation.date}</td>
@@ -138,6 +148,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
             ))}
           </tbody>
         </table>
+        </div>
 
         {showModal && (
           <CustomModal show={showModal} onClose={() => setShowModal(false)}>
@@ -146,23 +157,23 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
               <button
                 className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('sin_membretado')}
+                onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
               >
-                Ver PDF sin membretado
+                Ver PDF
               </button>
 
               <button
                 className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_Jalmeco')}
+                onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
               >
-                Ver PDF con membretado Jalmeco
+                Ver PDF Jalmeco
               </button>
 
               <button
                 className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption('con_membretado_Tecnolift')}
+                onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
               >
-                Ver PDF con membretado Tecnolift
+                Ver PDF Tecnolift
               </button>
 
               <button
@@ -173,6 +184,17 @@ const QuotationsModal = ({ clientId, onClose }) => {
               </button>
             </div>
           </CustomModal>
+        )}
+
+        {showPDFModal && (
+          <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
+            <PDFContent
+              formData={selectedPDFOption.data.quotationDetails}
+              values={selectedPDFOption.data.calculatedValues}
+              timestamp={selectedPDFOption.data.timestamp}
+              type={selectedPDFOption.option}
+            />
+          </Modal>
         )}
       </div>
     </div>

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
 import { usersText } from '../../../components/common/Text/texts';
+import { useAuth } from '../../../context/AuthContext'; // Importar para obtener currentUser
 
 const Users = () => {
+  const { currentUser } = useAuth(); // Obtener currentUser
   const [users, setUsers] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [formData, setFormData] = useState({
@@ -95,39 +97,47 @@ const Users = () => {
       </div>
       <table className="min-w-full bg-white border">
         <thead>
-          <tr className='text-black font-bold'>
+          <tr className="text-black font-bold">
             <th className="border px-4 py-2">{usersText.index}</th>
             <th className="border px-4 py-2">{usersText.username}</th>
-            <th className="border px-4 py-2">{usersText.password}</th>
             <th className="border px-4 py-2">{usersText.email}</th>
             <th className="border px-4 py-2">{usersText.phone}</th>
             <th className="border px-4 py-2">{usersText.role}</th>
-            <th className="border px-4 py-2">{usersText.actions}</th>
+            {['Administrador', 'Gerencia'].includes(currentUser.role) && (
+              <>
+                <th className="border px-4 py-2">{usersText.password}</th>
+                <th className="border px-4 py-2">{usersText.actions}</th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className='text-black'>
+            <tr key={user.id} className="text-black">
               <td className="border px-4 py-2">{user.index}</td>
               <td className="border px-4 py-2">{user.username}</td>
-              <td className="border px-4 py-2">{user.password}</td>
               <td className="border px-4 py-2">{user.email}</td>
               <td className="border px-4 py-2">{user.phone}</td>
               <td className="border px-4 py-2">{user.role}</td>
-              <td className="border px-4 py-2">
-                <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2 text-black"
-                  onClick={() => handleOpenModal(user)}
-                >
-                  {usersText.edit}
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition text-black"
-                  onClick={() => handleDeleteUser(user.id)}
-                >
-                  {usersText.delete}
-                </button>
-              </td>
+              {['Administrador', 'Gerencia'].includes(currentUser.role) && (
+                <>
+                  <td className="border px-4 py-2">{user.password}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2"
+                      onClick={() => handleOpenModal(user)}
+                    >
+                      {usersText.edit}
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      {usersText.delete}
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>
@@ -188,7 +198,9 @@ const Users = () => {
                   onChange={handleChange}
                   className="w-full p-3 border rounded bg-gray-100 focus:outline-none"
                 >
-                  <option value="" disabled>{usersText.selectRole}</option>
+                  <option value="" disabled>
+                    {usersText.selectRole}
+                  </option>
                   <option value="Administrador">Administrador</option>
                   <option value="Gerencia">Gerencia</option>
                   <option value="Usuario">Usuario</option>

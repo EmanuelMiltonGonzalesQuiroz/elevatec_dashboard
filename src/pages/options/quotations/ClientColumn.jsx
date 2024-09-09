@@ -3,18 +3,25 @@ import CustomSelect from '../../../components/UI/CustomSelect';
 import { clientColumnText } from '../../../components/common/Text/texts';
 import { useUpdateFormData } from '../../../hooks/useUpdateFormData';
 import NewClientModal from './NewClientModal';
-import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
+import MapComponent from './ClientColumn/MapComponent';
+import { useClientHandlers } from './ClientColumn/useClientHandlers';
 
 const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleReset, onReset }) => {
   const { updateFormData } = useUpdateFormData();
+  const { handleClientChange } = useClientHandlers(formData, setFormData, updateFormData);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSolicitante, setSelectedSolicitante] = useState(null);
-  const [selectedVendedor, setSelectedVendedor] = useState(null);
+  const [selectedVendedor, setSelectedVendedor] = useState('');
   const [showMessage, setShowMessage] = useState('');
-  const [mapCenter] = useState({ lat: -16.495543, lng: -68.133543 }); // Centro inicial en La Paz, Bolivia
+  const [mapCenter] = useState({ lat: -16.495543, lng: -68.133543 });
   const [markerPosition, setMarkerPosition] = useState(mapCenter);
-  const [locationName, setLocationName] = useState(''); // Agregado para manejar el nombre de la ubicación
+  const [locationName, setLocationName] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [locationError, setLocationError] = useState('');
+  const [isStateChecked, setIsStateChecked] = useState(false); // Para manejar el checkbox
+  const [stateValue, setStateValue] = useState(0); // Para manejar el valor del input del estado
 
   useEffect(() => {
     if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
@@ -25,54 +32,14 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     }
   }, [formData, selectedClient, selectedSolicitante]);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleClientChange = (selectedOption) => {
-    if (selectedOption && selectedOption.label !== formData['02_CLIENTE']) {
-      setSelectedClient(selectedOption);
-      updateFormData({ field: '02_CLIENTE', value: selectedOption.label }, formData, setFormData);
-    }
-  };
-
-  const handleSolicitanteChange = (selectedOption) => {
-    if (selectedOption && selectedOption.label !== formData['Solicitante']) {
-      setSelectedSolicitante(selectedOption);
-      updateFormData({ field: 'Solicitante', value: selectedOption.label }, formData, setFormData);
-    }
-  };
-
-  const handleVendedorChange = (selectedOption) => {
-    if (selectedOption && selectedOption.label !== formData['Vendedor']) {
-      setSelectedVendedor(selectedOption);
-      updateFormData({ field: 'Vendedor', value: selectedOption.label }, formData, setFormData);
-    }
-  };
-
-  const handleResetClient = () => {
-    setSelectedClient(null);
-    setSelectedSolicitante(null);
-    setSelectedVendedor(null);
-  };
-
   const handleResetAll = () => {
     handleReset();
-    handleResetClient();
-    if (onReset) {
-      onReset(); // Enviar señal a MainFormColumn1
-    }
-  };
-
-  const handleShowMessage = (message) => {
-    setShowMessage(message);
-    setTimeout(() => {
-      setShowMessage('');
-    }, 3000);
+    setSelectedClient(null);
+    setSelectedSolicitante(null);
+    setSelectedVendedor('');
+    setStateValue(0); // Resetear el valor del estado
+    setLocationError('');
+    if (onReset) onReset();
   };
 
   const handleMapClick = (event) => {
@@ -80,8 +47,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
-    setMarkerPosition(location); // Mueve el marcador a la nueva ubicación
-    updateFormData({ field: 'Ubicacion', value: location }, formData, setFormData); // Actualiza formData con la nueva ubicación
+    setMarkerPosition(location);
+    updateFormData({ field: 'Ubicacion', value: location }, formData, setFormData);
+    setLocationError('');
   };
 
   const handleLocationNameChange = (e) => {
@@ -89,6 +57,30 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     setLocationName(newName);
     updateFormData({ field: 'Ubicacion_nombre', value: newName }, formData, setFormData);
   };
+
+  const handleStateCheckboxChange = (e) => {
+    setIsStateChecked(e.target.checked);
+  };
+
+  const handleStateValueChange = (e) => {
+    const value = Math.max(0, e.target.value);
+    setStateValue(value);
+    updateFormData({ field: 'Estado', value }, formData, setFormData); // Guardar el valor del estado en formData
+  };
+
+  const handleVendedorChange = (e) => {
+    const vendedor = e.target.value;
+    setSelectedVendedor(vendedor);
+    updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData); // Guardar el vendedor en formData
+  };
+
+  useEffect(() => {
+    if (isButtonDisabled) {
+      setLocationError('La ubicación seleccionada ya existe, por favor elija otra.');
+    } else {
+      setLocationError('');
+    }
+  }, [isButtonDisabled]);
 
   return (
     <div className="flex flex-col items-center justify-center text-black font-bold h-full overflow-x-auto">
@@ -100,19 +92,43 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           <CustomSelect
             collectionName="login firebase"
             placeholder={clientColumnText.searchSolicitante}
-            onChange={handleSolicitanteChange}
+            onChange={(option) => handleClientChange(option, 'Solicitante')}
             selectedValue={selectedSolicitante}
           />
 
-          <label htmlFor="vendedorName" className="mb-2 font-semibold text-black">
+          <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
           </label>
-          <CustomSelect
-            collectionName="sellers"
+          <input
+            type="text"
             placeholder={clientColumnText.seller}
+            value={selectedVendedor}
             onChange={handleVendedorChange}
-            selectedValue={selectedVendedor}
+            className="p-3 border-2 border-gray-300 rounded-lg w-full"
           />
+
+          {/* Checkbox y input para el estado debajo del vendedor */}
+          <label className="mt-4 text-black font-semibold">
+            <input
+              type="checkbox"
+              checked={isStateChecked}
+              onChange={handleStateCheckboxChange}
+              className="mr-2"
+            />
+            Para el estado
+          </label>
+
+          {/* Mostrar el input si el checkbox está marcado */}
+          {isStateChecked && (
+            <input
+              type="number"
+              min="0"
+              value={stateValue}
+              onChange={handleStateValueChange}
+              className="mt-2 p-3 border-2 border-gray-300 rounded-lg w-full"
+              placeholder="Ingrese un valor mayor a 0"
+            />
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -123,25 +139,24 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             <CustomSelect
               collectionName="clients"
               placeholder={clientColumnText.searchClient}
-              onChange={handleClientChange}
+              onChange={(option) => handleClientChange(option, '02_CLIENTE')}
               selectedValue={selectedClient}
             />
             <button
-              onClick={handleOpenModal}
+              onClick={() => setIsModalOpen(true)}
               className="bg-green-500 text-white px-4 rounded hover:bg-green-700 transition"
-              style={{
-                height: '39px',
-                borderRadius: '0 4px 4px 0',
-                marginLeft: '-2px',
-              }}
+              style={{ height: '39px', borderRadius: '0 4px 4px 0', marginLeft: '-2px' }}
             >
               +
             </button>
           </div>
           <div className="flex flex-col">
             <button
-              onClick={() => handleGenerateQuotation(handleShowMessage)}
-              className="bg-green-500 text-white py-2 mb-2 w-full rounded hover:bg-green-700 transition"
+              onClick={() => handleGenerateQuotation(setShowMessage)}
+              className={`py-2 mb-2 w-full rounded transition ${
+                isButtonDisabled ? 'bg-gray-500 opacity-50 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700'
+              } text-white`}
+              disabled={isButtonDisabled}
             >
               {clientColumnText.generateQuotation}
             </button>
@@ -151,38 +166,47 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             >
               {clientColumnText.resetData}
             </button>
-            <label htmlFor="locationName" className="mt-2 font-semibold text-black text-lg">Nombre de la ubicación:</label>
-            <input
-              type="text"
-              id="locationName"
-              value={locationName}
-              onChange={handleLocationNameChange}
-              className="mt-1 p-3 border-2 border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-            />
+
+            <div className="flex flex-col">
+              {locationError ? (
+                <div className="mt-2 text-red-500 font-semibold">
+                  {locationError}
+                </div>
+              ) : (
+                <>
+                  <label htmlFor="locationName" className="mt-2 font-semibold text-black text-lg">
+                    Nombre de la ubicación:
+                  </label>
+                  <input
+                    type="text"
+                    id="locationName"
+                    value={locationName}
+                    onChange={handleLocationNameChange}
+                    className="mt-1 p-3 border-2 border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="w-full"> 
-            <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
-              <GoogleMap
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                center={mapCenter}
-                zoom={10}
-                onClick={handleMapClick}
-              >
-                <MarkerF position={markerPosition} />
-              </GoogleMap>
-            </LoadScript>
+        <div className="w-full">
+          <MapComponent
+            mapCenter={mapCenter}
+            markerPosition={markerPosition}
+            handleMapClick={handleMapClick}
+            setButtonDisabled={setIsButtonDisabled}
+          />
         </div>
       </div>
 
       {showMessage && (
-        <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {showMessage}
         </div>
       )}
 
-      {isModalOpen && <NewClientModal onClose={handleCloseModal} />}
+      {isModalOpen && <NewClientModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };

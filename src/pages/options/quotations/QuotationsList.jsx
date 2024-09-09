@@ -203,21 +203,21 @@ const QuotationList = () => {
               className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
               onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
             >
-              Ver PDF sin membretado
+              Ver PDF 
             </button>
 
             <button
               className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
               onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
             >
-              Ver PDF con membretado Jalmeco
+              Ver PDF Jalmeco
             </button>
 
             <button
               className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
               onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
             >
-              Ver PDF con membretado Tecnolift
+              Ver PDF Tecnolift
             </button>
 
             <button
