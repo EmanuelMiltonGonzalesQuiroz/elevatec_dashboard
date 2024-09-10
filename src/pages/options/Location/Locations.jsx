@@ -1,39 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
-import { collection, getDocs, updateDoc, doc, addDoc } from 'firebase/firestore';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { collection, getDocs, updateDoc, doc, setDoc, onSnapshot } from 'firebase/firestore';  
+import { GoogleMap, LoadScriptNext, Marker } from '@react-google-maps/api';
 import LocationStates from './LocationStates';
 import { useAuth } from '../../../context/AuthContext';
-import EditStatesModal from './EditStatesModal'; 
-import CustomSelect from '../../../components/UI/CustomSelect'; // Importar para seleccionar cliente
+import EditStatesModal from './EditStatesModal';
+import CustomSelect from '../../../components/UI/CustomSelect'; 
 import MapComponent from '../../../components/UI/MapComponent';
+import { FaTimes } from 'react-icons/fa'; 
+import { calculateDistance } from '../../../components/layout/calculateDistance';
 
 const Location = () => {
   const [locations, setLocations] = useState([]);
   const [mapLocations, setMapLocations] = useState([]);
-  const [stateColors, setStateColors] = useState({}); 
+  const [stateColors, setStateColors] = useState({});
   const { currentUser } = useAuth();
   const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
-  const [showEditModal, setShowEditModal] = useState(false); 
-  const [showAddModal, setShowAddModal] = useState(false); // Estado para el modal de agregar ubicación
-  const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); // Posición del marcador
-  const [selectedClient, setSelectedClient] = useState(null); // Cliente seleccionado
-  const [selectedState, setSelectedState] = useState('Pendiente'); // Estado seleccionado
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Estado para habilitar o deshabilitar el botón
-  console.log(userRole)
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false); 
+  const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); 
+  const [selectedClient, setSelectedClient] = useState(null); 
+  const [selectedState, setSelectedState] = useState('Pendiente'); 
+  const [description, setDescription] = useState('');  // Nuevo estado para descripción
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
+  const [distanceWarning, setDistanceWarning] = useState(''); 
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      const locationsCol = collection(db, 'locations');
-      const locationSnapshot = await getDocs(locationsCol);
-      const locationList = locationSnapshot.docs.map(doc => ({
+    const unsubscribe = onSnapshot(collection(db, 'locations'), (snapshot) => {
+      const locationList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
       setLocations(locationList);
       setMapLocations(locationList);
-    };
+    });
 
     const fetchStateColors = async () => {
       const statesCol = collection(db, 'locationStates');
@@ -48,69 +48,93 @@ const Location = () => {
       setStateColors(stateData);
     };
 
-    fetchLocations();
     fetchStateColors();
+
+    return () => unsubscribe();  
   }, []);
 
   const handleChangeState = async (id, newState) => {
     try {
       const locationDoc = doc(db, 'locations', id);
       await updateDoc(locationDoc, { state: newState });
-      const updatedLocations = locations.map(location => 
-        location.id === id ? { ...location, state: newState } : location
-      );
-      setLocations(updatedLocations);
-      setMapLocations(updatedLocations); 
     } catch (error) {
       console.error('Error updating location state: ', error);
     }
   };
 
+  const handleMapClick = (clickedLocation) => {
+    const newLat = clickedLocation.lat;
+    const newLng = clickedLocation.lng;
+
+    setMarkerPosition({ lat: newLat, lng: newLng });
+
+    let isTooClose = false;
+    let distanceWarningMessage = '';
+
+    locations.forEach((location) => {
+      if (location.location && location.location.lat && location.location.lng) {
+        const distance = calculateDistance(location.location.lat, location.location.lng, newLat, newLng);
+        if (distance < 10) { 
+          isTooClose = true;
+          distanceWarningMessage = 'La ubicación seleccionada está demasiado cerca de otra ubicación existente.';
+        }
+      }
+    });
+
+    setIsButtonDisabled(isTooClose);
+    setDistanceWarning(distanceWarningMessage);
+  };
+
   const handleAddLocation = async () => {
     if (selectedClient && markerPosition) {
       try {
-        await addDoc(collection(db, 'locations'), {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().replace(/[:.]/g, '_'); 
+        const locationId = `${selectedClient.label}_${formattedDate}`;  
+
+        await setDoc(doc(db, 'locations', locationId), {
           client: selectedClient.label,
           location: markerPosition,
-          state: selectedState
+          state: selectedState,
+          description: description,  // Guardar la descripción
         });
-        setShowAddModal(false); // Cerrar el modal después de agregar la ubicación
+  
+        setShowAddModal(false);  
+        setDescription('');  // Limpiar la descripción
       } catch (error) {
         console.error('Error al agregar la ubicación: ', error);
       }
     }
   };
+  
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full h-full text-black">
       <h2 className="text-xl font-bold mb-4">Ubicaciones de Cotizaciones</h2>
 
-      {/* Botón para editar estados, visible solo para Administradores */}
       {(userRole === 'Administrador' || userRole === 'Gerencia') && (
         <div className="mt-4">
           <button 
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            onClick={() => setShowEditModal(true)} 
+            onClick={() => setShowEditModal(true)}
           >
             Editar Estados
           </button>
           <button
             className="bg-green-500 text-white px-4 py-2 ml-4 rounded hover:bg-green-700 transition"
-            onClick={() => setShowAddModal(true)} // Mostrar el modal de agregar ubicación
+            onClick={() => setShowAddModal(true)} 
           >
             Agregar Ubicación
           </button>
         </div>
       )}
 
-      {/* Fila que contiene el mapa y la tabla */}
       <div className="flex flex-row w-full mt-4">
-        {/* Mapa de Google ocupando el 60% */}
         <div className="w-3/5 h-[68vh]">
-          <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+          <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
             <GoogleMap
               mapContainerStyle={{ width: '100%', height: '100%' }}
-              center={{ lat: -16.495543, lng: -68.133543 }} 
+              center={{ lat: -16.495543, lng: -68.133543 }}
               zoom={10}
             >
               {mapLocations.map((location) => (
@@ -124,15 +148,15 @@ const Location = () => {
                 )
               ))}
             </GoogleMap>
-          </LoadScript>
+          </LoadScriptNext>
         </div>
 
-        {/* Tabla de ubicaciones ocupando el 40% */}
         <div className="w-2/5 overflow-y-auto h-[68vh]">
           <table className="table-auto w-full mb-4">
             <thead>
               <tr>
                 <th className="px-4 py-2">Cliente</th>
+                <th className="px-4 py-2">Descripción</th> {/* Nueva columna */}
                 {userRole === 'Administrador' || userRole === 'Gerencia' ? (
                   <th className="px-4 py-2">Cambiar Estado</th>
                 ) : (
@@ -142,11 +166,12 @@ const Location = () => {
             </thead>
             <tbody>
               {locations
-                .filter(location => location.client) 
+                .filter(location => location.client)
                 .map((location) => (
                   location.id !== 'locationStates' && (
                     <tr key={location.id}>
                       <td className="border px-4 py-2">{location.client}</td>
+                      <td className="border px-4 py-2">{location.description || 'Sin descripción'}</td> {/* Mostrar la descripción */}
                       {userRole === 'Administrador' || userRole === 'Gerencia' ? (
                         <td className="border px-4 py-2">
                           <LocationStates
@@ -167,24 +192,41 @@ const Location = () => {
         </div>
       </div>
 
-      {/* Modal para agregar ubicación */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[80%] text-black">
-            <h2 className="text-xl font-bold mb-4">Agregar Ubicación</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[90%] text-black">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Agregar Ubicación</h2>
+              <button
+                className="text-red-500 bg-white border border-red-500 rounded-full p-2 hover:bg-red-500 hover:text-white"
+                onClick={() => setShowAddModal(false)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+
             <div className="flex flex-col space-y-4">
-              {/* Selección del cliente */}
               <div>
                 <label htmlFor="clientName" className="mb-2 font-semibold text-black">Seleccionar Cliente</label>
                 <CustomSelect
-                  collectionName="login"
+                  collectionName="clients"
                   placeholder="Seleccionar Cliente"
                   onChange={(option) => setSelectedClient(option)}
                   selectedValue={selectedClient}
                 />
               </div>
 
-              {/* Selección del estado */}
+              <div>
+                <label htmlFor="description" className="mb-2 font-semibold text-black">Descripción</label>
+                <input
+                  type="text"
+                  className="p-2 border rounded w-full"
+                  placeholder="Añadir descripción"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}  // Manejar la descripción
+                />
+              </div>
+
               <div>
                 <label htmlFor="state" className="mb-2 font-semibold text-black">Seleccionar Estado</label>
                 <LocationStates
@@ -193,20 +235,23 @@ const Location = () => {
                 />
               </div>
 
-              {/* Mapa para seleccionar ubicación */}
-              <div className="w-full h-[40vh]  border mt-4">
+              <div className="w-full h-[39vh] border mt-4">
                 <MapComponent
                   mapCenter={{ lat: -16.495543, lng: -68.133543 }}
                   markerPosition={markerPosition}
-                  handleMapClick={(event) => setMarkerPosition({ lat: event.latLng.lat(), lng: event.latLng.lng() })}
+                  handleMapClick={handleMapClick}
                   setButtonDisabled={setIsButtonDisabled}
                 />
               </div>
 
+              {distanceWarning && (
+                <p className="text-red-500">{distanceWarning}</p>
+              )}
+
               <button
                 className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-700 transition"
                 onClick={handleAddLocation}
-                disabled={isButtonDisabled || !selectedClient} // Deshabilitar si no hay cliente o si el botón está deshabilitado
+                disabled={isButtonDisabled || !selectedClient}
               >
                 Guardar Ubicación
               </button>
@@ -215,7 +260,6 @@ const Location = () => {
         </div>
       )}
 
-      {/* Modal para editar estados */}
       {showEditModal && (
         <EditStatesModal onClose={() => setShowEditModal(false)} />
       )}
@@ -223,4 +267,4 @@ const Location = () => {
   );
 };
 
-export default Location;
+export default React.memo(Location);

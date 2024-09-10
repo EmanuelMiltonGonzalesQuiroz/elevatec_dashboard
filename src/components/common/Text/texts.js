@@ -277,3 +277,15 @@ export const advancedOptionsText = {
   locks: <>{redAsterisk} Llavines con llave</>,
   locksConcept: "",
 };
+export const maintenanceText = {
+  title: 'Ajustes de mantenimiento',
+  description: 'Gestiona las opciones y parámetros de mantenimiento de la aplicación.',
+  ascensoresM: 'Ascensores M.',
+  montaCochesM: 'Monta coches M.',
+  montacargasM: 'Montacargas M.',
+  escaleraMecanicaM: 'Escalera mecánica M.',
+  ascensoresMContent: 'Aquí puedes configurar las opciones de mantenimiento para Ascensores M.',
+  montaCochesMContent: 'Aquí puedes configurar las opciones de mantenimiento para Monta coches M.',
+  montacargasMContent: 'Aquí puedes configurar las opciones de mantenimiento para Montacargas M.',
+  escaleraMecanicaMContent: 'Aquí puedes configurar las opciones de mantenimiento para Escalera mecánica M.',
+};

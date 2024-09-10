@@ -196,37 +196,38 @@ const QuotationList = () => {
       {/* Modal con opciones de PDF */}
       {showModal && (
         <CustomModal show={showModal} onClose={() => setShowModal(false)}>
-          <div className="max-w-[180px] mx-auto">
-            <h2 className="text-xl font-bold mb-4">Selecciona una opción de PDF</h2>
-            
+          <div className="flex flex-col items-center mx-auto">
+            <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
+
             <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
               onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
             >
-              Ver PDF 
+              Ver PDF
             </button>
 
             <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
               onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
             >
               Ver PDF Jalmeco
             </button>
 
             <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
               onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
             >
               Ver PDF Tecnolift
             </button>
 
             <button
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
+              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
               onClick={() => setShowModal(false)}
             >
               Cerrar
             </button>
           </div>
+
         </CustomModal>
       )}
 

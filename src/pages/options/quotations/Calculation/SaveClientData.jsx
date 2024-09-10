@@ -90,6 +90,7 @@ const SaveClientData = ({ formData, additionalData }) => {
           location: cleanedFormData['Ubicacion'], // Latitud y Longitud de la ubicación
           state: 'pendiente', // Estado inicial
           client: clientName, // Nombre del cliente
+          description: cleanedFormData['Ubicacion_nombre']
         };
         await setDoc(doc(locationsCol, docId), locationData);
         console.log(`Location data for ${docId} saved in Firestore`);

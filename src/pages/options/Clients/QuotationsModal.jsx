@@ -152,7 +152,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
         {showModal && (
           <CustomModal show={showModal} onClose={() => setShowModal(false)}>
-            <div className="max-w-[180px] mx-auto">
+            <div className="flex flex-col items-center mx-auto">
               <h2 className="text-xl font-bold mb-4">Selecciona una opción de PDF</h2>
 
               <button
