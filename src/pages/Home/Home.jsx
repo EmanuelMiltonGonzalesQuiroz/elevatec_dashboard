@@ -1,4 +1,4 @@
-import React, { useState, /*useEffect*/ } from 'react';
+import React, { useState, useEffect } from 'react';
 import Quotations from './../options/quotations/Quotations';
 import Users from '../options/Users/Users';
 import Clients from '../options/Clients/Clients';
@@ -10,27 +10,24 @@ import Settings from '../options/Settings/Settings';
 import Location from '../options/Location/Locations';
 import Maintenance from '../options/Maintenance/Maintenance';
 import MaintenanceSettings from '../options/MaintenanceSettings/MaintenanceSettings';
-//import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
+import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore'; // Import the function
 
 const Home = () => {
   const { currentUser } = useAuth();
   const [activeContent, setActiveContent] = useState('Cotizaciones');
 
-  /*useEffect(() => {
-    console.log('useEffect in Home is running'); // Debugging line
-
+  useEffect(() => {
     const loadData = async () => {
       try {
-        await loadJsonFilesToFirestore();
-        alert('Data loaded successfully!');
+        await loadJsonFilesToFirestore(); // Load data only once
+        console.log('Data loaded successfully!'); // Log success instead of alert
       } catch (error) {
-        console.error('Error loading data:', error); // Changed to console.error for better visibility
-        alert('Error loading data: ' + error.message);
+        console.error('Error loading data:', error); // Log error if there is any
       }
     };
 
-    loadData();
-  }, []);*/
+    loadData(); // Call loadData when component mounts
+  }, []); // Empty dependency array to ensure this runs only once
 
   if (!currentUser) {
     window.location.href = '/login';

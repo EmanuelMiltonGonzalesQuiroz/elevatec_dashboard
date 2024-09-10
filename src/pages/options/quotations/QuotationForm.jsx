@@ -59,7 +59,7 @@ const QuotationForm = () => {
       {!fetching && !allData && <FetchAllCollections onDataFetched={handleDataFetched} />}
       {allData && (
         <>
-          <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg overflow-auto min-h-[40vh] ">
+          <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg  max-h-[40vh] ">
             <ClientColumn
               formData={formData}
               setFormData={setFormData}

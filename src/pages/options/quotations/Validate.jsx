@@ -14,7 +14,7 @@ const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
     ];
 
     const requiredNumericFields = [
-      'Solicitante', 'Vendedor', '02_CLIENTE', 'Ubicacion', 'Ubicacion_nombre',
+      'Solicitante', 'Vendedor',"MetodoDePago", '02_CLIENTE', 'Ubicacion', 'Ubicacion_nombre',
       '03_PERSONAS', '01_PARADAS', '03_RECORRIDO', '09_PISOS A ANTENDER',
       '04_Frente', '05_ProfundidadR', '06_Foso', '07_Huida', '08_Número de ascensores'
     ];

@@ -83,9 +83,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   }, [isButtonDisabled]);
 
   return (
-    <div className="flex flex-col items-center justify-center text-black font-bold h-full overflow-x-auto">
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        <div className="flex flex-col h-min">
+    <div className="flex flex-col items-center justify-center text-black font-bold h-full w-full overflow-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        <div className="flex flex-col lg:overflow-y-auto lg:h-48">
           <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchSolicitante}
           </label>
@@ -95,7 +95,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             onChange={(option) => handleClientChange(option, 'Solicitante')}
             selectedValue={selectedSolicitante}
           />
-
+  
           <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
           </label>
@@ -106,8 +106,56 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             onChange={handleVendedorChange}
             className="p-3 border-2 border-gray-300 rounded-lg w-full"
           />
+  
+          <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
+            Método de Pago
+          </label>
+          <div className="flex flex-col">
+ 
+          <div className="flex flex-col space-y-2">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData['MetodoDePago'] === 'Efectivo'}
+                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Efectivo' }, formData, setFormData)}
+                className="mr-2"
+              />
+              Efectivo
+            </label>
 
-          {/* Checkbox y input para el estado debajo del vendedor */}
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData['MetodoDePago'] === 'Deposito'}
+                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Deposito' }, formData, setFormData)}
+                className="mr-2"
+              />
+              Depósito
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData['MetodoDePago'] === 'Dolar'}
+                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Dolar' }, formData, setFormData)}
+                className="mr-2"
+              />
+              Dólar
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData['MetodoDePago'] === 'Bolivianos'}
+                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Bolivianos' }, formData, setFormData)}
+                className="mr-2"
+              />
+              Bolivianos
+            </label>
+          </div>
+        </div>
+
+  
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
@@ -117,8 +165,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             />
             Para el estado
           </label>
-
-          {/* Mostrar el input si el checkbox está marcado */}
+  
           {isStateChecked && (
             <input
               type="number"
@@ -130,8 +177,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             />
           )}
         </div>
-
-        <div className="flex flex-col">
+  
+        <div className="flex flex-col lg:overflow-y-auto lg:h-48">
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
           </label>
@@ -150,6 +197,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               +
             </button>
           </div>
+  
           <div className="flex flex-col">
             <button
               onClick={() => handleGenerateQuotation(setShowMessage)}
@@ -166,7 +214,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             >
               {clientColumnText.resetData}
             </button>
-
+  
             <div className="flex flex-col">
               {locationError ? (
                 <div className="mt-2 text-red-500 font-semibold">
@@ -189,8 +237,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </div>
           </div>
         </div>
-
-        <div className="w-full">
+  
+        <div className="w-full ">
           <MapComponent
             mapCenter={mapCenter}
             markerPosition={markerPosition}
@@ -199,16 +247,17 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           />
         </div>
       </div>
-
+  
       {showMessage && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {showMessage}
         </div>
       )}
-
+  
       {isModalOpen && <NewClientModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
+  
 };
 
 export default ClientColumn;

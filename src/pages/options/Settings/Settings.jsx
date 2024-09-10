@@ -10,7 +10,7 @@ import { settingsText } from '../../../components/common/Text/texts';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('Groups');
-
+ 
   return (
     <div className="p-4 bg-gray-100 text-black">
       <div className="flex mb-4">
