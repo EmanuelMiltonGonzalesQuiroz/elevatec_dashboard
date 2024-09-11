@@ -141,19 +141,21 @@ const Profile = () => {
               <p>{currentUser.username}</p>
             )}
           </div>
-          <div className="w-full max-w-md">
-            <label className="font-semibold">Rol de Usuario:</label>
-            {currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' ? (
-              <input
-                type="text"
-                name="role"
-                value={currentUser.role}
-                disabled
-                className="p-2 border rounded w-full bg-gray-200"
-              />
-            ) : (
-              <p>{currentUser.role}</p>
-            )}
+          <div className="space-y-4 flex flex-col items-center text-center">
+            <div className="w-full max-w-md">
+              <label className="font-semibold">Rol de Usuario:</label>
+              {currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' ? (
+                <input
+                  type="text"
+                  name="role"
+                  value={currentUser.role}
+                  disabled
+                  className="p-2 border rounded w-full "
+                />
+              ) : (
+                <p>{currentUser.role}</p>
+              )}
+            </div>
           </div>
           <div className="w-full max-w-md">
             <label className="font-semibold">Correo electrónico:</label>
