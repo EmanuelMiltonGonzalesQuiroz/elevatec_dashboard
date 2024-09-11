@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Selects from './Selects';
+import Location from './Location';
+import Table from './Table';
 
 const Maintenance = () => {
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleAddItem = (type, basePrice, finalPrice) => {
+    const newItem = { type, basePrice, finalPrice };
+    setSelectedItems(prev => [...prev, newItem]);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-gray-800">Página en Mantenimiento</h1>
-      <p className="text-lg text-gray-600 mt-4">
-        Estamos trabajando para mejorar esta página. ¡Vuelve pronto!
-      </p>
-      <div className="mt-6">
-        <a href="/" className="text-blue-600 hover:underline">
-          Volver al inicio
-        </a>
+    <div className="flex items-start justify-between bg-gray-100 p-4">
+      <Selects handleAddItem={handleAddItem} />
+      <div className="flex flex-col justify-between w-3/4">
+        <Location handleAddItem={handleAddItem}/>
+        <Table selectedItems={selectedItems} setSelectedItems={setSelectedItems} />
       </div>
     </div>
   );

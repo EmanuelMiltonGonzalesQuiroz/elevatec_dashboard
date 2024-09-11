@@ -1,7 +1,4 @@
 // src/components/common/Text/texts.js
-
-
-
 export const loginText = {
   title: "Iniciar Sesión",
   emailPlaceholder: "Email",
@@ -15,7 +12,7 @@ export const homeText = {
   quotations: "Cotizaciones",
   clients: "Clientes",
   users: "Usuarios",
-  settings: "Ajustes",
+  settings: "Ajustes Cotizaciones",
   profile:"Perfil",
   logoutButton: "Cerrar Sesión",
   generateQuotation: "Generar Cotización",
