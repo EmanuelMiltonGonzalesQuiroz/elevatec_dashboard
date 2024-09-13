@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
 
+// Estados y colores personalizados según la imagen proporcionada
 const defaultStates = [
-  { id: 'Pendiente', state: true, color: 'green' },
-  { id: 'Perdida', state: true, color: 'gray' },
-  { id: 'Concretada', state: true, color: 'blue' },
-  { id: 'Default', state: false, color: 'white' },
+  { id: 'Cotizacion_A', state: true, color: 'skyblue' },  // Celeste
+  { id: 'Cotizacion_M', state: true, color: 'blue' },      // Azul
+  { id: 'Construccion', state: true, color: 'green' },     // Verde
+  { id: 'Mantenimiento', state: true, color: 'yellow' },   // Amarillo
+  { id: 'Modernizacion', state: true, color: 'purple' },   // Lila
+  { id: 'Competencia', state: true, color: 'gray' },       // Plomo
+  { id: 'Eliminar', state: true, color: 'red' }            // Rojo para eliminar
 ];
 
 const LocationStates = ({ currentLocationState, onChangeState }) => {
@@ -47,7 +51,7 @@ const LocationStates = ({ currentLocationState, onChangeState }) => {
   }, []);
 
   return (
-    <div>
+    <div >
       <select
         value={currentLocationState}
         onChange={(e) => onChangeState(e.target.value)}
@@ -55,7 +59,7 @@ const LocationStates = ({ currentLocationState, onChangeState }) => {
       >
         {availableStates.map((state) => (
           <option key={state.id} value={state.id}>
-            {state.id.charAt(0).toUpperCase() + state.id.slice(1)}
+            {state.id.charAt(0).toUpperCase() + state.id.slice(1).replace('_', ' ')}
           </option>
         ))}
       </select>

@@ -1,26 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { db } from '../../../connection/firebase'; // Importar Firestore
-import { doc, setDoc } from 'firebase/firestore'; // Importar funciones de Firestore
+import { doc, setDoc, collection, getDocs } from 'firebase/firestore'; // Importar funciones de Firestore
 import CustomSelect from '../../../components/UI/CustomSelect';
 import MapComponent from '../../../components/UI/MapComponent';
 
+// Opciones de tipo, subtipo y descripción
+const typeOptions = {
+  CONSTRUCCION: [
+    { id: 'CA', label: 'C. ASCENSORES' },
+    { id: 'CM', label: 'C. MONTA COCHES' },
+    { id: 'CE', label: 'C. ESCALERAS MECANIMAS' },
+    { id: 'C.MC', label: 'C. MONTA CARGAS' },
+  ],
+  MANTENIMEITNO: [
+    { id: 'MA', label: 'M. ASCENSORES' },
+    { id: 'MM', label: 'M. MONTA COCHES' },
+    { id: 'ME', label: 'M. ESCALERAS MECANIMAS' },
+    { id: 'M.MC', label: 'M. MONTA CARGAS' },
+  ],
+  MODERNIZACION: [
+    { id: 'MMA', label: 'M. ASCENSORES' },
+    { id: 'MMM', label: 'M. MONTA COCHES' },
+    { id: 'MME', label: 'M. ESCALERAS MECANIMAS' },
+    { id: 'ME.MC', label: 'M. MONTA CARGAS' },
+  ],
+};
+
 const AddLocationModal = ({ onClose }) => {
   const [description, setDescription] = useState('');
-  const [selectedClient, setSelectedClient] = useState(null); // Nuevo estado para el cliente seleccionado
+  const [selectedClient, setSelectedClient] = useState(null); // Estado para el cliente seleccionado
   const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); // Estado para la posición del marcador
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Estado para deshabilitar botón de guardar
   const [distanceWarning, setDistanceWarning] = useState(''); // Estado para mostrar advertencia
+  const [lowestAvailableId, setLowestAvailableId] = useState(null); // Estado para manejar el ID más bajo disponible
+
+  // Estado para manejar los selects de tipo
+  const [formData, setFormData] = useState({
+    Tipo0: '',
+    Tipo1: '',
+    Tipo2: '',
+  });
 
   // Función para manejar el clic en el mapa y actualizar la posición del marcador
   const handleMapClick = (clickedLocation) => {
     setMarkerPosition(clickedLocation);
   };
 
+  // Función para manejar cambios en los selects de tipo
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Función para obtener el ID más bajo disponible
+  const getLowestAvailableId = async () => {
+    const locationsCol = collection(db, 'locations');
+    const locationsSnapshot = await getDocs(locationsCol);
+    
+    const usedIds = locationsSnapshot.docs.map(doc => parseInt(doc.data().id)).filter(id => !isNaN(id));
+
+    let lowestId = 1;
+    while (usedIds.includes(lowestId)) {
+      lowestId++;
+    }
+    setLowestAvailableId(lowestId.toString()); // Convertir el ID a cadena para Firestore
+  };
+
+  // Obtener el ID más bajo disponible al cargar el componente
+  useEffect(() => {
+    getLowestAvailableId();
+  }, []);
+
   // Función para guardar la nueva ubicación en Firestore
   const handleSaveLocation = async () => {
-    if (!selectedClient || !description) {
-      alert('Por favor, selecciona un cliente y agrega una descripción.');
+    // Validación de campos requeridos
+    if (!selectedClient || !description || !formData.Tipo0 || !formData.Tipo1 || !formData.Tipo2) {
+      alert('Por favor, completa todos los campos.');
       return;
     }
 
@@ -29,20 +87,24 @@ const AddLocationModal = ({ onClose }) => {
       const formattedDate = currentDate.toISOString().replace(/[:.]/g, '_'); // Formatear la fecha para crear un ID único
       const locationId = `${selectedClient.label}_${formattedDate}`; // Crear un ID único para la ubicación
 
-      // Guardar la ubicación en Firestore
+      // Guardar la ubicación en Firestore con la estructura proporcionada
       await setDoc(doc(db, 'locations', locationId), {
         client: selectedClient.label,
-        description: description,
-        location: markerPosition,
-        state: 'Pendiente', // Estado inicial de la ubicación
+        id: lowestAvailableId, // Asignar el ID más bajo disponible
+        Direccion: description,
+        location: {
+          lat: markerPosition.lat,
+          lng: markerPosition.lng,
+        },
+        Tipo: [formData.Tipo0, formData.Tipo1, formData.Tipo2], // Arreglo de tipo
+        state: 'Construccion', // Estado inicial de la ubicación
         createdAt: currentDate,
       });
 
-      alert('¡Ubicación guardada exitosamente!');
       onClose(); // Cerrar el modal después de guardar
     } catch (error) {
-      console.error('Error al guardar la ubicación:', error);
-      alert('Hubo un error al guardar la ubicación.');
+      console.error('Error al guardar la ubicación:', error); // Mostrar el error en la consola
+      alert('Ocurrió un error al guardar la ubicación. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -53,6 +115,8 @@ const AddLocationModal = ({ onClose }) => {
           <h2 className="text-xl font-bold">Agregar Ubicación</h2>
           <button className="text-red-500" onClick={onClose}><FaTimes /></button>
         </div>
+        
+        {/* Selección del cliente */}
         <div>
           <label>Seleccionar Cliente</label>
           <CustomSelect
@@ -61,8 +125,10 @@ const AddLocationModal = ({ onClose }) => {
             selectedValue={selectedClient}
           />
         </div>
+        
+        {/* Campo de descripción */}
         <div className="flex flex-col mb-4">
-          <label className="mb-2 font-semibold text-black">Descripción</label>
+          <label className="mb-2 font-semibold text-black">Dirección</label>
           <input
             className="p-2 border rounded w-full"
             value={description}
@@ -70,19 +136,91 @@ const AddLocationModal = ({ onClose }) => {
           />
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-lg h-[60%] text-black">
+        {/* Select de tipo */}
+        <div className="mb-4">
+          <label className="block text-black">Tipo</label>
+          <select
+            name="Tipo0"
+            value={formData.Tipo0}
+            onChange={handleChange}
+            className="p-2 border rounded w-full"
+          >
+            <option value="" disabled>
+              Selecciona un tipo
+            </option>
+            {Object.keys(typeOptions).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Segundo select basado en el primer tipo */}
+        {formData.Tipo0 && (
+          <div className="mb-4">
+            <label className="block text-black">Subtipo</label>
+            <select
+              name="Tipo1"
+              value={formData.Tipo1}
+              onChange={handleChange}
+              className="p-2 border rounded w-full"
+            >
+              <option value="" disabled>
+                Selecciona un subtipo
+              </option>
+              {typeOptions[formData.Tipo0]?.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.id}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Tercer select basado en el segundo tipo */}
+        {formData.Tipo1 && (
+          <div className="mb-4">
+            <label className="block text-black">Descripción</label>
+            <select
+              name="Tipo2"
+              value={formData.Tipo2}
+              onChange={handleChange}
+              className="p-2 border rounded w-full"
+            >
+              <option value="" disabled>
+                Selecciona una descripción
+              </option>
+              {typeOptions[formData.Tipo0]?.map(
+                (option) =>
+                  option.id === formData.Tipo1 && (
+                    <option key={option.id} value={option.label}>
+                      {option.label}
+                    </option>
+                  )
+              )}
+            </select>
+          </div>
+        )}
+
+        {/* Componente de mapa */}
+        <div className="bg-white p-6 rounded-lg shadow-lg h-[20%] text-black">
           <MapComponent
             mapCenter={markerPosition}
             markerPosition={markerPosition}
             handleMapClick={handleMapClick} // Pasamos handleMapClick al componente MapComponent
-            setButtonDisabled={setIsButtonDisabled}
+            setButtonDisabled={setIsButtonDisabled} // Permite habilitar/deshabilitar el botón según la posición del marcador
           />
         </div>
+        
+        {/* Advertencia si hay alguna restricción de distancia */}
         {distanceWarning && <p className="text-red-500">{distanceWarning}</p>}
+        
+        {/* Botón para guardar la ubicación */}
         <button
           className="bg-blue-500 text-white px-4 py-2 mt-4"
-          disabled={isButtonDisabled}
-          onClick={handleSaveLocation} // Agregar la funcionalidad de guardar al hacer clic
+          disabled={isButtonDisabled} // Deshabilitar el botón si está marcado como no disponible
+          onClick={handleSaveLocation} // Guardar la ubicación
         >
           Guardar Ubicación
         </button>

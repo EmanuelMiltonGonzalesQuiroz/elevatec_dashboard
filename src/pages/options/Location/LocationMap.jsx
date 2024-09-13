@@ -2,11 +2,11 @@ import React from 'react';
 import { GoogleMap, LoadScriptNext, MarkerF } from '@react-google-maps/api';
 
 const LocationMap = ({ mapLocations, stateColors, mapCenter }) => (
-  <div className="w-3/5 h-[68vh]">
+  <div className="w-full h-[40vh]">
     <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={mapCenter}
+        center={mapCenter} // El mapa se centrará en la ubicación seleccionada
         zoom={14}
       >
         {/* Renderizar los marcadores con los colores basados en el estado */}

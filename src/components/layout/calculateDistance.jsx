@@ -1,4 +1,4 @@
-// helpers/calculateDistance.js
+// components/layout/calculateDistance.js
 export const calculateDistance = (lat1, lng1, lat2, lng2) => {
     const toRadians = (degree) => degree * (Math.PI / 180);
     const R = 6371e3; // Radio de la Tierra en metros

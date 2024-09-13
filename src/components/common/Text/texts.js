@@ -285,4 +285,7 @@ export const maintenanceText = {
   montaCochesMContent: 'Aquí puedes configurar las opciones de mantenimiento para Monta coches M.',
   montacargasMContent: 'Aquí puedes configurar las opciones de mantenimiento para Montacargas M.',
   escaleraMecanicaMContent: 'Aquí puedes configurar las opciones de mantenimiento para Escalera mecánica M.',
+  tabMaintenance: 'C. Mantenimiento',
+  tabMaintenanceList: 'Lista de mantenimientos',
 };
+

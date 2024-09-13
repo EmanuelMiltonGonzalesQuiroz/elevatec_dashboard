@@ -3,16 +3,17 @@ import { db } from '../../../connection/firebase';
 import { collection, getDocs, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const colorOptions = [
-  { name: 'red', color: '#FF0000', label: 'Rojo' },
-  { name: 'green', color: '#00FF00', label: 'Verde' },
-  { name: 'blue', color: '#0000FF', label: 'Azul' },
-  { name: 'yellow', color: '#FFFF00', label: 'Amarillo' },
-  { name: 'gray', color: '#808080', label: 'Gris' },
-  { name: 'white', color: '#FFFFFF', label: 'Blanco' },
-  { name: 'magenta', color: '#FF00FF', label: 'Magenta' },
-  { name: 'cyan', color: '#00FFFF', label: 'Cian' },
-  { name: 'olive', color: '#808000', label: 'Oliva' },
-  { name: 'purple', color: '#800080', label: 'Púrpura' },
+  { name: 'red', color: '#FF0000', label: 'Rojo' },       // Eliminar
+  { name: 'green', color: '#00FF00', label: 'Verde' },    // Construcción
+  { name: 'blue', color: '#0000FF', label: 'Azul' },      // Cotización M
+  { name: 'yellow', color: '#FFFF00', label: 'Amarillo' },// Mantenimiento
+  { name: 'gray', color: '#808080', label: 'Gris' },      // Competencia
+  { name: 'white', color: '#FFFFFF', label: 'Blanco' },   // Color adicional
+  { name: 'magenta', color: '#FF00FF', label: 'Magenta' },// Color adicional
+  { name: 'cyan', color: '#00FFFF', label: 'Cian' },      // Color adicional
+  { name: 'olive', color: '#808000', label: 'Oliva' },    // Color adicional
+  { name: 'skyblue', color: '#87CEEB', label: 'Celeste' },// Cotización A
+  { name: 'purple', color: '#800080', label: 'Púrpura' }  // Modernización
 ];
 
 const EditStatesModal = ({ onClose }) => {
@@ -40,6 +41,13 @@ const EditStatesModal = ({ onClose }) => {
 
     fetchStates();
   }, []);
+
+  // Función para filtrar los colores ya usados
+  const getAvailableColors = (currentColor) => {
+    return colorOptions.filter(
+      (option) => !locationStates.some((state) => state.color === option.name) || option.name === currentColor
+    );
+  };
 
   const handleStateChange = (id, key, value) => {
     // Verificar que el color no esté asignado a otro estado
@@ -111,65 +119,70 @@ const EditStatesModal = ({ onClose }) => {
         <h2 className="text-2xl font-bold mb-4">Editar Estados</h2>
 
         {/* Tabla de edición de estados */}
-        <table className="table-auto w-full mb-4">
-          <thead>
-            <tr className="text-left text-lg">
-              <th className="px-4 py-2">Estado</th>
-              <th className="px-4 py-2">Color</th>
-              <th className="px-4 py-2">Activo</th>
-              <th className="px-4 py-2">Eliminar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {locationStates.map((state) => (
-              <tr key={state.id}>
-                <td className="border px-4 py-2">
-                  <input
-                    type="text"
-                    value={state.id}
-                    disabled
-                    className="p-2 border rounded w-full"
-                  />
-                </td>
-                <td className="border px-4 py-2">
-                  {/* Select con los colores visualmente */}
-                  <select
-                    value={state.color}
-                    onChange={(e) => handleStateChange(state.id, 'color', e.target.value)}
-                    className="p-2 border rounded w-full"
-                    style={{
-                      backgroundColor: colorOptions.find((opt) => opt.name === state.color)?.color,
-                      border: '1px solid black',
-                      color: 'black'
-                    }}
-                  >
-                    {colorOptions.map((option) => (
-                      <option key={option.name} value={option.name} style={{ backgroundColor: 'white', color: 'black' }}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border px-4 py-2 text-center">
-                  <input
-                    type="checkbox"
-                    checked={state.state}
-                    onChange={(e) => handleStateChange(state.id, 'state', e.target.checked)}
-                    className="p-2"
-                  />
-                </td>
-                <td className="border px-4 py-2 text-center">
-                  <button
-                    onClick={() => handleDeleteState(state.id)}
-                    className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-700 transition"
-                  >
-                    Eliminar
-                  </button>
-                </td>
+        <div className="max-h-[50vh] overflow-auto">
+          <table className="table-auto w-full mb-4">
+            <thead>
+              <tr className="text-left text-lg">
+                <th className="px-4 py-2">Estado</th>
+                <th className="px-4 py-2">Color</th>
+                <th className="px-4 py-2">Activo</th>
+                <th className="px-4 py-2">Eliminar</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {locationStates.map((state) => (
+                <tr key={state.id}>
+                  <td className="border px-4 py-2">
+                    <input
+                      type="text"
+                      value={state.id}
+                      disabled
+                      className="p-2 border rounded w-full"
+                    />
+                  </td>
+                  <td className="border px-4 py-2">
+                    <select
+                      value={state.color}
+                      onChange={(e) => handleStateChange(state.id, 'color', e.target.value)}
+                      className="p-2 border rounded w-full"
+                      style={{
+                        backgroundColor: colorOptions.find((opt) => opt.name === state.color)?.color,
+                        border: '1px solid black',
+                        color: 'black',
+                      }}
+                    >
+                      {getAvailableColors(state.color).map((option) => (
+                        <option
+                          key={option.name}
+                          value={option.name}
+                          style={{ backgroundColor: option.color, color: 'black' }}
+                        >
+                          {""}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="border px-4 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={state.state}
+                      onChange={(e) => handleStateChange(state.id, 'state', e.target.checked)}
+                      className="p-2"
+                    />
+                  </td>
+                  <td className="border px-4 py-2 text-center">
+                    <button
+                      onClick={() => handleDeleteState(state.id)}
+                      className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-700 transition"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <h3 className="text-xl font-semibold mb-2">Agregar nuevo estado</h3>
         <div className="flex items-center space-x-4 mb-4">
@@ -187,15 +200,15 @@ const EditStatesModal = ({ onClose }) => {
             style={{
               backgroundColor: colorOptions.find((opt) => opt.name === newState.color)?.color,
               border: '1px solid black',
-              color: 'black'
+              color: 'black',
             }}
           >
             <option value="" disabled>
               Selecciona un color
             </option>
-            {colorOptions.map((option) => (
-              <option key={option.name} value={option.name} style={{ backgroundColor: 'white', color: 'black' }}>
-                {option.label}
+            {getAvailableColors().map((option) => (
+              <option key={option.name} value={option.name} style={{ backgroundColor: option.color, color: 'black' }}>
+                {""}
               </option>
             ))}
           </select>
