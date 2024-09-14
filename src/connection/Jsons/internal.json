@@ -5,22 +5,22 @@
       {
         "index": 1,
         "velocidad m/s": 1,
-        "precio": 10
+        "precio": 5.54
       },
       {
         "index": 2,
         "velocidad m/s": 1.5,
-        "precio": 23
+        "precio": 5.54
       },
       {
         "index": 3,
         "velocidad m/s": 1.75,
-        "precio": 80
+        "precio": 53.33
       },
       {
         "index": 4,
         "velocidad m/s": 2,
-        "precio": 120
+        "precio": 53.33
       }
     ]
   },
@@ -30,22 +30,22 @@
       {
         "index": 1,
         "velocidad m/s": 1,
-        "precio": 6
+        "precio": 3.5
       },
       {
         "index": 2,
         "velocidad m/s": 1.5,
-        "precio": 12
+        "precio": 3.5
       },
       {
         "index": 3,
         "velocidad m/s": 1.75,
-        "precio": 40
+        "precio": 5.54
       },
       {
         "index": 4,
         "velocidad m/s": 2,
-        "precio": 80
+        "precio": 5.54
       }
     ]
   },
@@ -96,6 +96,31 @@
         "index": 4,
         "velocidad m/s": 2,
         "precio": 350
+      }
+    ]
+  },
+  {
+    "clase": "amortiguador",
+    "items": [
+      {
+        "index": 1,
+        "velocidad m/s": 1,
+        "precio": 8
+      },
+      {
+        "index": 2,
+        "velocidad m/s": 1.5,
+        "precio": 76
+      },
+      {
+        "index": 3,
+        "velocidad m/s": 1.75,
+        "precio": 76
+      },
+      {
+        "index": 4,
+        "velocidad m/s": 2,
+        "precio": 76
       }
     ]
   }

@@ -9,7 +9,7 @@ const typeOptions = {
     { id: 'CE', label: 'C. ESCALERAS MECANIMAS' },
     { id: 'C.MC', label: 'C. MONTA CARGAS' },
   ],
-  MANTENIMEITNO: [
+  MANTENIMIENTO: [
     { id: 'MA', label: 'M. ASCENSORES' },
     { id: 'MM', label: 'M. MONTA COCHES' },
     { id: 'ME', label: 'M. ESCALERAS MECANIMAS' },
@@ -33,7 +33,7 @@ const EditLocationModal = ({ location, onClose }) => {
     state: location.state || '',
   });
 
-  const [locationDocId, setLocationDocId] = useState(null); // ID del documento en Firestore
+  const [locationDocId, setLocationDocId] = useState(null);
   const [locationStates, setLocationStates] = useState([]);
   const [stateColors, setStateColors] = useState({});
   const [loading, setLoading] = useState(true);
@@ -41,14 +41,12 @@ const EditLocationModal = ({ location, onClose }) => {
   useEffect(() => {
     const fetchLocationDocument = async () => {
       try {
-        // Obtener todos los documentos de la colección 'locations'
         const q = query(collection(db, 'locations'), where('id', '==', location.id));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          // Guardar el ID del primer documento encontrado
           const docSnapshot = querySnapshot.docs[0];
-          setLocationDocId(docSnapshot.id); // Guardar la ID del documento en Firestore
+          setLocationDocId(docSnapshot.id);
           setFormData({
             Tipo0: docSnapshot.data().Tipo[0],
             Tipo1: docSnapshot.data().Tipo[1],
@@ -83,28 +81,32 @@ const EditLocationModal = ({ location, onClose }) => {
       setLoading(false);
     };
 
-    fetchLocationDocument(); // Buscar el documento basado en location.id
+    fetchLocationDocument();
     fetchLocationStates();
   }, [location.id]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+      ...(name === 'Tipo2' && {
+        Tipo1: typeOptions[formData.Tipo0]?.find((option) => option.label === value)?.id || '',
+      }),
+    }));
   };
 
   const handleSave = async () => {
     try {
       if (locationDocId) {
-        const locationRef = doc(db, 'locations', locationDocId); // Usar la ID del documento en Firestore
+        const locationRef = doc(db, 'locations', locationDocId);
         await updateDoc(locationRef, {
           Tipo: [formData.Tipo0, formData.Tipo1, formData.Tipo2],
           client: formData.client,
           Direccion: formData.Direccion,
           state: formData.state,
         });
-        onClose(); // Cierra el modal después de guardar
+        onClose();
       } else {
         console.error('No se encontró el ID del documento para actualizar.');
       }
@@ -142,30 +144,24 @@ const EditLocationModal = ({ location, onClose }) => {
               </select>
             </div>
 
-            {/* Segundo select basado en el primer tipo */}
-            {formData.Tipo0 && (
-              <div className="mb-4">
-                <label className="block text-black">Subtipo</label>
-                <select
-                  name="Tipo1"
-                  value={formData.Tipo1}
-                  onChange={handleChange}
-                  className="p-2 border rounded w-full"
-                >
-                  <option value="" disabled>
-                    Selecciona un subtipo
+            {/* Segundo select oculto */}
+            <div className="hidden">
+              <select
+                name="Tipo1"
+                value={formData.Tipo1}
+                onChange={handleChange}
+                className="p-2 border rounded w-full"
+              >
+                {typeOptions[formData.Tipo0]?.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.id}
                   </option>
-                  {typeOptions[formData.Tipo0]?.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.id}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+                ))}
+              </select>
+            </div>
 
             {/* Tercer select basado en el segundo tipo */}
-            {formData.Tipo1 && (
+            {formData.Tipo0 && (
               <div className="mb-4">
                 <label className="block text-black">Descripción</label>
                 <select
@@ -177,14 +173,11 @@ const EditLocationModal = ({ location, onClose }) => {
                   <option value="" disabled>
                     Selecciona una descripción
                   </option>
-                  {typeOptions[formData.Tipo0]?.map(
-                    (option) =>
-                      option.id === formData.Tipo1 && (
-                        <option key={option.id} value={option.label}>
-                          {option.label}
-                        </option>
-                      )
-                  )}
+                  {typeOptions[formData.Tipo0]?.map((option) => (
+                    <option key={option.id} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}

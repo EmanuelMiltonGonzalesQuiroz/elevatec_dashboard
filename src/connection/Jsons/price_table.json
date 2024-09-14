@@ -6,355 +6,442 @@
         "index": 1,
         "name": "Ramplus",
         "volumen_x_pieza_m3": 0.00006,
-        "precio_unitario": 0.12
+        "precio_unitario": 0.1449,
+        "unidades": 0
       },
       {
         "index": 2,
         "name": "Brakets",
         "volumen_x_pieza_m3": 0.0032,
-        "precio_unitario": 1.7
+        "precio_unitario": 5,
+        "unidades": 0
       },
       {
         "index": 3,
-        "name": "Pernos brakets",
+        "name": "Pernos brakets (sapos)",
         "volumen_x_pieza_m3": 0.00006,
-        "precio_unitario": 0.156
+        "precio_unitario": 0.335,
+        "unidades": 0
       },
       {
         "index": 4,
         "name": "Pernos empalme braket",
         "volumen_x_pieza_m3": 0.00006,
-        "precio_unitario": 0.298
+        "precio_unitario": 0.156,
+        "unidades": 0
       },
       {
         "index": 5,
-        "name": "Riel de cabina",
-        "volumen_x_pieza_m3": 0.018,
-        "precio_unitario": 53.5
+        "name": "Riel de cabina + Pernos",
+        "volumen_x_pieza_m3": 0.05,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 6,
-        "name": "Riel de contrapeso",
-        "volumen_x_pieza_m3": 0.018,
-        "precio_unitario": 16.7
+        "name": "Riel de contrapeso +Pernos",
+        "volumen_x_pieza_m3": 0.05,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 7,
-        "name": "Pernos de empalmes",
-        "volumen_x_pieza_m3": 0.00006,
-        "precio_unitario": 0.156
+        "name": "Estructura de cabina",
+        "volumen_x_pieza_m3": 0,
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 8,
-        "name": "Estructura de cabina",
+        "name": "Estructura de contrapeso",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 745
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 9,
-        "name": "Estructura de contrapeso",
+        "name": "estructura de foso",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 270
+        "precio_unitario": 100,
+        "unidades": 1
       },
       {
         "index": 10,
-        "name": "estructura de foso",
+        "name": "Subtecho",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 200
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 11,
-        "name": "Subtecho",
+        "name": "Cabina",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 12,
-        "name": "Cabina",
+        "name": "Hormigones",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "precio_unitario": 30,
+        "unidades": 1
       },
       {
         "index": 13,
-        "name": "Hormigones",
+        "name": "Estructura de motor",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 30
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 14,
-        "name": "Estructura de motor",
-        "volumen_x_pieza_m3": 0,
-        "precio_unitario": 152.11
+        "name": "Pernos de motor",
+        "volumen_x_pieza_m3": 0.0006,
+        "precio_unitario": 0.5,
+        "unidades": 1
       },
       {
         "index": 15,
-        "name": "Pernos de motor",
-        "volumen_x_pieza_m3": 0.0006,
-        "precio_unitario": 0.5
+        "name": "Cable de traccion",
+        "volumen_x_pieza_m3": 0,
+        "precio_unitario": 0.7,
+        "unidades": 4
       },
       {
         "index": 16,
-        "name": "Cable de traccion",
-        "volumen_x_pieza_m3": 0,
-        "precio_unitario": 1.8
+        "name": "Chumbadores",
+        "volumen_x_pieza_m3": 0.005,
+        "precio_unitario": 3.51,
+        "unidades": 0
       },
       {
         "index": 17,
-        "name": "Chumbadores",
-        "volumen_x_pieza_m3": 0.005,
-        "precio_unitario": 4
+        "name": "Poleas",
+        "volumen_x_pieza_m3": 0.0135,
+        "precio_unitario": 85,
+        "unidades": 0
       },
       {
         "index": 18,
-        "name": "Poleas",
-        "volumen_x_pieza_m3": 0.0135,
-        "precio_unitario": 85
+        "name": "Corredizas de cabina",
+        "volumen_x_pieza_m3": 0.27,
+        "precio_unitario": 23,
+        "unidades": 4
       },
       {
         "index": 19,
-        "name": "Corredizas de cabina",
-        "volumen_x_pieza_m3": 0.008,
-        "precio_unitario": 10
+        "name": "Corredizas de contrapeso",
+        "volumen_x_pieza_m3": 0.27,
+        "precio_unitario": 12,
+        "unidades": 4
       },
       {
         "index": 20,
-        "name": "Corredizas de contrapeso",
-        "volumen_x_pieza_m3": 0.008,
-        "precio_unitario": 6
+        "name": "Puerta de cabina",
+        "volumen_x_pieza_m3": 2,
+        "precio_unitario": 0,
+        "unidades": 4
       },
       {
         "index": 21,
-        "name": "Puerta de cabina",
-        "volumen_x_pieza_m3": 2,
-        "precio_unitario": 0
+        "name": "Puertas en inoxidable",
+        "volumen_x_pieza_m3": 0.375,
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 22,
-        "name": "Puertas en inoxidable",
+        "name": "Puertas En Epoxi",
         "volumen_x_pieza_m3": 0.375,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 23,
-        "name": "Puertas En Epoxi",
+        "name": "Puertas En Vidrio",
         "volumen_x_pieza_m3": 0.375,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 24,
-        "name": "Puertas En Vidrio",
-        "volumen_x_pieza_m3": 0.375,
-        "precio_unitario": 0
+        "name": "Regulador de velocidad",
+        "volumen_x_pieza_m3": 0.048,
+        "precio_unitario": 115,
+        "unidades": 1
       },
       {
         "index": 25,
-        "name": "Regulador de velocidad",
-        "volumen_x_pieza_m3": 0.048,
-        "precio_unitario": 117
+        "name": "Freno",
+        "volumen_x_pieza_m3": 0.12,
+        "precio_unitario": 200,
+        "unidades": 1
       },
       {
         "index": 26,
-        "name": "Freno",
-        "volumen_x_pieza_m3": 0.048,
-        "precio_unitario": 115
+        "name": "Cable de 6mm Regulador de velocidad",
+        "volumen_x_pieza_m3": 0.00005,
+        "precio_unitario": 0.3,
+        "unidades": 1
       },
       {
         "index": 27,
-        "name": "Cable de 8mm",
-        "volumen_x_pieza_m3": 1,
-        "precio_unitario": 0.7
+        "name": "Cadena de compensacion",
+        "volumen_x_pieza_m3": 0.001,
+        "precio_unitario": 5,
+        "unidades": 0
       },
       {
         "index": 28,
-        "name": "Cadena de compensacion",
-        "volumen_x_pieza_m3": 0.001,
-        "precio_unitario": 6.38
+        "name": "ACCESORIOS DE CADENA DE COMPENSACION",
+        "volumen_x_pieza_m3": 0.05,
+        "precio_unitario": 62,
+        "unidades": 0
       },
       {
         "index": 29,
         "name": "Motor",
         "volumen_x_pieza_m3": 1.5,
-        "precio_unitario": 1800
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 30,
         "name": "Maniobra",
         "volumen_x_pieza_m3": 2,
-        "precio_unitario": 900
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 31,
         "name": "Indicador de Cabina",
         "volumen_x_pieza_m3": 0.05,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 32,
-        "name": "indicador de piso",
+        "name": "Indicador de piso",
         "volumen_x_pieza_m3": 0.00675,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 33,
         "name": "Cableado de pisos",
         "volumen_x_pieza_m3": 0.01,
-        "precio_unitario": 15
+        "precio_unitario": 15,
+        "unidades": 0
       },
       {
         "index": 34,
         "name": "LOP",
         "volumen_x_pieza_m3": 0.05,
-        "precio_unitario": 20
+        "precio_unitario": 20,
+        "unidades": 0
       },
       {
         "index": 35,
         "name": "Tipo de Botonera COP",
         "volumen_x_pieza_m3": 0.15,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 36,
         "name": "Botones de cabina",
         "volumen_x_pieza_m3": 0.000125,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 37,
         "name": "Botones de piso",
         "volumen_x_pieza_m3": 0.000125,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 38,
         "name": "Regla",
         "volumen_x_pieza_m3": 0.02,
-        "precio_unitario": 48
+        "precio_unitario": 48,
+        "unidades": 1
       },
       {
         "index": 39,
         "name": "Embarque Simple,Doble,Triple",
         "volumen_x_pieza_m3": 2,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 40,
         "name": "MRL/MR",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 41,
         "name": "Pesacarga",
         "volumen_x_pieza_m3": 0.001,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 42,
         "name": "Regenerador de energia",
         "volumen_x_pieza_m3": 0.027,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 43,
-        "name": "Llavines con llave",
+        "name": "Indicador_de_solo_botón",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 15
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 44,
-        "name": "Pasamanos adional",
+        "name": "Llavines con llave",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 80
+        "precio_unitario": 15,
+        "unidades": 0
       },
       {
         "index": 45,
-        "name": "espejo adicional",
+        "name": "Pasamanos adional",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 80
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 46,
-        "name": "Sistema de monitoreo",
+        "name": "espejo adicional",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 47,
-        "name": "Pre Apertura de puertas",
+        "name": "Sistema de monitoreo",
         "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 48,
-        "name": "Piso",
-        "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "name": "Pre Apertura de puertas",
+        "volumen_x_pieza_m3": 0.1,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 49,
-        "name": "AutoTransformador",
-        "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 350
+        "name": "Piso",
+        "volumen_x_pieza_m3": 0,
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 50,
-        "name": "ARD",
-        "volumen_x_pieza_m3": 0.105,
-        "precio_unitario": 0
+        "name": "AutoTransformador",
+        "volumen_x_pieza_m3": 0.1,
+        "precio_unitario": 353.00,
+        "unidades": 1
       },
       {
         "index": 51,
-        "name": "Ventiladores",
-        "volumen_x_pieza_m3": 0.05,
-        "precio_unitario": 60
+        "name": "ARD",
+        "volumen_x_pieza_m3": 0.105,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 52,
-        "name": "Aire acondicionado",
-        "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 280
+        "name": "Ventiladores",
+        "volumen_x_pieza_m3": 0.05,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 53,
-        "name": "Lector de Tarjetas",
-        "volumen_x_pieza_m3": 0.1,
-        "precio_unitario": 0
+        "name": "Aire acondicionado",
+        "volumen_x_pieza_m3": 1,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 54,
-        "name": "Transporte interno",
-        "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "name": "Lector de Tarjetas",
+        "volumen_x_pieza_m3": 0.1,
+        "precio_unitario": 0,
+        "unidades": 0
       },
       {
         "index": 55,
-        "name": "Comision INTERNA EMPRESA",
+        "name": "Transporte interno",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 800
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 56,
-        "name": "Mano de obra produccion",
+        "name": "Comision INTERNA EMPRESA",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 750
+        "precio_unitario": 1100,
+        "unidades": 1
       },
       {
         "index": 57,
-        "name": "Mano de obra instalaciones",
+        "name": "Mano de obra produccion",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 100
+        "precio_unitario": 750,
+        "unidades": 1
       },
       {
         "index": 58,
-        "name": "Costo de seguridad (agencias transportes internos)",
+        "name": "Mano de obra instalaciones",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 1000
+        "precio_unitario": 0,
+        "unidades": 1
       },
       {
         "index": 59,
+        "name": "Costo de seguridad (agencias transportes internos)",
+        "volumen_x_pieza_m3": 0,
+        "precio_unitario": 1000,
+        "unidades": 1
+      },
+      {
+        "index": 60,
         "name": "Comision del banco intermediario",
         "volumen_x_pieza_m3": 0,
-        "precio_unitario": 0
+        "precio_unitario": 0,
+        "unidades": 1
+      },
+      {
+        "index": 61,
+        "name": "Señalizacion Luminosas de Pisos",
+        "volumen_x_pieza_m3": 0.015,
+        "precio_unitario": 0,
+        "unidades": 1
+      },
+      {
+        "index": 62,
+        "name": "Amortiguador",
+        "volumen_x_pieza_m3": 0.01,
+        "precio_unitario": 0,
+        "unidades": 2
+      },
+      {
+        "index": 63,
+        "name": "Encoder",
+        "volumen_x_pieza_m3": 0.01,
+        "precio_unitario": 100,
+        "unidades": 1
       }
     ]
   }

@@ -18,12 +18,8 @@ const Home = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      try {
         await loadJsonFilesToFirestore(); // Load data only once
-        console.log('Data loaded successfully!'); // Log success instead of alert
-      } catch (error) {
-        console.error('Error loading data:', error); // Log error if there is any
-      }
+      
     };
 
     loadData(); // Call loadData when component mounts

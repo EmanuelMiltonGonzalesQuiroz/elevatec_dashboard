@@ -1,11 +1,11 @@
 [
   {
-    "clase": "basic config",
+    "clase": "basic config", 
     "items": [
       {
         "index": 1,
         "name": "Factura (%)",
-        "valor": 20
+        "valor": 20 
       },
       {
         "index": 2,

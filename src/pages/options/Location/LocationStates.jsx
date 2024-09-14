@@ -4,7 +4,7 @@ import { db } from '../../../connection/firebase';
 
 // Estados y colores personalizados según la imagen proporcionada
 const defaultStates = [
-  { id: 'Cotizacion_A', state: true, color: 'skyblue' },  // Celeste
+  { id: 'Cotizacion_A', state: true, color: 'lightblue' },  // Celeste
   { id: 'Cotizacion_M', state: true, color: 'blue' },      // Azul
   { id: 'Construccion', state: true, color: 'green' },     // Verde
   { id: 'Mantenimiento', state: true, color: 'yellow' },   // Amarillo
@@ -15,7 +15,7 @@ const defaultStates = [
 
 const LocationStates = ({ currentLocationState, onChangeState }) => {
   const [availableStates, setAvailableStates] = useState([]);
-
+ 
   useEffect(() => {
     const fetchLocationStates = async () => {
       try {

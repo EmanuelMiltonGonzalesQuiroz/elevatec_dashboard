@@ -1,0 +1,33 @@
+{
+    "maneuver": [
+      {
+        "power": 5.5,
+        "price": 900
+      },
+      {
+        "power": 7.5,
+        "price": 1000
+      },
+      {
+        "power": 11,
+        "price": 1200
+      },
+      {
+        "power": 15,
+        "price": 1300
+      },
+      {
+        "power": 18.5,
+        "price": 1400
+      },
+      {
+        "power": 20,
+        "price": 1700
+      },
+      {
+        "power": 25,
+        "price": 2000
+      }
+    ]
+  }
+  

@@ -1,660 +1,757 @@
 [
-  {
+    {
       "clase": "ARD",
       "items": [
-          {
-              "index": 1,
-              "nombre": "No requiere!",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "4 a 8 personas",
-              "valor": 450,
-              "descripcion": "hasta 11 kw",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "10 a 20 personas",
-              "valor": 650,
-              "descripcion": "**Solo hasta 20 Kw",
-              "tipo": "Avanzada"
-          }
+        {
+          "index": 1,
+          "nombre": "No requiere",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "4 a 8 Personas",
+          "valor": 450,
+          "descripcion": "hasta 11 kw",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "10 a 20 personas",
+          "valor": 650,
+          "descripcion": "**Solo hasta 20 Kw",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Acabado puerta de cabina",
+    },
+    {
+      "clase": "Acabado Puerta de Cabina",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Epoxi",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "Inoxidable",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "Vidrio",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          }
+        {
+          "index": 1,
+          "nombre": "Epoxi",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Inoxidable",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Vidrio",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Cabina",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Pintado",
-              "valor": 1000,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Semplice",
-              "valor": 1200,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Confort",
-              "valor": 1500,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "Inoxidable",
-              "valor": 1800,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 5,
-              "nombre": "Panoramico 1 lado",
-              "valor": 2500,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 6,
-              "nombre": "Panoramico 2 lados",
-              "valor": 2800,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 7,
-              "nombre": "Panoramico 3 lados",
-              "valor": 3100,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "PINTADO",
+          "valor": 1200,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "SEMPLICE",
+          "valor": 1200,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "CONFORT",
+          "valor": 1600,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "INOXIDABLE",
+          "valor": 1900,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "PANORAMICO 1",
+          "valor": 2500,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 6,
+          "nombre": "PANORAMICO 2",
+          "valor": 2800,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 7,
+          "nombre": "PANORAMICO 3",
+          "valor": 3100,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Ciudad",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Cochabamba",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "La Paz",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Santa Cruz",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "Oruro",
-              "valor": 450,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 5,
-              "nombre": "Potosí",
-              "valor": 550,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 6,
-              "nombre": "Tarija",
-              "valor": 850,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 7,
-              "nombre": "Sucre",
-              "valor": 550,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 8,
-              "nombre": "Beni",
-              "valor": 1000,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 9,
-              "nombre": "Otros",
-              "valor": 1000,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "POTOSI",
+          "valor": 550,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "COCHABAMBA",
+          "valor": 300,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "SANTA CRUZ",
+          "valor": 300,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "LA PAZ",
+          "valor": 300,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "ORURO",
+          "valor": 450,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 6,
+          "nombre": "TARIJA",
+          "valor": 850,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 7,
+          "nombre": "SUCRE",
+          "valor": 550,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 8,
+          "nombre": "BENI",
+          "valor": 1000,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 9,
+          "nombre": "TRANSPORTE POR EL CLIENTE",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Embarque",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Simple",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Doble 90°",
-              "valor": 500,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Doble 180°",
-              "valor": 1000,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "Triple",
-              "valor": 1500,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "Simple",
+          "valor": 0,
+          "descripcion": "S/O",
+          "unidades": 1,
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "Doble 90°",
+          "valor": 500,
+          "descripcion": "S/O",
+          "unidades": 2,
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "Doble 180°",
+          "valor": 1000,
+          "descripcion": "S/O",
+          "unidades": 2,
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "Triple",
+          "valor": 1500,
+          "descripcion": "S/O",
+          "unidades": 3,
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Energia Electrica",
       "items": [
-          {
-              "index": 1,
-              "nombre": "380 V Trifasico",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "220 V Trifasico",
-              "valor": 800,
-              "descripcion": "Si este es seleccionado debe incluir Auto transformador.",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "380 V Trifasico",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "220 V Trifasico",
+          "valor": 0,
+          "descripcion": "Si este es seleccionado debe incluir Auto transformador.",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Espejo Adicional",
       "items": [
-          {
-              "index": 1,
-              "nombre": "0",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "1",
-              "valor": 100,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "2",
-              "valor": 200,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          }
+        {
+          "index": 1,
+          "nombre": "0",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "1",
+          "valor": 100,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "2",
+          "valor": 150,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Indicador de cabina/piso",
+    },
+    {
+      "clase": "Indicador de Cabina",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Matriz de puntos",
-              "valor": 23,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "LCD",
-              "valor": 30,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Tft4.3",
-              "valor": 60,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "Tft7",
-              "valor": 130,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 5,
-              "nombre": "Tft10.4",
-              "valor": 410,
-              "descripcion": "Descripción",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "7 secmentos",
+          "valor": 19,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "Matriz de puntos",
+          "valor": 23,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "Lcd",
+          "valor": 30,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "Tft4.3",
+          "valor": 60,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "Tft7",
+          "valor": 130,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 6,
+          "nombre": "Tft10.4",
+          "valor": 410,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
-      "clase": "Indicador de piso con botón Integrado",
+    },
+    {
+      "clase": "Indicador de Piso",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Matriz de puntos",
-              "valor": 10,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "LCD",
-              "valor": 30,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Tft4.3",
-              "valor": 80,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "7 secmentos",
+          "valor": 19,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "Matriz de puntos",
+          "valor": 23,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "Lcd",
+          "valor": 30,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "Tft4.3",
+          "valor": 60,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "Tft7",
+          "valor": 130,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 6,
+          "nombre": "Tft10.4",
+          "valor": 410,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
-      "clase": "Indicador de piso horizontal",
+    },
+    {
+      "clase": "Lector de Tarjetas",
       "items": [
-          {
-              "index": 1,
-              "nombre": "No requiere",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "Matriz de puntos",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "Lcd",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 4,
-              "nombre": "Tft4.3",
-              "valor": 0,
-              "descripcion": "S/D",
-              "tipo": "Avanzada"
-          }
+        {
+          "index": 1,
+          "nombre": "No Requiere",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Local sistema LFRD",
+          "valor": 500,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Importado Sistema Mifare",
+          "valor": 1100,
+          "descripcion": "en programa sera 1100",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Lector de tarjetas",
+    },
+    {
+      "clase": "Maquina de Tracción",
       "items": [
-          {
-              "index": 1,
-              "nombre": "No Requiere",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "Local sistema LFRD",
-              "valor": 500,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "Importado Sistema Mifare",
-              "valor": 1100,
-              "descripcion": "en programa sera 1100",
-              "tipo": "Avanzada"
-          }
+        {
+          "index": 1,
+          "nombre": "Gearlees con imanes permanentes",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "Geared Con reductor",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
-      "clase": "Maquina de tracción",
+    },
+    {
+      "clase": "Pasamanos Adicional",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Gearlees con imanes permanentes",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Geared Con reductor",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "0",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "1",
+          "valor": 100,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "2",
+          "valor": 150,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Pasamanos adicional",
-      "items": [
-          {
-              "index": 1,
-              "nombre": "0",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 2,
-              "nombre": "1",
-              "valor": 100,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          },
-          {
-              "index": 3,
-              "nombre": "2",
-              "valor": 150,
-              "descripcion": "S/O",
-              "tipo": "Avanzada"
-          }
-      ]
-  },
-  {
+    },
+    {
       "clase": "Piso",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Vinil Alto trafico",
-              "valor": 80,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Goma Antideslizante",
-              "valor": 80,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Ceramica",
-              "valor": 200,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "Porcelanato",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 5,
-              "nombre": "Granito",
-              "valor": 500,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 6,
-              "nombre": "Provista por el cliente",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "Vinil Alto trafico",
+          "valor": 80,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Goma Antideslizante",
+          "valor": 80,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Ceramica",
+          "valor": 150,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 4,
+          "nombre": "Porcelanato",
+          "valor": 300,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 5,
+          "nombre": "Granito",
+          "valor": 500,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 6,
+          "nombre": "Provista por el cliente",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "SubTecho",
       "items": [
-          {
-              "index": 1,
-              "nombre": "t-1",
-              "valor": 100,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "t-2",
-              "valor": 100,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "t-3",
-              "valor": 110,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "t-4",
-              "valor": 100,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 5,
-              "nombre": "Personalizado",
-              "valor": 150,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "t-1",
+          "valor": 100,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "t-2",
+          "valor": 100,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "t-3",
+          "valor": 110,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "t-4",
+          "valor": 100,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "Personalizado",
+          "valor": 150,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Tipo",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Con sala MR",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Sin sala MRL",
-              "valor": 1000,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "CON SALA MR",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "SIN SALA MRL",
+          "valor": 1000,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
-      "clase": "Tipo de botonera",
+    },
+    {
+      "clase": "Tipo de Botonera COP",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Acero inoxidable",
-              "valor": 430,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Cristal (TOUCH)",
-              "valor": 700,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Acero inoxidable para pantalla10,4",
-              "valor": 700,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "Acero inoxidable con cristal negro",
+          "valor": 430,
+          "descripcion": "pc-1",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Cristal (TOUCH)",
+          "valor": 700,
+          "descripcion": "pc-2",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Acero inoxidable para pantalla 10.4",
+          "valor": 700,
+          "descripcion": "pc-1",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 4,
+          "nombre": "cristal blanco antivandalico",
+          "valor": 430,
+          "descripcion": "pc-3a",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Tipo de botones en cabina",
+    },
+    {
+      "clase": "Tipo de Botones en Cabina",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Antivandalicos",
-              "valor": 6,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Sensitivos (COVID19)",
-              "valor": 18,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Touch",
-              "valor": 5,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "Antivandalicos / bpc-1a",
+          "valor": 6,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Sensitivos (COVID19)",
+          "valor": 18,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Touch/ bpc-2ab",
+          "valor": 30,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 4,
+          "nombre": "antivandalicos / bpc-3a",
+          "valor": 6,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
-      "clase": "Tipo de botones en piso",
+    },
+    {
+      "clase": "Tipo de Botones en Piso",
       "items": [
-          {
-              "index": 1,
-              "nombre": "Antivandalicos",
-              "valor": 6,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "Sensitivos (COVID19)",
-              "valor": 18,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "Touch",
-              "valor": 72,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "Antivandalicos / bpc-1a",
+          "valor": 6,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 2,
+          "nombre": "Sensitivos (COVID19)",
+          "valor": 18,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 3,
+          "nombre": "Touch/ bpc-2ab",
+          "valor": 30,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 4,
+          "nombre": "antivandalicos / bpc-3a",
+          "valor": 6,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Traccion",
       "items": [
-          {
-              "index": 1,
-              "nombre": "1 a 1",
-              "valor": 0,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "2 a 1",
-              "valor": 300,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "1 A 1",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "2 A 1",
+          "valor": 0,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  },
-  {
+    },
+    {
       "clase": "Velocidad",
       "items": [
-          {
-              "index": 1,
-              "nombre": "1m/s",
-              "valor": 1,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 2,
-              "nombre": "1.5 m/s",
-              "valor": 1.5,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 3,
-              "nombre": "1.75 m/s",
-              "valor": 1.75,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          },
-          {
-              "index": 4,
-              "nombre": "2 m/s",
-              "valor": 2,
-              "descripcion": "S/O",
-              "tipo": "Comun"
-          }
+        {
+          "index": 1,
+          "nombre": "1 m/s",
+          "valor": 1,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "1.5 m/s",
+          "valor": 1.5,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "1.75 m/s",
+          "valor": 1.75,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "2 m/s",
+          "valor": 2,
+          "descripcion": "S/O",
+          "tipo": "Comun"
+        }
       ]
-  }
-]
+    },
+    {
+      "clase": "Estructura de Cabina",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "4 A 6 PERSONAS",
+          "valor": 420,
+          "descripcion": "DE 4 A 6 PERSONAS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "A MAS",
+          "valor": "5%",
+          "descripcion": "PORCENTAJE POR PERSONA",
+          "tipo": "Comun"
+        }
+      ]
+    },
+    {
+      "clase": "Estructura de Contra Peso",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "4 A 6 PERSONAS",
+          "valor": 200,
+          "descripcion": "DE 4 A 6 PERSONAS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "A MAS",
+          "valor": "3%",
+          "descripcion": "PORCENTAJE POR PERSONA",
+          "tipo": "Comun"
+        }
+      ]
+    },
+    {
+      "clase": "Cabina Porcentaje",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "4 A 6 PERSONAS",
+          "valor": 0,
+          "descripcion": "DE 4 A 6 PERSONAS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "A MAS",
+          "valor": "5%",
+          "descripcion": "PORCENTAJE POR PERSONA",
+          "tipo": "Comun"
+        }
+      ]
+    },
+    {
+      "clase": "Estructura Motor",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "4 A 6 PERSONAS",
+          "valor": 300,
+          "descripcion": "DE 4 A 6 PERSONAS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "A MAS",
+          "valor": "5%",
+          "descripcion": "PORCENTAJE POR PERSONA",
+          "tipo": "Comun"
+        }
+      ]
+    }
+  ]
+  

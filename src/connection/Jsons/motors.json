@@ -1,5 +1,251 @@
 [
   {
+    "clase": "1m/s",
+    "items": [
+      {
+        "clase": "1m/s",
+        "index": 1,
+        "personas": 4,
+        "gearleesPotencia": 3,
+        "gearleesPrecio": 1000,
+        "gearleesCanales": 4,
+        "conReducPotencia": 5.5,
+        "conReducPrecio": 900,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1m/s",
+        "index": 2,
+        "personas": 6,
+        "gearleesPotencia": 3,
+        "gearleesPrecio": 1000,
+        "gearleesCanales": 4,
+        "conReducPotencia": 5.5,
+        "conReducPrecio": 900,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1m/s",
+        "index": 3,
+        "personas": 8,
+        "gearleesPotencia": 4.2,
+        "gearleesPrecio": 1114,
+        "gearleesCanales": 5,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 1000,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1m/s",
+        "index": 4,
+        "personas": 10,
+        "gearleesPotencia": 4.9,
+        "gearleesPrecio": 1400,
+        "gearleesCanales": 5,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 1100,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1m/s",
+        "index": 5,
+        "personas": 13,
+        "gearleesPotencia": 7.8,
+        "gearleesPrecio": 1500,
+        "gearleesCanales": 8,
+        "conReducPotencia": 9,
+        "conReducPrecio": 1400,
+        "conReducCanales": 6
+      },
+      {
+        "clase": "1m/s",
+        "index": 6,
+        "personas": 15,
+        "gearleesPotencia": 7.8,
+        "gearleesPrecio": 1600,
+        "gearleesCanales": 7,
+        "conReducPotencia": 11,
+        "conReducPrecio": 1600,
+        "conReducCanales": 7
+      },
+      {
+        "clase": "1m/s",
+        "index": 7,
+        "personas": 20,
+        "gearleesPotencia": 9.8,
+        "gearleesPrecio": 1900,
+        "gearleesCanales": 9,
+        "conReducPotencia": 15,
+        "conReducPrecio": 1800,
+        "conReducCanales": 7
+      }
+    ]
+  },
+  {
+    "clase": "1.5m/s",
+    "items": [
+      {
+        "clase": "1.5m/s",
+        "index": 1,
+        "personas": 4,
+        "gearleesPotencia": 4.5,
+        "gearleesPrecio": 1000,
+        "gearleesCanales": 4,
+        "conReducPotencia": 5.5,
+        "conReducPrecio": 1200,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 2,
+        "personas": 6,
+        "gearleesPotencia": 4.5,
+        "gearleesPrecio": 1000,
+        "gearleesCanales": 4,
+        "conReducPotencia": 5.5,
+        "conReducPrecio": 1200,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 3,
+        "personas": 8,
+        "gearleesPotencia": 6.4,
+        "gearleesPrecio": 1114,
+        "gearleesCanales": 5,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 1400,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 4,
+        "personas": 10,
+        "gearleesPotencia": 7.8,
+        "gearleesPrecio": 1400,
+        "gearleesCanales": 5,
+        "conReducPotencia": 9,
+        "conReducPrecio": 1600,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 5,
+        "personas": 13,
+        "gearleesPotencia": 9.8,
+        "gearleesPrecio": 1600,
+        "gearleesCanales": 6,
+        "conReducPotencia": 11,
+        "conReducPrecio": 1800,
+        "conReducCanales": 6
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 6,
+        "personas": 15,
+        "gearleesPotencia": 12,
+        "gearleesPrecio": 1900,
+        "gearleesCanales": 8,
+        "conReducPotencia": 15,
+        "conReducPrecio": 2000,
+        "conReducCanales": 6
+      },
+      {
+        "clase": "1.5m/s",
+        "index": 7,
+        "personas": 20,
+        "gearleesPotencia": 14,
+        "gearleesPrecio": 2200,
+        "gearleesCanales": 9,
+        "conReducPotencia": 19,
+        "conReducPrecio": 2300,
+        "conReducCanales": 7
+      }
+    ]
+  },
+  {
+    "clase": "1.75m/s",
+    "items": [
+      {
+        "clase": "1.75m/s",
+        "index": 1,
+        "personas": 0,
+        "gearleesPotencia": 0,
+        "gearleesPrecio": 0,
+        "gearleesCanales": 0,
+        "conReducPotencia": 0,
+        "conReducPrecio": 0,
+        "conReducCanales": 0
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 2,
+        "personas": 6,
+        "gearleesPotencia": 6.8,
+        "gearleesPrecio": 1235,
+        "gearleesCanales": 5,
+        "conReducPotencia": 7.5,
+        "conReducPrecio": 1500,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 3,
+        "personas": 8,
+        "gearleesPotencia": 7.4,
+        "gearleesPrecio": 1235,
+        "gearleesCanales": 8,
+        "conReducPotencia": 9,
+        "conReducPrecio": 1700,
+        "conReducCanales": 5
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 4,
+        "personas": 10,
+        "gearleesPotencia": 9.3,
+        "gearleesPrecio": 1435,
+        "gearleesCanales": 8,
+        "conReducPotencia": 11,
+        "conReducPrecio": 1900,
+        "conReducCanales": 6
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 5,
+        "personas": 13,
+        "gearleesPotencia": 11.7,
+        "gearleesPrecio": 1635,
+        "gearleesCanales": 8,
+        "conReducPotencia": 15,
+        "conReducPrecio": 2200,
+        "conReducCanales": 6
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 6,
+        "personas": 15,
+        "gearleesPotencia": 14,
+        "gearleesPrecio": 1835,
+        "gearleesCanales": 9,
+        "conReducPotencia": 19,
+        "conReducPrecio": 2500,
+        "conReducCanales": 7
+      },
+      {
+        "clase": "1.75m/s",
+        "index": 7,
+        "personas": 20,
+        "gearleesPotencia": 18.7,
+        "gearleesPrecio": 2100,
+        "gearleesCanales": 10,
+        "conReducPotencia": 21.3,
+        "conReducPrecio": 2700,
+        "conReducCanales": 8
+      }
+    ]
+  },
+  {
     "clase": "2m/s",
     "items": [
       {
@@ -17,55 +263,55 @@
         "clase": "2m/s",
         "index": 2,
         "personas": 6,
-        "gearleesPotencia": 8.4,
-        "gearleesPrecio": 3000,
-        "gearleesCanales": 8,
-        "conReducPotencia": 15,
-        "conReducPrecio": 4000,
-        "conReducCanales": 8
+        "gearleesPotencia": 10.2,
+        "gearleesPrecio": 1500,
+        "gearleesCanales": 7,
+        "conReducPotencia": 9,
+        "conReducPrecio": 1800,
+        "conReducCanales": 5
       },
       {
         "clase": "2m/s",
         "index": 3,
         "personas": 8,
-        "gearleesPotencia": 8.4,
-        "gearleesPrecio": 3000,
-        "gearleesCanales": 8,
-        "conReducPotencia": 15,
-        "conReducPrecio": 4000,
-        "conReducCanales": 8
+        "gearleesPotencia": 10.2,
+        "gearleesPrecio": 1500,
+        "gearleesCanales": 7,
+        "conReducPotencia": 11,
+        "conReducPrecio": 2000,
+        "conReducCanales": 6
       },
       {
         "clase": "2m/s",
         "index": 4,
         "personas": 10,
-        "gearleesPotencia": 10.7,
-        "gearleesPrecio": 4000,
-        "gearleesCanales": 8,
+        "gearleesPotencia": 12.2,
+        "gearleesPrecio": 1600,
+        "gearleesCanales": 7,
         "conReducPotencia": 15,
-        "conReducPrecio": 5000,
-        "conReducCanales": 8
+        "conReducPrecio": 2300,
+        "conReducCanales": 6
       },
       {
         "clase": "2m/s",
         "index": 5,
         "personas": 13,
-        "gearleesPotencia": 13.3,
-        "gearleesPrecio": 5000,
-        "gearleesCanales": 7,
-        "conReducPotencia": 18,
-        "conReducPrecio": 6000,
-        "conReducCanales": 8
+        "gearleesPotencia": 15.3,
+        "gearleesPrecio": 1700,
+        "gearleesCanales": 8,
+        "conReducPotencia": 19,
+        "conReducPrecio": 2600,
+        "conReducCanales": 7
       },
       {
         "clase": "2m/s",
         "index": 6,
         "personas": 15,
-        "gearleesPotencia": 16,
-        "gearleesPrecio": 5500,
-        "gearleesCanales": 8,
-        "conReducPotencia": 20,
-        "conReducPrecio": 6500,
+        "gearleesPotencia": 18,
+        "gearleesPrecio": 2000,
+        "gearleesCanales": 9,
+        "conReducPotencia": 21.3,
+        "conReducPrecio": 2800,
         "conReducCanales": 8
       },
       {
@@ -73,257 +319,11 @@
         "index": 7,
         "personas": 20,
         "gearleesPotencia": 21.3,
-        "gearleesPrecio": 6500,
-        "gearleesCanales": 8,
-        "conReducPotencia": 22,
-        "conReducPrecio": 7500,
+        "gearleesPrecio": 2300,
+        "gearleesCanales": 10,
+        "conReducPotencia": 23,
+        "conReducPrecio": 3000,
         "conReducCanales": 8
-      }
-    ]
-  },
-  {
-    "clase": "1.5m/s",
-    "items": [
-      {
-        "clase": "1.5m/s",
-        "index": 1,
-        "personas": 4,
-        "gearleesPotencia": 0,
-        "gearleesPrecio": 0,
-        "gearleesCanales": 0,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 2,
-        "personas": 6,
-        "gearleesPotencia": 4.5,
-        "gearleesPrecio": 1450,
-        "gearleesCanales": 5,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 3,
-        "personas": 8,
-        "gearleesPotencia": 6.3,
-        "gearleesPrecio": 1950,
-        "gearleesCanales": 5,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 4,
-        "personas": 10,
-        "gearleesPotencia": 8,
-        "gearleesPrecio": 2800,
-        "gearleesCanales": 6,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 5,
-        "personas": 13,
-        "gearleesPotencia": 10,
-        "gearleesPrecio": 3300,
-        "gearleesCanales": 7,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 6,
-        "personas": 15,
-        "gearleesPotencia": 12,
-        "gearleesPrecio": 3800,
-        "gearleesCanales": 8,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1.5m/s",
-        "index": 7,
-        "personas": 20,
-        "gearleesPotencia": 10.7,
-        "gearleesPrecio": 5000,
-        "gearleesCanales": 10,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      }
-    ]
-  },
-  {
-    "clase": "1.75m/s",
-    "items": [
-      {
-        "clase": "1.75m/s",
-        "index": 1,
-        "personas": 4,
-        "gearleesPotencia": 0,
-        "gearleesPrecio": 0,
-        "gearleesCanales": 0,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 2,
-        "personas": 6,
-        "gearleesPotencia": 5.3,
-        "gearleesPrecio": 1776,
-        "gearleesCanales": 5,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 3,
-        "personas": 8,
-        "gearleesPotencia": 7.4,
-        "gearleesPrecio": 2800,
-        "gearleesCanales": 5,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 4,
-        "personas": 10,
-        "gearleesPotencia": 9.3,
-        "gearleesPrecio": 3800,
-        "gearleesCanales": 6,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 5,
-        "personas": 13,
-        "gearleesPotencia": 11.7,
-        "gearleesPrecio": 4800,
-        "gearleesCanales": 7,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 6,
-        "personas": 15,
-        "gearleesPotencia": 14,
-        "gearleesPrecio": 5500,
-        "gearleesCanales": 8,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      },
-      {
-        "clase": "1.75m/s",
-        "index": 7,
-        "personas": 20,
-        "gearleesPotencia": 18.7,
-        "gearleesPrecio": 6000,
-        "gearleesCanales": 10,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 0
-      }
-    ]
-  },
-  {
-    "clase": "1m/s",
-    "items": [
-      {
-        "clase": "1m/s",
-        "index": 1,
-        "personas": 4,
-        "gearleesPotencia": 3.3,
-        "gearleesPrecio": 1176,
-        "gearleesCanales": 3,
-        "conReducPotencia": 7.5,
-        "conReducPrecio": 900,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 2,
-        "personas": 6,
-        "gearleesPotencia": 3.3,
-        "gearleesPrecio": 1450,
-        "gearleesCanales": 4,
-        "conReducPotencia": 7.5,
-        "conReducPrecio": 900,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 3,
-        "personas": 8,
-        "gearleesPotencia": 4.2,
-        "gearleesPrecio": 1700,
-        "gearleesCanales": 5,
-        "conReducPotencia": 7.5,
-        "conReducPrecio": 900,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 4,
-        "personas": 10,
-        "gearleesPotencia": 5.3,
-        "gearleesPrecio": 2900,
-        "gearleesCanales": 6,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 5,
-        "personas": 13,
-        "gearleesPotencia": 6.7,
-        "gearleesPrecio": 4000,
-        "gearleesCanales": 7,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 6,
-        "personas": 15,
-        "gearleesPotencia": 8,
-        "gearleesPrecio": 4300,
-        "gearleesCanales": 7,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
-      },
-      {
-        "clase": "1m/s",
-        "index": 7,
-        "personas": 20,
-        "gearleesPotencia": 10.7,
-        "gearleesPrecio": 5000,
-        "gearleesCanales": 7,
-        "conReducPotencia": 0,
-        "conReducPrecio": 0,
-        "conReducCanales": 5
       }
     ]
   }

@@ -1,171 +1,86 @@
 [
   {
-    "clase": "AP CEN 4 HOJAS",
-    "items": [
-      {
-        "index": 1,
-        "medida": "600mm",
-        "c_inoxidable": 630,
-        "c_epoxi": 580,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 354,
-        "p_epoxi": 258
-      },
-      {
-        "index": 2,
-        "medida": "650mm",
-        "c_inoxidable": 630,
-        "c_epoxi": 580,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 354,
-        "p_epoxi": 258
-      },
-      {
-        "index": 3,
-        "medida": "700mm",
-        "c_inoxidable": 630,
-        "c_epoxi": 580,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 354,
-        "p_epoxi": 258
-      },
-      {
-        "index": 4,
-        "medida": "750mm",
-        "c_inoxidable": 630,
-        "c_epoxi": 580,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 354,
-        "p_epoxi": 258
-      },
-      {
-        "index": 5,
-        "medida": "800mm",
-        "c_inoxidable": 630,
-        "c_epoxi": 580,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 354,
-        "p_epoxi": 258
-      },
-      {
-        "index": 6,
-        "medida": "900mm",
-        "c_inoxidable": 680,
-        "c_epoxi": 630,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 404,
-        "p_epoxi": 308
-      },
-      {
-        "index": 7,
-        "medida": "1000mm",
-        "c_inoxidable": 830,
-        "c_epoxi": 780,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 554,
-        "p_epoxi": 458
-      },
-      {
-        "index": 8,
-        "medida": "1100mm",
-        "c_inoxidable": 980,
-        "c_epoxi": 930,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
-        "p_inox": 704,
-        "p_epoxi": 608
-      }
-    ]
-  },
-  {
     "clase": "AP LAT 2 HOJAS",
     "items": [
       {
         "index": 1,
         "medida": "600mm",
         "c_inoxidable": 482,
-        "c_epoxi": 432,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 261,
-        "p_epoxi": 170
+        "c_epoxi": 432,
+        "p_epoxi": 170,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 2,
         "medida": "650mm",
         "c_inoxidable": 482,
-        "c_epoxi": 432,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 261,
-        "p_epoxi": 170
+        "c_epoxi": 432,
+        "p_epoxi": 170,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 3,
         "medida": "700mm",
         "c_inoxidable": 482,
-        "c_epoxi": 432,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 261,
-        "p_epoxi": 170
+        "c_epoxi": 432,
+        "p_epoxi": 170,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 4,
         "medida": "750mm",
         "c_inoxidable": 482,
-        "c_epoxi": 432,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 261,
-        "p_epoxi": 170
+        "c_epoxi": 432,
+        "p_epoxi": 170,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 5,
         "medida": "800mm",
         "c_inoxidable": 482,
-        "c_epoxi": 432,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 261,
-        "p_epoxi": 170
+        "c_epoxi": 432,
+        "p_epoxi": 170,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 6,
         "medida": "900mm",
         "c_inoxidable": 497,
-        "c_epoxi": 447,
-        "c_vidrio": 729,
-        "p_de_vidrio": 476,
         "p_inox": 278,
-        "p_epoxi": 181
+        "c_epoxi": 447,
+        "p_epoxi": 181,
+        "c_vidrio": 729,
+        "p_de_vidrio": 476
       },
       {
         "index": 7,
         "medida": "1000mm",
         "c_inoxidable": 597,
-        "c_epoxi": 547,
-        "c_vidrio": 879,
-        "p_de_vidrio": 546,
         "p_inox": 450,
-        "p_epoxi": 205
+        "c_epoxi": 547,
+        "p_epoxi": 205,
+        "c_vidrio": 879,
+        "p_de_vidrio": 546
       },
       {
         "index": 8,
         "medida": "1100mm",
         "c_inoxidable": 697,
-        "c_epoxi": 647,
-        "c_vidrio": 979,
-        "p_de_vidrio": 616,
         "p_inox": 500,
-        "p_epoxi": 255
+        "c_epoxi": 647,
+        "p_epoxi": 255,
+        "c_vidrio": 979,
+        "p_de_vidrio": 616
       }
     ]
   },
@@ -176,81 +91,166 @@
         "index": 1,
         "medida": "600mm",
         "c_inoxidable": 625,
-        "c_epoxi": 575,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 355,
-        "p_epoxi": 255
+        "c_epoxi": 575,
+        "p_epoxi": 255,
+        "c_vidrio": 925,
+        "p_de_vidrio": 655
       },
       {
         "index": 2,
         "medida": "650mm",
         "c_inoxidable": 625,
-        "c_epoxi": 575,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 355,
-        "p_epoxi": 255
+        "c_epoxi": 575,
+        "p_epoxi": 255,
+        "c_vidrio": 925,
+        "p_de_vidrio": 655
       },
       {
         "index": 3,
         "medida": "700mm",
         "c_inoxidable": 625,
-        "c_epoxi": 575,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 355,
-        "p_epoxi": 255
+        "c_epoxi": 575,
+        "p_epoxi": 255,
+        "c_vidrio": 925,
+        "p_de_vidrio": 655
       },
       {
         "index": 4,
         "medida": "750mm",
         "c_inoxidable": 625,
-        "c_epoxi": 575,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 355,
-        "p_epoxi": 255
+        "c_epoxi": 575,
+        "p_epoxi": 255,
+        "c_vidrio": 925,
+        "p_de_vidrio": 655
       },
       {
         "index": 5,
         "medida": "800mm",
         "c_inoxidable": 625,
-        "c_epoxi": 575,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 355,
-        "p_epoxi": 255
+        "c_epoxi": 575,
+        "p_epoxi": 255,
+        "c_vidrio": 925,
+        "p_de_vidrio": 655
       },
       {
         "index": 6,
         "medida": "900mm",
         "c_inoxidable": 675,
-        "c_epoxi": 625,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 405,
-        "p_epoxi": 305
+        "c_epoxi": 625,
+        "p_epoxi": 305,
+        "c_vidrio": 975,
+        "p_de_vidrio": 705
       },
       {
         "index": 7,
         "medida": "1000mm",
         "c_inoxidable": 690,
-        "c_epoxi": 640,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 555,
-        "p_epoxi": 455
+        "c_epoxi": 640,
+        "p_epoxi": 455,
+        "c_vidrio": 990,
+        "p_de_vidrio": 855
       },
       {
         "index": 8,
         "medida": "1100mm",
         "c_inoxidable": 705,
-        "c_epoxi": 655,
-        "c_vidrio": 0,
-        "p_de_vidrio": 0,
         "p_inox": 705,
-        "p_epoxi": 605
+        "c_epoxi": 655,
+        "p_epoxi": 605,
+        "c_vidrio": 1005,
+        "p_de_vidrio": 1005
+      }
+    ]
+  },
+  {
+    "clase": "AP CEN 4 HOJAS",
+    "items": [
+      {
+        "index": 1,
+        "medida": "600mm",
+        "c_inoxidable": 630,
+        "p_inox": 354,
+        "c_epoxi": 580,
+        "p_epoxi": 258,
+        "c_vidrio": 930,
+        "p_de_vidrio": 654
+      },
+      {
+        "index": 2,
+        "medida": "650mm",
+        "c_inoxidable": 630,
+        "p_inox": 354,
+        "c_epoxi": 580,
+        "p_epoxi": 258,
+        "c_vidrio": 930,
+        "p_de_vidrio": 654
+      },
+      {
+        "index": 3,
+        "medida": "700mm",
+        "c_inoxidable": 630,
+        "p_inox": 354,
+        "c_epoxi": 580,
+        "p_epoxi": 258,
+        "c_vidrio": 930,
+        "p_de_vidrio": 654
+      },
+      {
+        "index": 4,
+        "medida": "750mm",
+        "c_inoxidable": 630,
+        "p_inox": 354,
+        "c_epoxi": 580,
+        "p_epoxi": 258,
+        "c_vidrio": 930,
+        "p_de_vidrio": 654
+      },
+      {
+        "index": 5,
+        "medida": "800mm",
+        "c_inoxidable": 630,
+        "p_inox": 354,
+        "c_epoxi": 580,
+        "p_epoxi": 258,
+        "c_vidrio": 930,
+        "p_de_vidrio": 654
+      },
+      {
+        "index": 6,
+        "medida": "900mm",
+        "c_inoxidable": 680,
+        "p_inox": 404,
+        "c_epoxi": 630,
+        "p_epoxi": 308,
+        "c_vidrio": 980,
+        "p_de_vidrio": 704
+      },
+      {
+        "index": 7,
+        "medida": "1000mm",
+        "c_inoxidable": 830,
+        "p_inox": 554,
+        "c_epoxi": 780,
+        "p_epoxi": 458,
+        "c_vidrio": 1130,
+        "p_de_vidrio": 854
+      },
+      {
+        "index": 8,
+        "medida": "1100mm",
+        "c_inoxidable": 980,
+        "p_inox": 704,
+        "c_epoxi": 930,
+        "p_epoxi": 608,
+        "c_vidrio": 1280,
+        "p_de_vidrio": 1004
       }
     ]
   }
