@@ -31,13 +31,13 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
             Ver PDF con membretado Tecnolift
           </button>
 
-          {/* Uncommented: Ver Procedimiento 
+          
           <button
             className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onViewProcedure}
           >
             Ver Procedimiento
-          </button>*/}
+          </button>
 
           {/* Confirm and Close buttons */}
           <button

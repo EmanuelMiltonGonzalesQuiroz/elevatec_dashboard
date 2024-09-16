@@ -6,7 +6,6 @@ const RenderComplexFieldsTable = ({ formData }) => {
     "Pernos_empalme_braket",
     "Riel_de_cabina",
     "Riel_de_contrapeso",
-    "Pernos_de_empalmes",
     "Estructura_de_cabina",
     "Estructura_de_contrapeso",
     "Estructura_de_foso",
@@ -28,6 +27,7 @@ const RenderComplexFieldsTable = ({ formData }) => {
     "Freno",
     "Cable_de_8mm",
     "Cadena_de_compensacion",
+    "ACCESORIOS_DE_CADENA_DE_COMPENSACION",
     "Motor",
     "Maniobra",
     "Indicador_de_Cabina",
@@ -59,7 +59,10 @@ const RenderComplexFieldsTable = ({ formData }) => {
     "Mano_de_obra_produccion",
     "Mano_de_obra_instalaciones",
     "Costo_de_seguridad_agencias_transportes_internos",
-    "Comision_del_banco_intermediario"
+    "Comision_del_banco_intermediario",
+    "Señalizacion_Luminosas_de_Pisos",
+    "Amortiguador",
+    "Encoder",
   ];
 
   const complexFields = Object.keys(formData)

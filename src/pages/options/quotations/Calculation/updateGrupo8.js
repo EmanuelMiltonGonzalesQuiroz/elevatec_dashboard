@@ -59,7 +59,7 @@ const updateGrupo8 = (formData, valor3, allData) => {
 
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       // Guardar los valores calculados en formData[key]

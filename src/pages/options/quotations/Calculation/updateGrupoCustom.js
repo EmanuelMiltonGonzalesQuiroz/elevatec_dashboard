@@ -60,7 +60,10 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     "Corredizas_de_contrapeso": 4,  // Aquí aplicaremos la búsqueda en internal_config
     "Motor": 1,
     "Maniobra": 1,
-    "Regla": 1
+    "Regla": 1,
+    "Señalizacion_Luminosas_de_Pisos": 1,
+    "Amortiguador": 1,
+    "Encoder": 1,
   };
 
   Object.keys(descriptions).forEach(description => {
@@ -86,7 +89,7 @@ const updateGrupoCustom = (formData, valor3, allData) => {
 
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       formData[key].UNIDADES = unidades;

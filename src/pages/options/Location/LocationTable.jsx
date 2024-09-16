@@ -14,7 +14,7 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
             <th className="py-3 px-6 text-left">ACCIÓN</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="text-gray-600 text-sm font-light"> 
           {locations
             .filter((location) => location.state !== 'Eliminar') // Filtrar los eliminados
             .map((location) => (

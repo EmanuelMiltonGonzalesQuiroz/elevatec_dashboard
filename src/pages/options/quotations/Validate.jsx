@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Calculation from './Calculation';
 
 const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
+  
   const [isValid, setIsValid] = useState(false);
-
+ 
   useEffect(() => {
     const arrayFields = [
       'ARD', 'AcabadoPuertaCabina', 'EspejoAdicional', 
-      'IndicadorPisoHorizontal', 'LectorTarjetas', 'PasamanosAdicional', 'Piso', 
+      'IndicadorCabina','IndicadorPiso', 'LectorTarjetas', 'PasamanosAdicional', 'Piso', 
       'SubTecho', 'Tipo', 'TipoBotonera', 'BotonesCabina', 'BotonesPiso', 
-      'Cabina', 'Ciudad', 'Embarque', 'EnergiaElectrica', 'IndicadorCabinaPiso', 
-      'IndicadorPisoBoton', 'MaquinaTraccion', 'Traccion', 'Velocidad'
+      'Cabina', 'Ciudad', 'Embarque', 'EnergiaElectrica', 'MaquinaTraccion', 'Traccion', 'Velocidad'
     ];
 
     const requiredNumericFields = [
@@ -69,6 +69,7 @@ const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
         return false;
       }
     });
+    
 
     const totalUnits = complexFields.reduce((sum, field) => sum + (formData[field]?.UNIDADES || 0), 0);
     const stopsMatch = totalUnits === formData['01_PARADAS'];
@@ -111,11 +112,14 @@ const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
     const findGearleesPrecio = (velocidadNombre, personas) => {
       const motorData = allData.motors[velocidadNombre];
       const maquina_de_traccion = formData['MaquinaTraccion']?.nombre || '';
+      
       if (!motorData || !Array.isArray(motorData.items)) {
         return 0;
       }
-
-      const motor = motorData.items.find(item => personas >= item.personas && personas <= item.personas);
+    
+      // Encontrar el motor cuyo valor en personas sea mayor o igual al valor ingresado
+      const motor = motorData.items.find(item => item.personas >= personas);
+    
       if (maquina_de_traccion.toLowerCase().includes("gearlees")) {
         return motor ? motor.gearleesPrecio : 0;
       } else if (maquina_de_traccion.toLowerCase().includes("reductor")) {
@@ -124,6 +128,7 @@ const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
         return 0;
       }
     };
+    
 
     const velocidadClave = formData['Velocidad']?.nombre?.replace('/', '_').toLowerCase();
     const personas = formData['03_PERSONAS'] || 0;

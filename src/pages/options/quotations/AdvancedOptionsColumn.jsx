@@ -9,7 +9,6 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
     ARD: [],
     AcabadoPuertaCabina: [],
     EspejoAdicional: [],
-    IndicadorPisoHorizontal: [],
     Indicador_de_solo_botón: [],
     LectorTarjetas: [],
     PasamanosAdicional: [],
@@ -41,17 +40,16 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
         elements: allData.elements?.elements?.items || [],
         doors: doorsOptions,
         ARD: allData.groups.ARD?.items || [],
-        AcabadoPuertaCabina: allData.groups['Acabado puerta de cabina']?.items || [],
+        AcabadoPuertaCabina: allData.groups['Acabado Puerta de Cabina']?.items || [],
         EspejoAdicional: allData.groups['Espejo Adicional']?.items || [],
-        IndicadorPisoHorizontal: allData.groups['Indicador de piso horizontal']?.items || [],
-        LectorTarjetas: allData.groups['Lector de tarjetas']?.items || [],
-        PasamanosAdicional: allData.groups['Pasamanos adicional']?.items || [],
+        LectorTarjetas: allData.groups['Lector de Tarjetas']?.items || [],
+        PasamanosAdicional: allData.groups['Pasamanos Adicional']?.items || [],
         Piso: allData.groups.Piso?.items || [],
         SubTecho: allData.groups.SubTecho?.items || [],
         Tipo: allData.groups.Tipo?.items || [],
-        TipoBotonera: allData.groups['Tipo de botonera']?.items || [],
-        BotonesCabina: allData.groups['Tipo de botones en cabina']?.items || [],
-        BotonesPiso: allData.groups['Tipo de botones en piso']?.items || [],
+        TipoBotonera: allData.groups['Tipo de Botonera COP']?.items || [],
+        BotonesCabina: allData.groups['Tipo de Botones en Cabina']?.items || [],
+        BotonesPiso: allData.groups['Tipo de Botones en Piso']?.items || [],
       });
     }
   }, [allData]);
@@ -163,17 +161,16 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
 
       {renderSelectForGroup('doors', advancedOptionsText.doors, advancedOptionsText.doorsConcept, options.doors, 'Puertas')}
       {renderSelectForGroup('ARD', advancedOptionsText.ard, advancedOptionsText.ardConcept, options.ARD, 'ARD')}
-      {renderSelectForGroup('AcabadoPuertaCabina', advancedOptionsText.cabinFinish, advancedOptionsText.cabinFinishConcept, options.AcabadoPuertaCabina, 'Acabado puerta de cabina')}
+      {renderSelectForGroup('AcabadoPuertaCabina', advancedOptionsText.cabinFinish, advancedOptionsText.cabinFinishConcept, options.AcabadoPuertaCabina, 'Acabado Puerta de Cabina')}
       {renderSelectForGroup('EspejoAdicional', advancedOptionsText.additionalMirror, advancedOptionsText.additionalMirrorConcept, options.EspejoAdicional, 'Espejo Adicional')}
-      {renderSelectForGroup('IndicadorPisoHorizontal', advancedOptionsText.horizontalFloorIndicator, advancedOptionsText.horizontalFloorIndicatorConcept, options.IndicadorPisoHorizontal, 'Indicador de piso horizontal')}
-      {renderSelectForGroup('LectorTarjetas', advancedOptionsText.cardReader, advancedOptionsText.cardReaderConcept, options.LectorTarjetas, 'Lector de tarjetas')}
-      {renderSelectForGroup('PasamanosAdicional', advancedOptionsText.additionalHandrail, advancedOptionsText.additionalHandrailConcept, options.PasamanosAdicional, 'Pasamanos adicional')}
+      {renderSelectForGroup('LectorTarjetas', advancedOptionsText.cardReader, advancedOptionsText.cardReaderConcept, options.LectorTarjetas, 'Lector de Tarjetas')}
+      {renderSelectForGroup('PasamanosAdicional', advancedOptionsText.additionalHandrail, advancedOptionsText.additionalHandrailConcept, options.PasamanosAdicional, 'Pasamanos Adicional')}
       {renderSelectForGroup('Piso', advancedOptionsText.floor, advancedOptionsText.floorConcept, options.Piso, 'Piso')}
       {renderSelectForGroup('SubTecho', advancedOptionsText.subCeiling, advancedOptionsText.subCeilingConcept, options.SubTecho, 'SubTecho')}
       {renderSelectForGroup('Tipo', advancedOptionsText.type, advancedOptionsText.typeConcept, options.Tipo, 'Tipo')}
-      {renderSelectForGroup('TipoBotonera', advancedOptionsText.controlPanel, advancedOptionsText.controlPanelConcept, options.TipoBotonera, 'Tipo de botonera')}
-      {renderSelectForGroup('BotonesCabina', advancedOptionsText.cabinButtons, advancedOptionsText.cabinButtonsConcept, options.BotonesCabina, 'Tipo de botones en cabina')}
-      {renderSelectForGroup('BotonesPiso', advancedOptionsText.floorButtons, advancedOptionsText.floorButtonsConcept, options.BotonesPiso, 'Tipo de botones en piso')}
+      {renderSelectForGroup('TipoBotonera', advancedOptionsText.controlPanel, advancedOptionsText.controlPanelConcept, options.TipoBotonera, 'Tipo de Botonera COP')}
+      {renderSelectForGroup('BotonesCabina', advancedOptionsText.cabinButtons, advancedOptionsText.cabinButtonsConcept, options.BotonesCabina, 'Tipo de Botones en Cabina')}
+      {renderSelectForGroup('BotonesPiso', advancedOptionsText.floorButtons, advancedOptionsText.floorButtonsConcept, options.BotonesPiso, 'Tipo de Botones en Piso')}
       
       <div>
         <label htmlFor="locks" className="mb-2 font-semibold text-black">

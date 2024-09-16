@@ -17,7 +17,7 @@ const updateGrupo4 = (formData, valor3) => {
       const volumenEnM3XPieza = formData['Cable_de_traccion'].VOLUMEN_EN_M3_X_PIEZA;
       const volumenTotalM3 = volumenEnM3XPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * (formData['Cable_de_traccion'].PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+      const aduana = ((unidades * (formData['Cable_de_traccion'].PRECIO_UNITARIO || 0)) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + ((formData['Cable_de_traccion'].PRECIO_UNITARIO || 0) * unidades);
 
       formData['Cable_de_traccion'] = {
@@ -48,7 +48,7 @@ const updateGrupo4 = (formData, valor3) => {
       const volumenEnM3XPieza = formData['Poleas']?.VOLUMEN_EN_M3_X_PIEZA || 0;
       const volumenTotalM3 = unidades * volumenEnM3XPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * (formData['Poleas']?.PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+      const aduana = ((unidades * (formData['Poleas']?.PRECIO_UNITARIO || 0)) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + ((formData['Poleas']?.PRECIO_UNITARIO || 0) * unidades);
 
       formData['Poleas'] = {
@@ -71,7 +71,7 @@ const updateGrupo4 = (formData, valor3) => {
       const volumenEnM3XPieza = formData['Cable_de_8mm'].VOLUMEN_EN_M3_X_PIEZA ; // Usar el precio unitario como volumen por pieza
       const volumenTotalM3 = unidades * volumenEnM3XPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       // Actualizar formData para Cable_de_8mm
@@ -88,7 +88,9 @@ const updateGrupo4 = (formData, valor3) => {
 
       return unidades;
     },
-    "Cadena_de_compensacion": () => 2
+    "Cadena_de_compensacion": () => formData['01_PARADAS'] >= 10 ? 2 : 0,
+    "ACCESORIOS_DE_CADENA_DE_COMPENSACION": () => formData['01_PARADAS'] >= 10 ? 2 : 0,
+
   };
 
   Object.keys(descriptions).forEach(description => {
@@ -103,7 +105,7 @@ const updateGrupo4 = (formData, valor3) => {
       if (description !== 'Cable_de_traccion' && description !== 'Poleas') {
         const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
         const transporte = (valor3 || 0) * volumenTotalM3;
-        const aduana = ((unidades * (formData[key].PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+        const aduana = ((unidades * (formData[key].PRECIO_UNITARIO || 0)) + transporte) * 0.3 *0.5;
         const costoFinal = aduana + transporte + ((formData[key].PRECIO_UNITARIO || 0) * unidades);
 
         formData[key] = {

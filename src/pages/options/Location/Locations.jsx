@@ -11,7 +11,7 @@ import DirectionsModal from './DirectionsModal'; // Importamos el nuevo modal
 import { useAuth } from '../../../context/AuthContext';
 
 const Location = () => {
-  const [locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState([]); 
   const [mapLocations, setMapLocations] = useState([]);
   const [stateColors, setStateColors] = useState({});
   const [mapCenter, setMapCenter] = useState({ lat: -16.495543, lng: -68.133543 });

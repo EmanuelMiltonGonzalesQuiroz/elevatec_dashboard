@@ -32,6 +32,7 @@ const QuotationForm = () => {
       ...prevData,
       isGenerated: true,
     }));
+    console.log(FormData)
   };
 
   const handleShowMessage = (msg) => {

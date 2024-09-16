@@ -5,8 +5,7 @@ const updateGrupo2 = (formData, valor3) => {
     "Ramplus",
     "Brakets",
     "Pernos_brakets",
-    "Pernos_empalme_braket",
-    "Pernos_de_empalmes"
+    "Pernos_empalme_braket"
   ];
  
   descriptions.forEach((description) => {
@@ -19,7 +18,7 @@ const updateGrupo2 = (formData, valor3) => {
       const unidades = (paradas + 2) * 8;
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * (formData[key].PRECIO_UNITARIO || 0)) + transporte) * 0.3;
+      const aduana = ((unidades * (formData[key].PRECIO_UNITARIO || 0)) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + ((formData[key].PRECIO_UNITARIO || 0) * unidades);
 
       formData[key].UNIDADES = unidades;

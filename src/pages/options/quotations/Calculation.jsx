@@ -19,6 +19,7 @@ import updateGrupo8 from './Calculation/updateGrupo8';
 import updateGrupoCustom from './Calculation/updateGrupoCustom';
 
 const Calculation = ({ formData, allData, setFormData }) => {
+  console.log(formData)
   const [previousFormData, setPreviousFormData] = useState(JSON.stringify(formData));
   const [showActionModal, setShowActionModal] = useState(true); 
   const [showProcedureModal, setShowProcedureModal] = useState(false);
@@ -47,9 +48,11 @@ const Calculation = ({ formData, allData, setFormData }) => {
               ...updatedFormDataCopy[key],
               VOLUMEN_EN_M3_X_PIEZA: item.volumen_x_pieza_m3 || 0,
               PRECIO_UNITARIO: item.precio_unitario || 0,
+              ...(item.unidades > 0 && { UNIDADES: item.unidades }),  // Solo asigna UNIDADES si es mayor que 0
             };
           }
         });
+        
 
         const calculatedValues = calculateValues(updatedFormDataCopy, allData);
         const valor4 = calculatedValues.valor4 || 0;

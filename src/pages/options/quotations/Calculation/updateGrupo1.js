@@ -53,7 +53,7 @@ const updateGrupo1 = (formData, valor3, allData) => {
       const transporte = (valor3 || 0) * volumenTotalM3;
       if (description.toLowerCase() === 'piso') {
         precioUnitario = formData['Piso'].valor || 0;
-        aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+        aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       }
       
 
@@ -69,7 +69,7 @@ const updateGrupo1 = (formData, valor3, allData) => {
           
         }
         
-      aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       }
 
       

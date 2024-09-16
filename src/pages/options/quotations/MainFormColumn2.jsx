@@ -8,8 +8,8 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
     Ciudad: [],
     Embarque: [],
     EnergiaElectrica: [],
-    IndicadorCabinaPiso: [],
-    IndicadorPisoBoton: [],
+    IndicadorCabina: [],
+    IndicadorPiso: [],
     MaquinaTraccion: [],
     Traccion: [],
     Velocidad: []
@@ -23,9 +23,9 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
         Ciudad: allData.groups.Ciudad?.items || [],
         Embarque: allData.groups.Embarque?.items || [],
         EnergiaElectrica: allData.groups['Energia Electrica']?.items || [],
-        IndicadorCabinaPiso: allData.groups['Indicador de cabina_piso']?.items || [],
-        IndicadorPisoBoton: allData.groups['Indicador de piso con botón Integrado']?.items || [],
-        MaquinaTraccion: allData.groups['Maquina de tracción']?.items || [],
+        IndicadorCabina: allData.groups['Indicador de Cabina']?.items || [],
+        IndicadorPiso: allData.groups['Indicador de Piso']?.items || [],
+        MaquinaTraccion: allData.groups['Maquina de Tracción']?.items || [],
         Traccion: allData.groups.Traccion?.items || [],
         Velocidad: allData.motors ? Object.keys(allData.motors).map(speed => speed.replace('_', '/')) : []
       });
@@ -81,7 +81,7 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
           <option key={index} value={option.nombre}>
             {option.nombre}
           </option>
-        ))}
+        ))} 
       </select>
     </div>
   );
@@ -92,8 +92,8 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       {renderSelectForGroup('Ciudad', mainFormColumn2Text.city, options.Ciudad, 'Ciudad', mainFormColumn2Text.cityConcept)}
       {renderSelectForGroup('Embarque', mainFormColumn2Text.embark, options.Embarque, 'Embarque', mainFormColumn2Text.embarkConcept)}
       {renderSelectForGroup('EnergiaElectrica', mainFormColumn2Text.electricity, options.EnergiaElectrica, 'Energia Electrica', mainFormColumn2Text.electricityConcept)}
-      {renderSelectForGroup('IndicadorCabinaPiso', mainFormColumn2Text.cabinIndicator, options.IndicadorCabinaPiso, 'Indicador de cabina_piso', mainFormColumn2Text.cabinIndicatorConcept)}
-      {renderSelectForGroup('IndicadorPisoBoton', mainFormColumn2Text.floorIndicator, options.IndicadorPisoBoton, 'Indicador de piso con botón Integrado', mainFormColumn2Text.floorIndicatorConcept)}
+      {renderSelectForGroup('Indicador_de_Cabina', mainFormColumn2Text.cabinIndicator, options.IndicadorCabina, 'Indicador de Cabina', mainFormColumn2Text.cabinIndicatorConcept)}
+      {renderSelectForGroup('Indicador_de_piso', mainFormColumn2Text.floorIndicator, options.IndicadorPiso, 'Indicador de Piso', mainFormColumn2Text.floorIndicatorConcept)}
       {renderSelectForGroup('MaquinaTraccion', mainFormColumn2Text.tractionMachine, options.MaquinaTraccion, 'Maquina de tracción', mainFormColumn2Text.tractionMachineConcept)}
       {renderSelectForGroup('Traccion', mainFormColumn2Text.traction, options.Traccion, 'Traccion', mainFormColumn2Text.tractionConcept)}
       {renderSelectForGroup('Velocidad', mainFormColumn2Text.speed, options.Velocidad.map(speed => ({ nombre: speed })), 'Velocidad', mainFormColumn2Text.speedConcept)}

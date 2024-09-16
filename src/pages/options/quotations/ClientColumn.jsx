@@ -22,6 +22,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const [locationError, setLocationError] = useState('');
   const [isStateChecked, setIsStateChecked] = useState(false); // Para manejar el checkbox
   const [stateValue, setStateValue] = useState(0); // Para manejar el valor del input del estado
+  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState([]); // Para manejar los métodos de pago seleccionados
 
   useEffect(() => {
     if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
@@ -39,6 +40,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     setSelectedVendedor('');
     setStateValue(0); // Resetear el valor del estado
     setLocationError('');
+    setSelectedPaymentMethods([]); // Resetear los métodos de pago seleccionados
     if (onReset) onReset();
   };
 
@@ -74,6 +76,17 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData); // Guardar el vendedor en formData
   };
 
+  const handlePaymentMethodChange = (method) => {
+    let updatedMethods = [...selectedPaymentMethods];
+    if (updatedMethods.includes(method)) {
+      updatedMethods = updatedMethods.filter((m) => m !== method);
+    } else {
+      updatedMethods.push(method);
+    }
+    setSelectedPaymentMethods(updatedMethods);
+    updateFormData({ field: 'MetodoDePago', value: updatedMethods.join('_') }, formData, setFormData);
+  };
+
   useEffect(() => {
     if (isButtonDisabled) {
       setLocationError('La ubicación seleccionada ya existe, por favor elija otra.');
@@ -95,7 +108,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             onChange={(option) => handleClientChange(option, 'Solicitante')}
             selectedValue={selectedSolicitante}
           />
-  
+
           <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
           </label>
@@ -106,56 +119,54 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             onChange={handleVendedorChange}
             className="p-3 border-2 border-gray-300 rounded-lg w-full"
           />
-  
+
           <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
             Método de Pago
           </label>
           <div className="flex flex-col">
- 
-          <div className="flex flex-col space-y-2">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData['MetodoDePago'] === 'Efectivo'}
-                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Efectivo' }, formData, setFormData)}
-                className="mr-2"
-              />
-              Efectivo
-            </label>
+            <div className="flex flex-col space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedPaymentMethods.includes('Efectivo')}
+                  onChange={() => handlePaymentMethodChange('Efectivo')}
+                  className="mr-2"
+                />
+                Efectivo
+              </label>
 
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData['MetodoDePago'] === 'Deposito'}
-                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Deposito' }, formData, setFormData)}
-                className="mr-2"
-              />
-              Depósito
-            </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedPaymentMethods.includes('Deposito')}
+                  onChange={() => handlePaymentMethodChange('Deposito')}
+                  className="mr-2"
+                />
+                Depósito
+              </label>
 
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData['MetodoDePago'] === 'Dolar'}
-                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Dolar' }, formData, setFormData)}
-                className="mr-2"
-              />
-              Dólar
-            </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedPaymentMethods.includes('Dolar')}
+                  onChange={() => handlePaymentMethodChange('Dolar')}
+                  className="mr-2"
+                />
+                Dólar
+              </label>
 
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData['MetodoDePago'] === 'Bolivianos'}
-                onChange={() => updateFormData({ field: 'MetodoDePago', value: 'Bolivianos' }, formData, setFormData)}
-                className="mr-2"
-              />
-              Bolivianos
-            </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedPaymentMethods.includes('Bolivianos')}
+                  onChange={() => handlePaymentMethodChange('Bolivianos')}
+                  className="mr-2"
+                />
+                Bolivianos
+              </label>
+            </div>
           </div>
-        </div>
 
-  
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
@@ -165,7 +176,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             />
             Para el estado
           </label>
-  
+
           {isStateChecked && (
             <input
               type="number"
@@ -177,7 +188,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             />
           )}
         </div>
-  
+
         <div className="flex flex-col lg:overflow-y-auto lg:h-48">
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
@@ -197,7 +208,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               +
             </button>
           </div>
-  
+
           <div className="flex flex-col">
             <button
               onClick={() => handleGenerateQuotation(setShowMessage)}
@@ -214,7 +225,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             >
               {clientColumnText.resetData}
             </button>
-  
+
             <div className="flex flex-col">
               {locationError ? (
                 <div className="mt-2 text-red-500 font-semibold">
@@ -237,7 +248,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </div>
           </div>
         </div>
-  
+
         <div className="w-full ">
           <MapComponent
             mapCenter={mapCenter}
@@ -247,17 +258,16 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           />
         </div>
       </div>
-  
+
       {showMessage && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {showMessage}
         </div>
       )}
-  
+
       {isModalOpen && <NewClientModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
-  
 };
 
 export default ClientColumn;

@@ -91,7 +91,7 @@ const updateGrupo7 = (formData, valor3, allData) => {
       // Calcular los valores basados en unidades y volúmenes
       const volumenTotalM3 = unidades * volumenPorPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       // Actualizar los valores en formData

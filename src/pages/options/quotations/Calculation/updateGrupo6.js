@@ -39,7 +39,7 @@ const updateGrupo6 = (formData, valor3) => {
 
       const volumenTotalM3 = unidades * (fieldData.VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       // Actualizar la copia y no el objeto original directamente
