@@ -12,13 +12,10 @@ export const checkAddPage = (doc, currentY, imageBase64) => {
   // Función para añadir la imagen como encabezado
   export const addHeaderImage = (doc, imageBase64) => {
     try {
-      console.log("Intentando cargar la imagen en base64...");
       
       // Añadir la imagen base64 como encabezado en cada página
       doc.addImage(imageBase64, 'JPEG', 10, 10, 190, 30); // Ajusta las coordenadas y el tamaño según sea necesario
-      console.log("Imagen agregada correctamente.");
     } catch (error) {
-      console.error("Error al cargar la imagen: ", error.message);
     }
   };
   

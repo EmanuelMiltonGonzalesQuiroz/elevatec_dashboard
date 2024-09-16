@@ -1,4 +1,5 @@
 import areStringsSimilar from './areStringsSimilar.js';
+import SearchValue from './SearchValue.jsx'; // Asegúrate de importar SearchValue
 
 const updateGrupoCustom = (formData, valor3, allData) => {
 
@@ -7,25 +8,20 @@ const updateGrupoCustom = (formData, valor3, allData) => {
   const findElementValue = (name) => {
     const element = elements.find(el => areStringsSimilar(el.name, name));
     return element ? element.value : 0;
-  }; 
+  };
 
   // Función para buscar el gearleesPrecio según la clase de velocidad y el número de personas
   const findGearleesPrecio = (velocidadNombre, personas) => {
-    const maquina_de_traccion= formData['MaquinaTraccion'].nombre
     const motorData = allData.motors[velocidadNombre];
+    const maquina_de_traccion = formData['MaquinaTraccion']?.nombre || '';
+    
     if (!motorData || !Array.isArray(motorData.items)) {
-      console.error("No se encontraron items para la velocidad especificada en motors.");
-      return 0; // Retornar 0 si no se encuentran datos
+      return 0;
     }
-
-    const motor = motorData.items.find(item => {
-      const personasNumeros = [item.personas, item.personas];
-
-      return (
-        personas >= personasNumeros[0] && personas <= personasNumeros[1]
-      );
-    });
-
+  
+    // Encontrar el motor cuyo valor en personas sea mayor o igual al valor ingresado
+    const motor = motorData.items.find(item => item.personas >= personas);
+  
     if (maquina_de_traccion.toLowerCase().includes("gearlees")) {
       return motor ? motor.gearleesPrecio : 0;
     } else if (maquina_de_traccion.toLowerCase().includes("reductor")) {
@@ -33,9 +29,6 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     } else {
       return 0;
     }
-    
- 
-    
   };
 
   // Convertir la velocidad a la clave correspondiente en allData.motors
@@ -44,26 +37,23 @@ const updateGrupoCustom = (formData, valor3, allData) => {
 
   const findInternalConfigPrice = (configKey, velocidadNombre) => {
     const configData = allData.internal_config[configKey]?.items || [];
-    
-    // Convertir `velocidadNombre` a número y asegurarnos de que `item["velocidad m/s"]` también sea un número
     const velocidadNumero = parseFloat(velocidadNombre);
-    
+
     const configItem = configData.find(item => parseFloat(item["velocidad m/s"]) === velocidadNumero);
-
     return configItem ? configItem.precio : 0;
-};
+  };
 
-
+  // Descriptions ahora buscarán unidades desde la tabla de precios usando SearchValue
   const descriptions = {
-    "Pernos_de_motor": 4,
-    "Corredizas_de_cabina": 4,  // Aquí aplicaremos la búsqueda en internal_config
-    "Corredizas_de_contrapeso": 4,  // Aquí aplicaremos la búsqueda en internal_config
-    "Motor": 1,
-    "Maniobra": 1,
-    "Regla": 1,
-    "Señalizacion_Luminosas_de_Pisos": 1,
-    "Amortiguador": 1,
-    "Encoder": 1,
+    "Pernos_de_motor": SearchValue(allData.price_table, "Pernos de motor", "unidades"),
+    "Corredizas_de_cabina": SearchValue(allData.price_table, "Corredizas de cabina", "unidades"),
+    "Corredizas_de_contrapeso": SearchValue(allData.price_table, "Corredizas de contrapeso", "unidades"),
+    "Motor": SearchValue(allData.price_table, "Motor", "unidades"),
+    "Maniobra": SearchValue(allData.price_table, "Maniobra", "unidades"),
+    "Regla": SearchValue(allData.price_table, "Regla", "unidades"),
+    "Señalizacion_Luminosas_de_Pisos": SearchValue(allData.price_table, "Señalizacion Luminosas de Pisos", "unidades"),
+    "Amortiguador": SearchValue(allData.price_table, "Amortiguador", "unidades"),
+    "Encoder": SearchValue(allData.price_table, "Encoder", "unidades"),
   };
 
   Object.keys(descriptions).forEach(description => {
@@ -72,7 +62,7 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     );
 
     if (key && formData[key]) {
-      const unidades = descriptions[description];
+      const unidades = descriptions[description] || formData[key].UNIDADES || 0;
       let precioUnitario = findElementValue(description) || formData[key].PRECIO_UNITARIO || 0;
 
       // Si estamos en la descripción de Motor, usar el gearleesPrecio

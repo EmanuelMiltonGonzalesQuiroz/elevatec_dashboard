@@ -65,7 +65,6 @@ const SaveClientData = ({ formData, additionalData }) => {
 
         // Si se encuentra una entrada muy cercana, cancelar la operación
         if (tooClose) {
-          console.log('Error: Guardado de la cotización cancelado por estar demasiado cerca de la última entrada.');
           return;
         }
 
@@ -82,7 +81,6 @@ const SaveClientData = ({ formData, additionalData }) => {
 
         // Guardar la cotización en la colección 'list of quotations'
         await setDoc(doc(quotationsCol, docId), dataToSave);
-        console.log(`Quotation data for ${docId} saved in Firestore`);
 
         // Guardar la ubicación en la colección 'locations'
         const locationsCol = collection(db, 'locations');
@@ -93,7 +91,6 @@ const SaveClientData = ({ formData, additionalData }) => {
           description: cleanedFormData['Ubicacion_nombre']
         };
         await setDoc(doc(locationsCol, docId), locationData);
-        console.log(`Location data for ${docId} saved in Firestore`);
 
       } catch (err) {
         console.error('Error saving quotation data or location data', err);

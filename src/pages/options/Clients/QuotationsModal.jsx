@@ -94,7 +94,6 @@ const QuotationsModal = ({ clientId, onClose }) => {
   };
 
   const handlePDFOption = (quotationData, option) => {
-    console.log(quotationData)
     setSelectedPDFOption({ data: quotationData, option });
     setShowModal(false);
     setShowPDFModal(true);

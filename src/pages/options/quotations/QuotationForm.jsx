@@ -32,7 +32,6 @@ const QuotationForm = () => {
       ...prevData,
       isGenerated: true,
     }));
-    console.log(FormData)
   };
 
   const handleShowMessage = (msg) => {
@@ -51,7 +50,6 @@ const QuotationForm = () => {
       setAllData(fetchedData);
       setFetching(false);
     } else {
-      console.log("Fetching data is throttled. Please wait.");
     }
   };
 

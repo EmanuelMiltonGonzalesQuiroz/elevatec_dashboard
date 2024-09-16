@@ -156,7 +156,6 @@ const Table = ({ selectedItems, setSelectedItems }) => {
 
         try {
             await addDoc(collection(db, 'list of maintenance'), dataToSave);
-            console.log('Datos guardados exitosamente');
         } catch (error) {
             console.error('Error al guardar los datos en Firebase:', error);
         }

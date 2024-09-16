@@ -17,7 +17,6 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
       lng: event.latLng.lng(),
     };
     setMarkerPosition(newPosition); // Actualizar la posición del marcador
-    console.log('Nueva ubicación seleccionada:', newPosition);
   };
 
   // Función para guardar la ubicación
@@ -35,7 +34,6 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
     // Llama a handleAddItem para pasar los valores al componente padre
     handleAddItem(locationData);
 
-    console.log('Ubicación guardada:', locationData);
     // Limpia los campos después de guardar
     setLocationName('');
   };

@@ -19,7 +19,6 @@ import updateGrupo8 from './Calculation/updateGrupo8';
 import updateGrupoCustom from './Calculation/updateGrupoCustom';
 
 const Calculation = ({ formData, allData, setFormData }) => {
-  console.log(formData)
   const [previousFormData, setPreviousFormData] = useState(JSON.stringify(formData));
   const [showActionModal, setShowActionModal] = useState(true); 
   const [showProcedureModal, setShowProcedureModal] = useState(false);
@@ -59,11 +58,11 @@ const Calculation = ({ formData, allData, setFormData }) => {
 
         // Aplica los cálculos para los grupos
         updatedFormDataCopy = updateGrupo1(updatedFormDataCopy, valor4, allData);
-        updatedFormDataCopy = updateGrupo2(updatedFormDataCopy, valor4);
-        updatedFormDataCopy = updateGrupo3(updatedFormDataCopy, valor4);
+        updatedFormDataCopy = updateGrupo2(updatedFormDataCopy, valor4, allData);
+        updatedFormDataCopy = updateGrupo3(updatedFormDataCopy, valor4, allData);
         updatedFormDataCopy = updateGrupo4(updatedFormDataCopy, valor4, allData);
         updatedFormDataCopy = updateGrupo5(updatedFormDataCopy, valor4, allData);
-        updatedFormDataCopy = updateGrupo6(updatedFormDataCopy, valor4);
+        updatedFormDataCopy = updateGrupo6(updatedFormDataCopy, valor4, allData);
         updatedFormDataCopy = updateGrupo7(updatedFormDataCopy, valor4, allData);
         updatedFormDataCopy = updateGrupo8(updatedFormDataCopy, valor4, allData);
         updatedFormDataCopy = updateGrupoCustom(updatedFormDataCopy, valor4, allData);

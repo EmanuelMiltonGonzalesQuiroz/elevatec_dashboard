@@ -26,7 +26,6 @@ const collectionExists = async (collectionName) => {
 
 // Función principal que carga los archivos JSON a Firestore
 const loadJsonFilesToFirestore = async () => {
-    console.log('loadJsonFilesToFirestore function is being called');
 
     // Lista de archivos JSON a cargar en Firestore
     const jsonFiles = [

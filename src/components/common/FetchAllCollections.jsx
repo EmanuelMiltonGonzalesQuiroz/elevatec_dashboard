@@ -9,11 +9,9 @@ const FetchAllCollections = ({ onDataFetched }) => {
     const fetchData = async () => {
       const currentTime = Date.now();
       if (currentTime - lastFetchTime < 5000) { 
-        console.log('Skipping fetch, waiting for cooldown period.');
         return;
       }
 
-      console.log('Fetching data from Firestore...'); // Log para verificar consultas a la BD
 
       const collections = [
         'basic_config',

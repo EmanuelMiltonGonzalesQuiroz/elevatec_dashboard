@@ -17,7 +17,6 @@ const capitalizeWords = (str) => {
 };
 
 const GroupClassesColumn = ({ groups, selectedGroup, handleGroupClick, textConfig }) => {
-  console.log(groups);
   return (
     <div className="w-1/4 p-4 overflow-y-auto max-h-[60vh]">
       <div className="bg-white p-4 rounded-lg shadow-lg min-h-full flex flex-col min-h-[50vh] overflow-x-auto">
