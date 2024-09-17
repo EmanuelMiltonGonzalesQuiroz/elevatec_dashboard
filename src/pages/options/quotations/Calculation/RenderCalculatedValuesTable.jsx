@@ -11,7 +11,9 @@ const RenderCalculatedValuesTable = ({ calculatedValues }) => (
     <tbody>
       {Object.entries(calculatedValues).map(([key, value], index) => (
         <tr key={index}>
-          <td className="px-4 py-2 border">{`VALOR ${index}`}</td>
+          <td className="px-4 py-2 border">
+            {index < 5 ? `VALOR ${index}` : `VAR${index - 4}`}
+          </td>
           <td className="px-4 py-2 border">{value}</td>
         </tr>
       ))}

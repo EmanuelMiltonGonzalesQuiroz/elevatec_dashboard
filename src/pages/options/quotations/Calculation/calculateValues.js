@@ -48,7 +48,29 @@ const calculateValues = (formData, allData) => {
     .filter(field => typeof formData[field] === 'object')
     .reduce((sum, key) => sum + (formData[key].COSTO_FINAL || 0), 0);
 
-  const VAR1 = sumaCostoFinal;
+    const sumaCostoFinalBanco = Object.keys(formData)
+    .filter(field => typeof formData[field] === 'object')
+    .reduce((sum, key) => {
+      const item = formData[key];
+      if ((item.ADUANA || 0) !== 0 && (item.TRANSPORTE || 0) !== 0) {
+        return sum + (item.COSTO_FINAL || 0);
+      }
+      return sum;
+    }, 0);
+
+  let VAR1 = sumaCostoFinal+sumaCostoFinalBanco * (getValueByName("Comision Bancaria (%)") / 100);;
+
+  // Revisar si Interpisos es "Sí" y ajustar VAR1 basado en el número de personas
+  if (formData["Interpisos"] === "Sí") {
+    const personas = formData["03_PERSONAS"] || 0;
+    if (personas <= 10) {
+      VAR1 += 320.2;
+    } else if (personas <= 20) {
+      VAR1 += 254.6;
+    } else if (personas <= 30) {
+      VAR1 += 181.9;
+    }
+  }
   const VAR2 = VAR1
   const VAR3 =  VAR1 * (getValueByName("Utilidad (%)") / 100);
   const VAR4 =VAR1+VAR2+VAR3

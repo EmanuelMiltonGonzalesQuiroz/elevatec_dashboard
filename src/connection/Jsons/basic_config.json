@@ -31,6 +31,11 @@
         "index": 6,
         "name": "Volumen de un contenedor de 40 pies (%)",
         "valor": 67.67
+      },
+      {
+        "index": 7,
+        "name": "Comision Bancaria (%)",
+        "valor": 2
       }
     ]
   }

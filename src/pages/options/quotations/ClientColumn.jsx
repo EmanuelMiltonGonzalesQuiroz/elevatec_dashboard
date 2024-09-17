@@ -20,7 +20,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const [locationName, setLocationName] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [locationError, setLocationError] = useState('');
-  const [isStateChecked, setIsStateChecked] = useState(false); // Para manejar el checkbox
+  const [isStateChecked, setIsStateChecked] = useState(false); // Para manejar el checkbox de Para el Estado
+  const [isInterpisosChecked, setIsInterpisosChecked] = useState(true); // Para manejar el checkbox de Interpisos
   const [stateValue, setStateValue] = useState(0); // Para manejar el valor del input del estado
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState([]); // Para manejar los métodos de pago seleccionados
 
@@ -41,6 +42,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     setStateValue(0); // Resetear el valor del estado
     setLocationError('');
     setSelectedPaymentMethods([]); // Resetear los métodos de pago seleccionados
+    setIsInterpisosChecked(true); // Resetear Interpisos a true
+    setIsStateChecked(false); // Resetear Para el Estado a false
     if (onReset) onReset();
   };
 
@@ -61,13 +64,23 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   };
 
   const handleStateCheckboxChange = (e) => {
-    setIsStateChecked(e.target.checked);
+    const isChecked = e.target.checked;
+    setIsStateChecked(isChecked);
+    updateFormData({ field: 'Para_el_Estado', value: isChecked ? 'Sí' : 'No' }, formData, setFormData); // Guardar el valor en formData
   };
 
   const handleStateValueChange = (e) => {
     const value = Math.max(0, e.target.value);
     setStateValue(value);
     updateFormData({ field: 'Estado', value }, formData, setFormData); // Guardar el valor del estado en formData
+  };
+
+  const handleInterpisosCheckboxChange = (e) => {
+    
+    const isChecked = e.target.checked;
+    console.log(isChecked)
+    setIsInterpisosChecked(isChecked);
+    updateFormData({ field: 'Interpisos', value: isChecked === true ? 'Sí' : 'No' }, formData, setFormData); // Guardar Interpisos en formData
   };
 
   const handleVendedorChange = (e) => {
@@ -167,6 +180,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </div>
           </div>
 
+          {/* Para el Estado Checkbox */}
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
@@ -174,7 +188,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               onChange={handleStateCheckboxChange}
               className="mr-2"
             />
-            Para el estado
+            Para el Estado
           </label>
 
           {isStateChecked && (
@@ -187,6 +201,17 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               placeholder="Ingrese un valor mayor a 0"
             />
           )}
+
+          {/* Interpisos Checkbox */}
+          <label className="mt-4 text-black font-semibold">
+            <input
+              type="checkbox"
+              checked={isInterpisosChecked}
+              onChange={handleInterpisosCheckboxChange}
+              className="mr-2"
+            />
+            Interpisos
+          </label>
         </div>
 
         <div className="flex flex-col lg:overflow-y-auto lg:h-48">

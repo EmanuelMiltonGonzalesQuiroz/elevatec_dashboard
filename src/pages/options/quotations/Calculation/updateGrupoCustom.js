@@ -2,6 +2,7 @@ import areStringsSimilar from './areStringsSimilar.js';
 import SearchValue from './SearchValue.jsx'; // Asegúrate de importar SearchValue
 
 const updateGrupoCustom = (formData, valor3, allData) => {
+  
 
   const elements = allData.elements?.items || [];
 
@@ -9,6 +10,7 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     const element = elements.find(el => areStringsSimilar(el.name, name));
     return element ? element.value : 0;
   };
+  
 
   // Función para buscar el gearleesPrecio según la clase de velocidad y el número de personas
   const findGearleesPrecio = (velocidadNombre, personas) => {
@@ -75,6 +77,8 @@ const updateGrupoCustom = (formData, valor3, allData) => {
         precioUnitario = findInternalConfigPrice("corredizas de cabina", formData['Velocidad'].nombre.replace('m/s', '').trim());
       } else if (description === "Corredizas_de_contrapeso") {
         precioUnitario = findInternalConfigPrice("corredizas de contrapeso", formData['Velocidad'].nombre.replace('m/s', '').trim());
+      }else if (description === "Amortiguador") {
+        precioUnitario = findInternalConfigPrice("amortiguador", formData['Velocidad'].nombre.replace('m/s', '').trim());
       }
 
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);

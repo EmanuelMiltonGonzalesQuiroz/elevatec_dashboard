@@ -125,8 +125,34 @@ const updateGrupo4 = (formData, valor3, allData) => {
 
       return unidades;
     },
-    "Cadena_de_compensacion": () => formData['01_PARADAS'] >= 10 ? 2 : 0,
-    "ACCESORIOS_DE_CADENA_DE_COMPENSACION": () => formData['01_PARADAS'] >= 10 ? 2 : 0,
+    "Cadena_de_compensacion": () => {
+      const unidades = formData['01_PARADAS'] >= 10 ? 2 : 0;
+      let precioUnitario = formData['Cadena_de_compensacion'].PRECIO_UNITARIO;
+      
+      // Si hay 16 o más personas, duplicar el precio unitario
+      if (formData['03_PERSONAS'] >= 16) {
+        precioUnitario *= 2;
+      }
+
+      // Actualizar formData con el nuevo precio unitario
+      formData['Cadena_de_compensacion'].PRECIO_UNITARIO = precioUnitario;
+
+      return unidades;
+    },
+    "ACCESORIOS_DE_CADENA_DE_COMPENSACION": () => {
+      const unidades = formData['01_PARADAS'] >= 10 ? 2 : 0;
+      let precioUnitario = formData['ACCESORIOS_DE_CADENA_DE_COMPENSACION'].PRECIO_UNITARIO;
+      
+      // Si hay 16 o más personas, duplicar el precio unitario
+      if (formData['03_PERSONAS'] >= 16) {
+        precioUnitario *= 2;
+      }
+
+      // Actualizar formData con el nuevo precio unitario
+      formData['ACCESORIOS_DE_CADENA_DE_COMPENSACION'].PRECIO_UNITARIO = precioUnitario;
+
+      return unidades;
+    },
   };
 
   Object.keys(descriptions).forEach(description => {
