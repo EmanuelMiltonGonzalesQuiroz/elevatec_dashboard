@@ -1,6 +1,6 @@
 // Archivo: Calculation/updateGrupo2.js
 
-import SearchValue from "./SearchValue.jsx";
+import SearchValue from "./SearchValue.js";
 
 const updateGrupo2 = (formData, valor3, allData) => {
   const descriptions = [
@@ -11,8 +11,8 @@ const updateGrupo2 = (formData, valor3, allData) => {
   ];
  
   // Actualiza el PRECIO_UNITARIO de "Pernos_brakets"
-  formData["Pernos_brakets"].PRECIO_UNITARIO = SearchValue(allData.price_table["price table"], "Pernos brakets (sapos)", "precio_unitario");
-  formData["Pernos_brakets"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table["price table"], "Pernos brakets (sapos)", "volumen_x_pieza_m3");
+  formData["Pernos_brakets"].PRECIO_UNITARIO = SearchValue(allData.price_table, "Pernos brakets (sapos)", "precio_unitario");
+  formData["Pernos_brakets"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table, "Pernos brakets (sapos)", "volumen_x_pieza_m3");
 
   descriptions.forEach((description) => {
     const key = Object.keys(formData).find(

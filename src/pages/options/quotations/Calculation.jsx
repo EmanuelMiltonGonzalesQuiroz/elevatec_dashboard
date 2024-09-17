@@ -6,7 +6,7 @@ import RenderComplexFieldsTable from './Calculation/RenderComplexFieldsTable';
 import Modal from './Calculation/Modal';
 import ActionModal from './Calculation/ActionModal';
 import PDFContent from './PDFGenerator/PDFContent';
-import SaveClientData from './Calculation/SaveClientData';  // Importa el nuevo componente
+import SaveClientData from './Calculation/SaveClientData';
 import areStringsSimilar from './Calculation/areStringsSimilar';
 import updateGrupo1 from './Calculation/updateGrupo1';
 import updateGrupo2 from './Calculation/updateGrupo2';
@@ -37,7 +37,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
         const priceTableItems = allData.price_table["price table"].items;
         const formDataKeys = Object.keys(formData);
 
-        let updatedFormDataCopy = { ...formData }; // Hacemos una copia del formData
+        let updatedFormDataCopy = { ...formData };
 
         // Actualiza los datos basados en la tabla de precios
         priceTableItems.forEach(item => {
@@ -51,7 +51,6 @@ const Calculation = ({ formData, allData, setFormData }) => {
             };
           }
         });
-        
 
         const calculatedValues = calculateValues(updatedFormDataCopy, allData);
         const valor4 = calculatedValues.valor4 || 0;
@@ -71,8 +70,8 @@ const Calculation = ({ formData, allData, setFormData }) => {
         const updatedFormDataString = JSON.stringify(updatedFormDataCopy);
         if (updatedFormDataString !== previousFormData) {
           setFormData(updatedFormDataCopy);
-          setUpdatedFormData(updatedFormDataCopy); // Actualiza el estado con el nuevo formData
-          setPreviousFormData(updatedFormDataString); // Guarda el formData actualizado para futuras comparaciones
+          setUpdatedFormData(updatedFormDataCopy);
+          setPreviousFormData(updatedFormDataString);
         }
       }
       setShowActionModal(true);
@@ -83,6 +82,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
 
   const handleConfirm = () => {
     const values = calculateValues(updatedFormData, allData);
+    
     setModalContent(
       <SaveClientData 
         formData={updatedFormData} 
@@ -99,7 +99,18 @@ const Calculation = ({ formData, allData, setFormData }) => {
 
   const handleViewPDF = () => {
     const values = calculateValues(updatedFormData, allData);
-    setModalContent(<PDFContent formData={updatedFormData} values={values} />);
+    setModalContent(<PDFContent formData={updatedFormData} values={values} type="sin_membrete" />);
+    setShowProcedureModal(true);
+  };
+
+  const handleViewPDFjalmeco = () => {
+    const values = calculateValues(updatedFormData, allData);
+    setModalContent(<PDFContent formData={updatedFormData} values={values} type="con_membretado_Jalmeco" />);
+    setShowProcedureModal(true);
+  };
+  const handleViewPDFtecnolif = () => {
+    const values = calculateValues(updatedFormData, allData);
+    setModalContent(<PDFContent formData={updatedFormData} values={values} type="con_membretado_Tecnolift" />);
     setShowProcedureModal(true);
   };
   
@@ -107,7 +118,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
     setModalContent(
       <div>
         <h2 className="text-xl font-bold">Valores Calculados</h2>
-        <RenderCalculatedValuesTable calculatedValues={calculateValues(updatedFormData,allData)} />
+        <RenderCalculatedValuesTable calculatedValues={calculateValues(updatedFormData, allData)} />
 
         <h2 className="text-xl font-bold">Campos Específicos de FormData</h2>
         <RenderFormDataFieldsTable formData={updatedFormData} fields={specificFields} />
@@ -119,7 +130,7 @@ const Calculation = ({ formData, allData, setFormData }) => {
     setShowProcedureModal(true);
   };
 
-  const closeProcedureModal = () => {
+  const closeProcedureModal = () => { 
     setShowProcedureModal(false);
   };
 
@@ -130,7 +141,9 @@ const Calculation = ({ formData, allData, setFormData }) => {
         onClose={() => setShowActionModal(false)}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
-        onViewPDF={handleViewPDF}
+        onViewPDFNoHeader={handleViewPDF}  // Nuevo manejador
+        onViewPDFtecnolif={handleViewPDFtecnolif} 
+        onViewPDFjalmeco={handleViewPDFjalmeco}  // Nuevo manejador
         onViewProcedure={handleViewProcedure}
       />
 

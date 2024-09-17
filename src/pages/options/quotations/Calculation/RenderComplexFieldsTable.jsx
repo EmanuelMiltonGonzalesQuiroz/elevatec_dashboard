@@ -87,7 +87,7 @@ const RenderComplexFieldsTable = ({ formData }) => {
     if (typeof value === 'number' || typeof value === 'string') {
       return value;
     }
-    return '-'; // Si es un objeto, array, o cualquier otro tipo no renderizable, muestra '-'
+    return '0'; // Si es un objeto, array, o cualquier otro tipo no renderizable, muestra '-'
   };
 
   return (

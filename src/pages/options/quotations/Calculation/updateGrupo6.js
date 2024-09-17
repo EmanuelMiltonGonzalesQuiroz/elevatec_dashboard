@@ -1,15 +1,14 @@
 const updateGrupo6 = (formData, valor3) => {
   const descriptions = {
-    "Indicador_de_Cabina": 1,
-    "Indicador_de_piso": formData['01_PARADAS'] || 1,
-    "Cableado_de_pisos": formData['03_RECORRIDO']*2 || 1, 
-    "LOP": formData['01_PARADAS'] || 1,
-    "TipoBotonera": 1,
-    "BotonesCabina": formData['01_PARADAS'] || 1,
-    "BotonesPiso": formData['01_PARADAS'] || 1,
-    "Tipo_de_Botonera_COP": 1,
-    "Botones_de_cabina": formData['01_PARADAS'] || 1,
-    "Botones_de_piso": formData['01_PARADAS'] || 1
+    "Indicador_de_Cabina": formData['Indicador_de_Cabina']?.UNIDADES,
+    "Indicador_de_piso": formData['01_PARADAS'] || 0,
+    "Cableado_de_pisos": formData['03_RECORRIDO']*2 || 0, 
+    "LOP": formData['01_PARADAS'] || 0,
+    "BotonesCabina": formData['01_PARADAS'] || 0,
+    "BotonesPiso": formData['01_PARADAS'] || 0,
+    "Tipo_de_Botonera_COP": formData['Tipo_de_Botonera_COP']?.UNIDADES,
+    "Botones_de_cabina": formData['01_PARADAS'] || 0,
+    "Botones_de_piso": formData['01_PARADAS'] || 0
   };
 
   Object.keys(descriptions).forEach(description => {

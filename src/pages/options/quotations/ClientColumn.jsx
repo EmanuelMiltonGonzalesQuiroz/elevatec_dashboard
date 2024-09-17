@@ -78,7 +78,6 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const handleInterpisosCheckboxChange = (e) => {
     
     const isChecked = e.target.checked;
-    console.log(isChecked)
     setIsInterpisosChecked(isChecked);
     updateFormData({ field: 'Interpisos', value: isChecked === true ? 'Sí' : 'No' }, formData, setFormData); // Guardar Interpisos en formData
   };

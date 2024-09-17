@@ -1,6 +1,6 @@
 // Archivo: Calculation/updateGrupo3.js
 
-import SearchValue from "./SearchValue.jsx";
+import SearchValue from "./SearchValue.js";
 
 const updateGrupo3 = (formData, valor3, allData) => {
   const descriptions = [
@@ -27,8 +27,8 @@ const updateGrupo3 = (formData, valor3, allData) => {
   formData["Riel_de_contrapeso"].PRECIO_UNITARIO = precioRielContrapeso;
 
   // Asignar los volúmenes correspondientes desde la tabla de precios
-  formData["Riel_de_cabina"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table["price table"], "Riel de cabina + Pernos", "volumen_x_pieza_m3");
-  formData["Riel_de_contrapeso"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table["price table"], "Riel de contrapeso +Pernos", "volumen_x_pieza_m3");
+  formData["Riel_de_cabina"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table, "Riel de cabina + Pernos", "volumen_x_pieza_m3");
+  formData["Riel_de_contrapeso"].VOLUMEN_EN_M3_X_PIEZA = SearchValue(allData.price_table, "Riel de contrapeso +Pernos", "volumen_x_pieza_m3");
 
   descriptions.forEach((description) => {
     const key = Object.keys(formData).find(

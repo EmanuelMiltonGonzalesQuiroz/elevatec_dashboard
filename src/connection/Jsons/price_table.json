@@ -245,7 +245,7 @@
         "name": "Tipo de Botonera COP",
         "volumen_x_pieza_m3": 0.15,
         "precio_unitario": 0,
-        "unidades": 0
+        "unidades": 1
       },
       {
         "index": 36,
@@ -287,7 +287,7 @@
         "name": "Pesacarga",
         "volumen_x_pieza_m3": 0.001,
         "precio_unitario": 0,
-        "unidades": 1
+        "unidades": 0
       },
       {
         "index": 42,

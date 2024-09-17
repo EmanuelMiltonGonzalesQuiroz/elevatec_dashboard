@@ -1,9 +1,7 @@
 import areStringsSimilar from './areStringsSimilar.js';
-import SearchValue from './SearchValue.jsx'; // Asegúrate de importar SearchValue
+import SearchValue from './SearchValue.js'; // Asegúrate de importar SearchValue
 
 const updateGrupoCustom = (formData, valor3, allData) => {
-  
-
   const elements = allData.elements?.items || [];
 
   const findElementValue = (name) => {
@@ -11,7 +9,6 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     return element ? element.value : 0;
   };
   
-
   // Función para buscar el gearleesPrecio según la clase de velocidad y el número de personas
   const findGearleesPrecio = (velocidadNombre, personas) => {
     const motorData = allData.motors[velocidadNombre];
@@ -21,7 +18,6 @@ const updateGrupoCustom = (formData, valor3, allData) => {
       return 0;
     }
   
-    // Encontrar el motor cuyo valor en personas sea mayor o igual al valor ingresado
     const motor = motorData.items.find(item => item.personas >= personas);
   
     if (maquina_de_traccion.toLowerCase().includes("gearlees")) {
@@ -33,7 +29,36 @@ const updateGrupoCustom = (formData, valor3, allData) => {
     }
   };
 
-  // Convertir la velocidad a la clave correspondiente en allData.motors
+  const findGearleesPotencia = (velocidadNombre, personas) => {
+    const motorData = allData.motors[velocidadNombre];
+    const maquina_de_traccion = formData['MaquinaTraccion']?.nombre || '';
+    
+    if (!motorData || !Array.isArray(motorData.items)) {
+      return 0;
+    }
+  
+    const motor = motorData.items.find(item => item.personas >= personas);
+  
+    if (maquina_de_traccion.toLowerCase().includes("gearlees")) {
+      return motor ? motor.gearleesPotencia : 0;
+    } else if (maquina_de_traccion.toLowerCase().includes("reductor")) {
+      return motor ? motor.conReducPotencia : 0;
+    } else {
+      return 0;
+    }
+  };
+
+  const findManeuverPrice = (potencia) => {
+    const maneuverData = allData.maneuver["maneuver"]?.items || [];
+    
+    // Encontrar el rango en el que cae la potencia
+    const maneuverItem = maneuverData.find(item => 
+      item.power >= potencia
+    );
+
+    return maneuverItem ? maneuverItem.price : 0;
+  };
+
   const velocidadClave = formData['Velocidad'].nombre.replace('/', '_').toLowerCase();
   const personas = formData['03_PERSONAS'] || 0;
 
@@ -77,13 +102,19 @@ const updateGrupoCustom = (formData, valor3, allData) => {
         precioUnitario = findInternalConfigPrice("corredizas de cabina", formData['Velocidad'].nombre.replace('m/s', '').trim());
       } else if (description === "Corredizas_de_contrapeso") {
         precioUnitario = findInternalConfigPrice("corredizas de contrapeso", formData['Velocidad'].nombre.replace('m/s', '').trim());
-      }else if (description === "Amortiguador") {
+      } else if (description === "Amortiguador") {
         precioUnitario = findInternalConfigPrice("amortiguador", formData['Velocidad'].nombre.replace('m/s', '').trim());
+      }
+
+      // Si estamos en "Maniobra", calcular el precio basado en la potencia
+      if (description === "Maniobra") {
+        const potencia = findGearleesPotencia(velocidadClave, personas);
+        precioUnitario = findManeuverPrice(potencia);
       }
 
       const volumenTotalM3 = unidades * (formData[key].VOLUMEN_EN_M3_X_PIEZA || 0);
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
+      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 * 0.5;
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       formData[key].UNIDADES = unidades;

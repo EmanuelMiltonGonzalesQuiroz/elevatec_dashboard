@@ -1,4 +1,5 @@
 import areStringsSimilar from './areStringsSimilar.js';
+import SearchValue from './SearchValue.js';
 
 const updateGrupo7 = (formData, valor3, allData) => {
   // Acceder a los items dentro de la tabla de precios y los grupos
@@ -28,7 +29,7 @@ const updateGrupo7 = (formData, valor3, allData) => {
       // Si EnergiaElectrica tiene 220 en su nombre, asigna 1 unidad a Ventiladores, de lo contrario 0
       return formData['EnergiaElectrica']?.nombre?.includes('220') ? 1 : 0;
     },
-    "AutoTransformador": formData['AutoTransformador']?.UNIDADES || 0,
+    "AutoTransformador": SearchValue(allData.price_table, "AutoTransformador", "unidades"),
     "ARD": formData['ARD']?.UNIDADES || 0,
     "Lector_de_Tarjetas": formData['LectorTarjetas'].nombre ==="No Requiere" ? 0 : 1,
   };
@@ -43,30 +44,23 @@ const updateGrupo7 = (formData, valor3, allData) => {
 
       // Condiciones especiales para ARD
       if (description === "ARD") {
-        if (formData['ARD']?.nombre?.includes("No requiere!")) {
+        if (formData['ARD']?.nombre?.includes("No requiere")) {
           unidades = 0;
         }
         precioUnitario = formData['ARD'].valor;
-        formData['ARD'].PRECIO_UNITARIO = precioUnitario;
+        formData['ARD'].PRECIO_UNITARIO = precioUnitario; 
       }
 
       // Condiciones especiales para AutoTransformador
-      if (description === "AutoTransformador") {
-        if (formData['EnergiaElectrica']?.nombre?.includes("220")) {
-          unidades = 1;
-        } else {
-          unidades = 0;
-        }
-      }
 
       // Para Pasamanos_adicional y Espejo_adicional, obtener precio_unitario desde los grupos y volumen desde la tabla de precios
       if (description === "Pasamanos_adicional") {
-        const itemData = findPriceTableItem("Pasamanos adional");
-        volumenPorPieza = itemData ? itemData.volumen_x_pieza_m3 : 0;
+        volumenPorPieza = SearchValue(allData.price_table, "Pasamanos adional", "volumen_x_pieza_m3");
         precioUnitario = formData['PasamanosAdicional']?.valor;
 
         // Actualización en formData de las unidades y precio unitario
         formData['Pasamanos_adicional'].UNIDADES = unidades;
+        formData['Pasamanos_adicional'].VOLUMEN_EN_M3_X_PIEZA = volumenPorPieza
         formData['Pasamanos_adicional'].PRECIO_UNITARIO = precioUnitario;
 
       } else if (description === "Espejo_adicional") {
@@ -116,10 +110,12 @@ const updateGrupo7 = (formData, valor3, allData) => {
      
 
       // Calcular los valores basados en unidades y volúmenes
+      const precioUnitarioSeguro = precioUnitario || 0;
       const volumenTotalM3 = unidades * volumenPorPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * precioUnitario) + transporte) * 0.3 *0.5;
-      const costoFinal = aduana + transporte + (precioUnitario * unidades);
+      const aduana = ((unidades * precioUnitarioSeguro) + transporte) * 0.3 * 0.5;
+      const costoFinal = aduana + transporte + (precioUnitarioSeguro * unidades);
+
 
       // Actualizar los valores en formData
       formData[key].UNIDADES = unidades;

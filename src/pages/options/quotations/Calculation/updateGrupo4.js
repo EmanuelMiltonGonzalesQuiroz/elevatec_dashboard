@@ -1,4 +1,4 @@
-import SearchValue from "./SearchValue.jsx";
+import SearchValue from "./SearchValue.js";
 
 const updateGrupo4 = (formData, valor3, allData) => {
 
@@ -40,16 +40,17 @@ const updateGrupo4 = (formData, valor3, allData) => {
       } else {
         unidades = 1; // Valor predeterminado si no se encuentra tracción específica
       }
-
-      const volumenEnM3XPieza = formData['Cable_de_traccion'].VOLUMEN_EN_M3_X_PIEZA;
+      const precioUnitario = SearchValue(allData.price_table, "Cable de traccion", "precio_unitario")
+      formData['Cable_de_traccion'].PRECIO_UNITARIO= precioUnitario || 0
+      const volumenEnM3XPieza = recorrido*0.01*0.01;
       const volumenTotalM3 = unidades * volumenEnM3XPieza;
       const transporte = (valor3 || 0) * volumenTotalM3;
-      const aduana = ((unidades * (formData['Cable_de_traccion'].PRECIO_UNITARIO || 0)) + transporte) * 0.3 * 0.5;
-      const costoFinal = aduana + transporte + ((formData['Cable_de_traccion'].PRECIO_UNITARIO || 0) * unidades);
+      const aduana = ((unidades * (precioUnitario || 0)) + transporte) * 0.3 * 0.5;
+      const costoFinal = aduana + transporte + ((precioUnitario || 0) * unidades);
 
       formData['Cable_de_traccion'] = {
-        ...formData['Cable_de_traccion'],
         UNIDADES: unidades,
+        PRECIO_UNITARIO: precioUnitario,
         VOLUMEN_EN_M3_X_PIEZA: volumenEnM3XPieza,
         VOLUMEN_TOTAL_M3: volumenTotalM3,
         TRANSPORTE: transporte,
@@ -104,6 +105,7 @@ const updateGrupo4 = (formData, valor3, allData) => {
       const unidades = recorrido * 2;
       // Usando SearchValue para encontrar el precio unitario y volumen de la tabla de precios
       const valorBuscado = "Cable de 6mm Regulador de velocidad";
+      console.log(valorBuscado)
       const precioUnitario = SearchValue(allData.price_table, valorBuscado, "precio_unitario");
       const volumenEnM3XPieza = SearchValue(allData.price_table, valorBuscado, "volumen_x_pieza_m3");
 
@@ -113,7 +115,6 @@ const updateGrupo4 = (formData, valor3, allData) => {
       const costoFinal = aduana + transporte + (precioUnitario * unidades);
 
       formData['Cable_de_8mm'] = {
-        ...formData['Cable_de_8mm'],
         UNIDADES: unidades,
         VOLUMEN_EN_M3_X_PIEZA: volumenEnM3XPieza,
         VOLUMEN_TOTAL_M3: volumenTotalM3,

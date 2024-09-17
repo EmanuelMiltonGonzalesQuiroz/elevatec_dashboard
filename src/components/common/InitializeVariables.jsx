@@ -108,6 +108,7 @@ const useInitializeVariables = () => {
       TipoBotonera: [],
       BotonesCabina: [],
       BotonesPiso: [],
+      Interpisos: "Si"
     };
 
     setVariables(initVars);

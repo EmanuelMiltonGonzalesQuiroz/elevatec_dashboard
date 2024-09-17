@@ -752,6 +752,32 @@
           "tipo": "Comun"
         }
       ]
-    }
+    },
+    {
+      "clase": "Interpiso",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "CONTROLADOR DE PISOS",
+          "valor": 320.20,
+          "descripcion": "CONTROLADOR SOLO PARA 10 PISOS O MENOS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "CONTROLADOR INTERPISOS",
+          "valor": 254.60,
+          "descripcion": "CONTROLADOR 2800 BS INTERPISOS 2000 BS SI TIENE 10 A 20 PISOS CADA PISO 6800 BS",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "TARJETADE INTER PISOS",
+          "valor": 181.90,
+          "descripcion": "Si tiene más de 20 pisos se aumenta a 436,4 dólares 181,9 dólares",
+          "tipo": "Comun"
+        }
+      ]
+    }    
   ]
   

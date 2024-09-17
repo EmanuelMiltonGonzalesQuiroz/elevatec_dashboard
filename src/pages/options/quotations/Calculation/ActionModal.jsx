@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProcedure, onViewPDFNoHeader, onViewPDFWithHeader }) => {
+const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProcedure, onViewPDFNoHeader,onViewPDFjalmeco,onViewPDFtecnolif, onViewPDFWithHeader }) => {
   if (!show) {
     return null;
   }
@@ -11,25 +11,25 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
         <div className="p-4 flex flex-col items-center">
           
           <button
-            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full" 
-            onClick={onViewPDF}
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewPDFNoHeader}  // PDF sin membrete
           >
-            Ver PDF sin membretado 
+            Ver PDF 
           </button>
 
           <button
-            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full"
-            onClick={onViewPDFWithHeader}
-          >
-            Ver PDF con membretado  Jalmeco
-          </button>
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+              onClick={onViewPDFjalmeco}
+            >
+              Ver PDF Jalmeco
+            </button>
 
-          <button
-            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full"
-            onClick={onViewPDFWithHeader}
-          >
-            Ver PDF con membretado Tecnolift
-          </button>
+            <button
+              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+              onClick={onViewPDFtecnolif}
+            >
+              Ver PDF Tecnolift
+            </button>
 
           
           <button

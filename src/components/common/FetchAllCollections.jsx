@@ -21,6 +21,7 @@ const FetchAllCollections = ({ onDataFetched }) => {
         'internal_config',
         'motors',
         'price_table',
+        "maneuver"
       ];
 
       const dataPromises = collections.map(async (collectionName) => {
@@ -35,7 +36,7 @@ const FetchAllCollections = ({ onDataFetched }) => {
 
       const results = await Promise.all(dataPromises);
 
-      const [basicConfig, doors, elements, groups, internalConfig, motors, priceTable] = results;
+      const [basicConfig, doors, elements, groups, internalConfig, motors, priceTable, maneuver] = results;
 
       onDataFetched({
         basic_config: basicConfig,
@@ -45,6 +46,7 @@ const FetchAllCollections = ({ onDataFetched }) => {
         internal_config: internalConfig,
         motors: motors,
         price_table: priceTable,
+        maneuver:maneuver
       });
 
       setLastFetchTime(currentTime); // Actualiza el tiempo del último fetch

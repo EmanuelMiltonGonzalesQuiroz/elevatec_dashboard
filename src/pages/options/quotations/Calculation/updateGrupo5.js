@@ -46,7 +46,7 @@ const updateGrupo5 = (formData, valor3, allData) => {
     medidaPuerta,
     'p_epoxi'
   );
-
+ 
   // Puertas en vidrio
   const precioPuertasVidrio = getPrecioUnitario(
     tipoPuerta, 
