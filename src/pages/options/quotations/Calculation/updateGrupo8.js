@@ -4,14 +4,7 @@ import SearchValue from './SearchValue.js';
 const updateGrupo8 = (formData, valor3, allData) => {
   
   const descriptions = {
-    "Embarque_Simple_Doble_Triple": () => {
-      const nombreEmbarque = formData['Embarque']?.nombre?.toLowerCase() || '';
-      if (nombreEmbarque.includes('simple')) return 0; 
-      if (nombreEmbarque.includes('doble 90')) return 1;
-      if (nombreEmbarque.includes('doble 180')) return 1;
-      if (nombreEmbarque.includes('triple')) return 2;
-      return 0; // Valor por defecto si no coincide
-    },
+    "Embarque_Simple_Doble_Triple": formData['Embarque']?.UNIDADES|| 0,
     "MRL_MR": formData['Tipo']?.UNIDADES || 0,
     "Pesacarga": formData['Pesacarga'].valor !== 0 ? 1 : 0,
     "Regenerador_de_energia": formData['Regenerador_de_energia'].valor !== 0 ? 1 : 0,

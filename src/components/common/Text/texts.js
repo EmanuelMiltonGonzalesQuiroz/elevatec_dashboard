@@ -228,6 +228,8 @@ export const mainFormColumn2Text = {
   cabinIndicatorConcept: "",
   floorIndicator: <>{redAsterisk} Indicador de Piso</>,
   floorIndicatorConcept: "",
+  Paquetes: <>{redAsterisk} Paquetes</>,
+  PaquetesConcept: "",
   tractionMachine: <>{redAsterisk} Máquina de tracción</>,
   tractionMachineConcept: "",
   traction: <>{redAsterisk} Tracción</>,

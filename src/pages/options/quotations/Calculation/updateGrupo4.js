@@ -105,7 +105,6 @@ const updateGrupo4 = (formData, valor3, allData) => {
       const unidades = recorrido * 2;
       // Usando SearchValue para encontrar el precio unitario y volumen de la tabla de precios
       const valorBuscado = "Cable de 6mm Regulador de velocidad";
-      console.log(valorBuscado)
       const precioUnitario = SearchValue(allData.price_table, valorBuscado, "precio_unitario");
       const volumenEnM3XPieza = SearchValue(allData.price_table, valorBuscado, "volumen_x_pieza_m3");
 

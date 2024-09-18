@@ -26,11 +26,12 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                 <td className="py-3 px-6 text-left whitespace-nowrap">{location.id}</td>
                 <td className="py-3 px-6 text-left">
                   <div className="flex flex-col">
-                    <span>{location.Tipo[0]}</span>
-                    <span>{location.Tipo[1]}</span>
-                    <span>{location.Tipo[2]}</span>
+                    <span>{location.Tipo ? location.Tipo[0] || 0 : 0}</span>
+                    <span>{location.Tipo ? location.Tipo[1] || 0 : 0}</span>
+                    <span>{location.Tipo ? location.Tipo[2] || 0 : 0}</span>
                   </div>
                 </td>
+
                 <td className="py-3 px-6 text-left">{location.client}</td>
                 <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
                 <td className="py-3 px-6 text-left">

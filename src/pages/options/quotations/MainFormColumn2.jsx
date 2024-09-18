@@ -12,7 +12,8 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
     IndicadorPiso: [],
     MaquinaTraccion: [],
     Traccion: [],
-    Velocidad: []
+    Velocidad: [],
+    Paquetes: [],
   });
 
   // Cargar opciones desde allData cuando esté disponible
@@ -26,6 +27,7 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
         IndicadorCabina: allData.groups['Indicador de Cabina']?.items || [],
         IndicadorPiso: allData.groups['Indicador de Piso']?.items || [],
         MaquinaTraccion: allData.groups['Maquina de Tracción']?.items || [],
+        Paquetes: allData.groups['Paquetes']?.items || [],
         Traccion: allData.groups.Traccion?.items || [],
         Velocidad: allData.motors ? Object.keys(allData.motors).map(speed => speed.replace('_', '/')) : []
       });
@@ -94,6 +96,7 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       {renderSelectForGroup('EnergiaElectrica', mainFormColumn2Text.electricity, options.EnergiaElectrica, 'Energia Electrica', mainFormColumn2Text.electricityConcept)}
       {renderSelectForGroup('Indicador_de_Cabina', mainFormColumn2Text.cabinIndicator, options.IndicadorCabina, 'Indicador de Cabina', mainFormColumn2Text.cabinIndicatorConcept)}
       {renderSelectForGroup('Indicador_de_piso', mainFormColumn2Text.floorIndicator, options.IndicadorPiso, 'Indicador de Piso', mainFormColumn2Text.floorIndicatorConcept)}
+      {renderSelectForGroup('Paquetes', mainFormColumn2Text.Paquetes, options.Paquetes, 'Paquetes', mainFormColumn2Text.PaquetesConcept)}
       {renderSelectForGroup('MaquinaTraccion', mainFormColumn2Text.tractionMachine, options.MaquinaTraccion, 'Maquina de tracción', mainFormColumn2Text.tractionMachineConcept)}
       {renderSelectForGroup('Traccion', mainFormColumn2Text.traction, options.Traccion, 'Traccion', mainFormColumn2Text.tractionConcept)}
       {renderSelectForGroup('Velocidad', mainFormColumn2Text.speed, options.Velocidad.map(speed => ({ nombre: speed })), 'Velocidad', mainFormColumn2Text.speedConcept)}

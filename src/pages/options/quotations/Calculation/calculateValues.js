@@ -43,13 +43,60 @@ const calculateValues = (formData, allData) => {
     }
   });
 
-  // Calcular suma de COSTO_FINAL después de restablecer los valores
-  const sumaCostoFinal = Object.keys(formData)
-    .filter(field => typeof formData[field] === 'object')
-    .reduce((sum, key) => sum + (formData[key].COSTO_FINAL || 0), 0);
-
-    const sumaCostoFinalBanco = Object.keys(formData)
-    .filter(field => typeof formData[field] === 'object')
+  // Lista de nombres específicos que deben incluirse en el cálculo de sumaCostoFinalBanco
+  const nombresValidosParaSuma = [
+    "Ramplus",
+    "Pernos_brakets",
+    "Pernos_empalme_braket",
+    "Riel_de_cabina",
+    "Riel_de_contrapeso",
+    "Pernos_de_motor",
+    "Cable_de_traccion",
+    "Chumbadores",
+    "Poleas",
+    "Corredizas_de_cabina",
+    "Corredizas_de_contrapeso",
+    "Puerta_de_cabina",
+    "Puertas_en_inoxidable",
+    "Puertas_En_Epoxi",
+    "Puertas_En_Vidrio",
+    "Regulador_de_velocidad",
+    "Freno",
+    "Cable_de_8mm",
+    "Cadena_de_compensacion",
+    "ACCESORIOS_DE_CADENA_DE_COMPENSACION",
+    "Motor",
+    "Maniobra",
+    "Indicador_de_Cabina",
+    "Indicador_de_piso",
+    "Cableado_de_pisos",
+    "LOP",
+    "Tipo_de_Botonera_COP",
+    "Botones_de_cabina",
+    "Botones_de_piso",
+    "Regla",
+    "Embarque_Simple_Doble_Triple",
+    "Pesacarga",
+    "Regenerador_de_energia",
+    "Indicador_de_solo_boton",
+    "Llavines_con_llave",
+    "Pasamanos_adicional",
+    "Espejo_adicional",
+    "Sistema_de_monitoreo",
+    "Pre_Apertura_de_puertas",
+    "AutoTransformador",
+    "ARD",
+    "Ventiladores",
+    "Aire_acondicionado",
+    "Lector_de_Tarjetas",
+    "Señalizacion_Luminosas_de_Pisos",
+    "Amortiguador",
+    "Encoder"
+  ];
+  
+  // Calcular suma de COSTO_FINAL para campos con nombres en `nombresValidosParaSuma`
+  const sumaCostoFinalBanco = Object.keys(formData)
+    .filter(field => typeof formData[field] === 'object' && nombresValidosParaSuma.includes(field))
     .reduce((sum, key) => {
       const item = formData[key];
       if ((item.ADUANA || 0) !== 0 && (item.TRANSPORTE || 0) !== 0) {
@@ -58,25 +105,32 @@ const calculateValues = (formData, allData) => {
       return sum;
     }, 0);
 
-  let VAR1 = sumaCostoFinal+sumaCostoFinalBanco * (getValueByName("Comision Bancaria (%)") / 100);;
+    const sumaCostoFinal = Object.keys(formData)
+    .filter(field => typeof formData[field] === 'object')
+    .reduce((sum, key) => sum + (formData[key].COSTO_FINAL || 0), 0); 
+
+  let VAR1 = sumaCostoFinal + (sumaCostoFinalBanco * (getValueByName("Comision Bancaria (%)") / 100));
+
+
+
 
   // Revisar si Interpisos es "Sí" y ajustar VAR1 basado en el número de personas
-  if (formData["Interpisos"] === "Sí" || formData["Interpisos"] === undefined) {
+  if (formData["Interpiso"] === "Sí" || formData["Interpiso"] === undefined) {
     const paradas = formData["01_PARADAS"] || 0;
-    
+
     // Buscar el valor correcto en allData.groups["Interpisos"]
-    const interpisosItems = allData.groups["Interpisos"]?.items || [];
-  
+    const interpisosItems = allData.groups["Interpiso"]?.items || [];
+
     // Valores por defecto en caso de que no se encuentren en los datos
     let valorMenosDe10Pisos = 320.2;
-    let valorEntre10Y20Pisos = 254.6;
-    let valorMasDe20Pisos = 181.9;
-  
+    let valorEntre10Y20Pisos = 210.6;
+    let valorMasDe20Pisos = 297.18;
+
     // Buscar los valores en los items de Interpisos
     const itemMenosDe10Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR DE PISOS") && item.descripcion.includes("10 PISOS O MENO"));
     const itemEntre10Y20Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR INTERPISOS") && item.descripcion.includes("10 A 20 PISOS"));
     const itemMasDe20Pisos = interpisosItems.find(item => item.nombre.includes("TARJETADE INTER PISOS") && item.descripcion.includes("más de 20 pisos"));
-  
+
     // Si existen los valores en los datos, actualizarlos
     if (itemMenosDe10Pisos) {
       valorMenosDe10Pisos = itemMenosDe10Pisos.valor;
@@ -87,7 +141,7 @@ const calculateValues = (formData, allData) => {
     if (itemMasDe20Pisos) {
       valorMasDe20Pisos = itemMasDe20Pisos.valor;
     }
-  
+
     // Aplicar los valores según el número de paradas
     if (paradas <= 10) {
       VAR1 += valorMenosDe10Pisos;
@@ -97,15 +151,22 @@ const calculateValues = (formData, allData) => {
       VAR1 += valorMasDe20Pisos;
     }
   }
-  
-  const VAR2 = VAR1
-  const VAR3 =  VAR1 * (getValueByName("Utilidad (%)") / 100);
-  const VAR4 =VAR2+VAR3
-  const VAR5= VAR4* (getValueByName("Factura (%)") / 100);
-  const VAR6= VAR4+VAR5
-  const VAR7= VAR6*formData["08_Número de ascensores"]
 
-  return { valor1, valor2, valor3, valor4, VAR1,VAR2,VAR3,VAR4,VAR5,VAR6,VAR7 };
+  const VAR2 = VAR1;
+  const VAR3 = VAR1 * 0//(getValueByName("Utilidad (%)") / 100);
+  const VAR4 = VAR2 + VAR3;
+  const VAR5 = VAR4 * 0//(getValueByName("Factura (%)") / 100);
+  let VAR6 = VAR4 + VAR5 ;
+  let VAR7 = VAR6 * (formData["08_Número de ascensores"] || 1) ;
+  if(formData["Estado"] && formData["Para_el_Estado"] === "Sí"){
+    VAR6 += ((formData["Estado"] || 0) / (formData["08_Número de ascensores"] || 1));
+    VAR7 += (formData["Estado"] || 0);
+  }
+
+
+  
+
+  return { valor1, valor2, valor3, valor4, VAR1, VAR2, VAR3, VAR4, VAR5, VAR6, VAR7 };
 };
 
 export default calculateValues;

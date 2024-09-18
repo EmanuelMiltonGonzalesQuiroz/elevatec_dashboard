@@ -17,7 +17,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     pit: initialFieldState('06_Foso'),
     height: initialFieldState('07_Huida'),
     numElevators: initialFieldState('08_Número de ascensores'),
-    supportChains: initialFieldState(1),// Inicializa a 1 si no hay cadenas adicionales
+    supportChains: initialFieldState(1), // Inicializa a 1 si no hay cadenas adicionales
     addSupportChains: 'no', // Por defecto es 'no'
   });
 
@@ -30,18 +30,6 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
   const [floorAssignments, setFloorAssignments] = useState(initializeFloorAssignments(localFields.stops));
   const [doorError] = useState('');
   const [floorAssignmentError, setFloorAssignmentError] = useState('');
-
-  const floorOptions = (index) => [
-    'Seleccionar opción',
-    ...Array.from({ length: localFields.stops }, (_, i) => `Piso ${i + 1}`),
-    'Subsuelo',
-    'Garaje',
-    'Mezanine',
-    'Terraza',
-    'Planta baja',
-    'Otro',
-  ];
-  
 
   useEffect(() => {
     setFormData(prev => ({
@@ -213,17 +201,12 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
                 <label className="block text-sm font-bold mb-1">
                   {mainFormColumn1Text.assignStop} {index + 1}
                 </label>
-                <select
-                  className="p-2 border rounded focus:outline-none w/full"
+                <input
+                  type="text"
+                  className="p-2 border rounded focus:outline-none w-full"
                   value={assignment}
                   onChange={(e) => handleFloorAssignmentChange(index, e.target.value)}
-                >
-                  {floorOptions(index).map((floor, i) => (
-                    <option key={i} value={floor}>
-                      {floor}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             ))}
           </div>

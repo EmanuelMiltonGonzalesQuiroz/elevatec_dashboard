@@ -27,7 +27,7 @@ const updateGrupo7 = (formData, valor3, allData) => {
     "Aire_acondicionado": formData['Aire_acondicionado']?.UNIDADES || 0,
     "Ventiladores": () => {
       // Si EnergiaElectrica tiene 220 en su nombre, asigna 1 unidad a Ventiladores, de lo contrario 0
-      return formData['EnergiaElectrica']?.nombre?.includes('220') ? 1 : 0;
+      return formData['Ventilacion']?.valor ? 1 : 0;
     },
     "AutoTransformador": SearchValue(allData.price_table, "AutoTransformador", "unidades"),
     "ARD": formData['ARD']?.UNIDADES || 0,

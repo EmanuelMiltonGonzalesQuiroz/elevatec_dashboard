@@ -361,20 +361,48 @@
         },
         {
           "index": 2,
-          "nombre": "Local sistema LFRD",
-          "valor": 500,
+          "nombre": "LRD1",
+          "valor": 23,
           "descripcion": "S/O",
           "tipo": "Avanzada"
         },
         {
           "index": 3,
-          "nombre": "Importado Sistema Mifare",
-          "valor": 1100,
-          "descripcion": "en programa sera 1100",
+          "nombre": "LRD2",
+          "valor": 56.2,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 4,
+          "nombre": "LRD3",
+          "valor": 116,
+          "descripcion": "S/O",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 5,
+          "nombre": "LRD4",
+          "valor": 91.3,
+          "descripcion": "",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 6,
+          "nombre": "LRD5",
+          "valor": 42.2,
+          "descripcion": "",
+          "tipo": "Avanzada"
+        },
+        {
+          "index": 7,
+          "nombre": "LRD6",
+          "valor": 83.4,
+          "descripcion": "",
           "tipo": "Avanzada"
         }
       ]
-    },
+    },    
     {
       "clase": "Maquina de Tracción",
       "items": [
@@ -520,7 +548,7 @@
         {
           "index": 2,
           "nombre": "SIN SALA MRL",
-          "valor": 1000,
+          "valor": 0,
           "descripcion": "S/O",
           "tipo": "Comun"
         }
@@ -758,26 +786,69 @@
       "items": [
         {
           "index": 1,
-          "nombre": "CONTROLADOR DE PISOS",
-          "valor": 320.20,
+          "nombre": "CONTROLADOR DE PISOS + TRANSFORMADOR",
+          "valor": 325.10,
           "descripcion": "CONTROLADOR SOLO PARA 10 PISOS O MENOS",
           "tipo": "Comun"
         },
         {
           "index": 2,
-          "nombre": "CONTROLADOR INTERPISOS",
-          "valor": 254.60,
+          "nombre": "CONTROLADOR INTERPISOS + TRANSFORMADOR",
+          "valor": 210.60,
           "descripcion": "CONTROLADOR 2800 BS INTERPISOS 2000 BS SI TIENE 10 A 20 PISOS CADA PISO 6800 BS",
           "tipo": "Comun"
         },
         {
           "index": 3,
           "nombre": "TARJETADE INTER PISOS",
-          "valor": 181.90,
+          "valor": 297.18,
           "descripcion": "Si tiene más de 20 pisos se aumenta a 436,4 dólares 181,9 dólares",
           "tipo": "Comun"
         }
       ]
-    }    
+    },
+    {
+      "clase": "Paquetes",
+      "items": [
+        {
+          "index": 1,
+          "nombre": "PAQUETE 1",
+          "valor": 100.00,
+          "descripcion": "DESCRIPCION LARGA",
+          "tipo": "Comun"
+        },
+        {
+          "index": 2,
+          "nombre": "PAQUETE 2",
+          "valor": 200.00,
+          "descripcion": "",
+          "tipo": "Comun"
+        },
+        {
+          "index": 3,
+          "nombre": "PAQUETE 3",
+          "valor": 300.00,
+          "descripcion": "",
+          "tipo": "Comun"
+        },
+        {
+          "index": 4,
+          "nombre": "PAQUETE 4",
+          "valor": 400.00,
+          "descripcion": "",
+          "tipo": "Comun"
+        },
+        {
+          "index": 5,
+          "nombre": "NO REQUIERE",
+          "valor": 0.00,
+          "descripcion": "",
+          "tipo": "Comun"
+        }
+      ]
+    }
+    
   ]
+  
+
   

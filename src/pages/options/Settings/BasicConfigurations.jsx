@@ -56,10 +56,11 @@ const BasicConfigurations = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-100 text-black">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
+    <div className="p-4 bg-gray-100 text-black max-h-[80vh]">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-h-[65vh]">
         <h2 className="text-2xl font-bold mb-6">{basicConfigurationsText.title}</h2>
-        <table className="min-w-full bg-white border">
+        <div className="overflow-x-auto max-h-[50vh]">
+          <table className="min-w-full bg-white border">
           <thead>
             <tr className="text-black font-bold">
               <th className="border px-4 py-2">{basicConfigurationsText.index}</th>
@@ -68,7 +69,7 @@ const BasicConfigurations = () => {
               <th className="border px-4 py-2">{basicConfigurationsText.actions}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody> 
             {configurations.map((config, index) => (
               <tr key={index} className="text-black">
                 <td className="border px-4 py-2">{config.index}</td>
@@ -86,6 +87,8 @@ const BasicConfigurations = () => {
             ))}
           </tbody>
         </table>
+        </div>
+        
       </div>
 
       {isModalOpen && (

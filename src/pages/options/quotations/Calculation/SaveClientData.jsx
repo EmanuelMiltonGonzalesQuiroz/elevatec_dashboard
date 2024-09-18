@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { db } from '../../../../connection/firebase.js';
-import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs,  query, orderBy } from 'firebase/firestore';
 
 const sanitizeDocId = (id) => {
   return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
@@ -84,12 +84,41 @@ const SaveClientData = ({ formData, additionalData }) => {
 
         // Guardar la ubicación en la colección 'locations'
         const locationsCol = collection(db, 'locations');
-        const locationData = {
-          location: cleanedFormData['Ubicacion'], // Latitud y Longitud de la ubicación
-          state: 'pendiente', // Estado inicial
-          client: clientName, // Nombre del cliente
-          description: cleanedFormData['Ubicacion_nombre']
-        };
+
+// Función para obtener el ID disponible más bajo
+const getLowestAvailableId = async () => {
+  const q = query(locationsCol, orderBy("id")); // Ordenar por ID
+  const querySnapshot = await getDocs(q);
+  let lowestAvailableId = 1; // Empezamos desde el ID 1
+  const ids = querySnapshot.docs.map(doc => parseInt(doc.data().id, 10)).filter(id => !isNaN(id)); // Convertir los IDs a números
+  
+  // Buscar el ID más bajo disponible
+  for (let i = 1; i <= ids.length + 1; i++) {
+    if (!ids.includes(i)) {
+      lowestAvailableId = i;
+      break;
+    }
+  }
+
+  return lowestAvailableId.toString(); // Devolver el ID como cadena
+};
+
+// Obtener el ID disponible más bajo y luego guardar el documento
+const lowestAvailableId = await getLowestAvailableId();
+
+const locationData = {
+  Direccion: cleanedFormData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
+  Tipo: [
+    cleanedFormData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
+    cleanedFormData['Tipo_1'] || "CA", // Segundo valor en el array
+    cleanedFormData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
+  ],
+  client: clientName || "Cliente desconocido", // Nombre del cliente o valor por defecto
+  createdAt: timestamp, // Marca de tiempo generada por Firestore
+  id: lowestAvailableId, // ID más bajo disponible
+  location: cleanedFormData['Ubicacion'],
+  state: "Construccion" // Estado específico
+};
         await setDoc(doc(locationsCol, docId), locationData);
 
       } catch (err) {
