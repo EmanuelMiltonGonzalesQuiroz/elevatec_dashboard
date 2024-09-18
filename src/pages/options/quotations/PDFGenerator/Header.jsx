@@ -8,7 +8,13 @@ const Header = ({ doc, config, startY }) => {
   doc.setFontSize(12);
   
   // Ciudad y fecha
-  doc.text(`${city}, ${date}`, leftMargin, currentY);
+  if (city && city.toLowerCase().includes("transporte por el cliente")) {
+    doc.text(`_____________ , ${date}`, leftMargin, currentY); // Espacio agregado antes de la coma
+} else {
+    doc.text(`${city}, ${date}`, leftMargin, currentY);
+}
+
+
   currentY += lineSpacing;
 
   // Referencia

@@ -9,7 +9,15 @@ const TechnicalSpecifications = ({ doc, formData, startY }) => {
   ));
 
   const technicalSpecifications = [
-    [{ content: "Ciudad de Instalación", styles: { fontStyle: 'bold' } }, formData['Ciudad']?.nombre || "Falta"],
+    [{ 
+      content: "Ciudad de Instalación", 
+      styles: { fontStyle: 'bold' } 
+  }, 
+  formData['Ciudad']?.nombre?.toLowerCase().includes("transporte por el cliente") 
+      ? "_____________" 
+      : formData['Ciudad']?.nombre || "Falta"
+  ],
+  
     [{ content: "Marca", styles: { fontStyle: 'bold' } }, "Elevatec"],
     [{ content: "Componentes principales de fabricación europea. Acabados y estética de cabina de fabricación boliviana", colSpan: 2, styles: { halign: 'center' } }],
     [{ content: "Cantidad", styles: { fontStyle: 'bold' } }, formData['08_Número de ascensores'] || "Falta"],
@@ -22,8 +30,8 @@ const TechnicalSpecifications = ({ doc, formData, startY }) => {
     [{ content: "N° Paradas", styles: { fontStyle: 'bold' } }, formData['01_PARADAS'] || "Falta"],
     [{ content: "Recorrido", styles: { fontStyle: 'bold' } }, formData['03_RECORRIDO'] || "Falta"],
     [{ content: "Embarque", styles: { fontStyle: 'bold' } }, formData['Embarque']?.nombre || "Falta"],
-    [{ content: "Datos eléctricos", styles: { fontStyle: 'bold' } }, formData['DatosElectricos'] || "Falta"],
-    [{ content: "Máquina de tracción", styles: { fontStyle: 'bold' } }, formData['MaquinaTraccion']?.nombre || "Falta"],
+    [{ content: "Datos eléctricos", styles: { fontStyle: 'bold' } }, "Fuerza trifásica 220v/380v– 50Hz / Iluminación 220 v"],
+    [{ content: "Máquina de tracción", styles: { fontStyle: 'bold' } }, formData['MaquinaTraccion']?.nombre+", sin engranajes, de funcionamiento silencioso y ahorro energético, tecnología de magneto síncrono permanente" || "Falta"],
     [{ content: "PISOS A ATENDER", colSpan: 2, styles: { halign: 'center' } }],
     ...pisosFilas
   ];
