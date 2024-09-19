@@ -20,10 +20,10 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const [locationName, setLocationName] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [locationError, setLocationError] = useState('');
-  const [isStateChecked, setIsStateChecked] = useState(false); // Para manejar el checkbox de Para el Estado
-  const [isInterpisosChecked, setIsInterpisosChecked] = useState(true); // Para manejar el checkbox de Interpisos
-  const [stateValue, setStateValue] = useState(0); // Para manejar el valor del input del estado
-  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState([]); // Para manejar los métodos de pago seleccionados
+  const [isStateChecked, setIsStateChecked] = useState(false);
+  const [isInterpisosChecked, setIsInterpisosChecked] = useState(true);
+  const [stateValue, setStateValue] = useState(0);
+  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState([]);
 
   useEffect(() => {
     if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
@@ -39,11 +39,11 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     setSelectedClient(null);
     setSelectedSolicitante(null);
     setSelectedVendedor('');
-    setStateValue(0); // Resetear el valor del estado
+    setStateValue(0);
     setLocationError('');
-    setSelectedPaymentMethods([]); // Resetear los métodos de pago seleccionados
-    setIsInterpisosChecked(true); // Resetear Interpisos a true
-    setIsStateChecked(false); // Resetear Para el Estado a false
+    setSelectedPaymentMethods([]);
+    setIsInterpisosChecked(true);
+    setIsStateChecked(false);
     if (onReset) onReset();
   };
 
@@ -66,26 +66,25 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   const handleStateCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     setIsStateChecked(isChecked);
-    updateFormData({ field: 'Para_el_Estado', value: isChecked ? 'Sí' : 'No' }, formData, setFormData); // Guardar el valor en formData
+    updateFormData({ field: 'Para_el_Estado', value: isChecked ? 'Sí' : 'No' }, formData, setFormData);
   };
 
   const handleStateValueChange = (e) => {
     const value = Math.max(0, e.target.value);
     setStateValue(value);
-    updateFormData({ field: 'Estado', value }, formData, setFormData); // Guardar el valor del estado en formData
+    updateFormData({ field: 'Estado', value }, formData, setFormData);
   };
 
   const handleInterpisosCheckboxChange = (e) => {
-    
     const isChecked = e.target.checked;
     setIsInterpisosChecked(isChecked);
-    updateFormData({ field: 'Interpisos', value: isChecked === true ? 'Sí' : 'No' }, formData, setFormData); // Guardar Interpisos en formData
+    updateFormData({ field: 'Interpisos', value: isChecked === true ? 'Sí' : 'No' }, formData, setFormData);
   };
 
   const handleVendedorChange = (e) => {
     const vendedor = e.target.value;
     setSelectedVendedor(vendedor);
-    updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData); // Guardar el vendedor en formData
+    updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData);
   };
 
   const handlePaymentMethodChange = (method) => {
@@ -108,9 +107,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   }, [isButtonDisabled]);
 
   return (
-    <div className="flex flex-col items-center justify-center text-black font-bold h-full w-full overflow-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        <div className="flex flex-col lg:overflow-y-auto lg:h-48">
+    <div className="flex flex-col ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  flex-grow overflow-auto max">
+        <div className="flex flex-col">
           <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchSolicitante}
           </label>
@@ -179,7 +178,6 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </div>
           </div>
 
-          {/* Para el Estado Checkbox */}
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
@@ -201,7 +199,6 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             />
           )}
 
-          {/* Interpisos Checkbox */}
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
@@ -213,7 +210,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           </label>
         </div>
 
-        <div className="flex flex-col lg:overflow-y-auto lg:h-48">
+        <div className="flex flex-col">
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
           </label>
@@ -273,7 +270,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           </div>
         </div>
 
-        <div className="w-full ">
+        <div className="w-full h-[60vh]">
           <MapComponent
             mapCenter={mapCenter}
             markerPosition={markerPosition}

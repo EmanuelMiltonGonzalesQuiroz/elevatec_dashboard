@@ -153,9 +153,9 @@ const calculateValues = (formData, allData) => {
   }
 
   const VAR2 = VAR1;
-  const VAR3 = VAR1 * 0//(getValueByName("Utilidad (%)") / 100);
+  const VAR3 = VAR1 * (getValueByName("Utilidad (%)") / 100);
   const VAR4 = VAR2 + VAR3;
-  const VAR5 = VAR4 * 0//(getValueByName("Factura (%)") / 100);
+  const VAR5 = VAR4 * (getValueByName("Factura (%)") / 100);
   let VAR6 = VAR4 + VAR5 ;
   let VAR7 = VAR6 * (formData["08_Número de ascensores"] || 1) ;
   if(formData["Estado"] && formData["Para_el_Estado"] === "Sí"){

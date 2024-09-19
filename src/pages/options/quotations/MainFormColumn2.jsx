@@ -89,7 +89,7 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
   );
 
   return (
-    <div className="col-span-1 gap-4 overflow-y-auto max-h-full">
+    <div className="col-span-1 gap-4 overflow-auto ">
       {renderSelectForGroup('Cabina', mainFormColumn2Text.cabin, options.Cabina, 'Cabina', mainFormColumn2Text.cabinConcept)}
       {renderSelectForGroup('Ciudad', mainFormColumn2Text.city, options.Ciudad, 'Ciudad', mainFormColumn2Text.cityConcept)}
       {renderSelectForGroup('Embarque', mainFormColumn2Text.embark, options.Embarque, 'Embarque', mainFormColumn2Text.embarkConcept)}

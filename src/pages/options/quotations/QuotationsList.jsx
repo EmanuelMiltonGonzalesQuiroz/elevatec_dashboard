@@ -106,8 +106,11 @@ const QuotationList = () => {
   };
 
   const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+    let selectedDate = new Date(event.target.value + "T00:00:00"); // Crear una nueva fecha a partir del valor seleccionado
+    selectedDate.setDate(selectedDate.getDate() + 1); // Sumar un día
+    setSelectedDate(selectedDate.toISOString().split('T')[0]); // Actualizar el estado con la nueva fecha
   };
+  
 
   const handleViewPDF = (quotation) => {
     setSelectedQuotation(quotation);
@@ -154,49 +157,50 @@ const QuotationList = () => {
         />
       </div>
       <div className="overflow-auto">
-        <table className="bg-white">
-        <thead>
-          <tr>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.number}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.client}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.clientPhone}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.city}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.location}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.quotedBy}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.total}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.date}</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.actions}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredQuotations.map((quotation, index) => (
-            <tr key={quotation.id} className="bg-gray-100">
-              <td className="py-2 px-4 text-black">{index + 1}</td>
-              <td className="py-2 px-4 text-black">{quotation.clientName}</td>
-              <td className="py-2 px-4 text-black">{quotation.clientPhone}</td>
-              <td className="py-2 px-4 text-black">{quotation.city}</td>
-              <td className="py-2 px-4 text-black">{quotation.address}</td>
-              <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
-              <td className="py-2 px-4 text-black">{quotation.total}</td>
-              <td className="py-2 px-4 text-black">{quotation.date}</td>
-              <td className="py-2 px-4">
-                <button
-                  className="bg-blue-500 text-white p-2 rounded"
-                  onClick={() => handleViewPDF(quotation)}
-                >
-                  Ver PDF
-                </button>
-              </td>
+
+        <table className="bg-white w-full">
+          <thead>
+            <tr>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.number}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.client}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.clientPhone}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.city}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.location}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.quotedBy}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.total}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.date}</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.actions}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredQuotations.map((quotation, index) => (
+              <tr key={quotation.id} className="bg-gray-100">
+                <td className="py-2 px-4 text-black">{index + 1}</td>
+                <td className="py-2 px-4 text-black">{quotation.clientName}</td>
+                <td className="py-2 px-4 text-black">{quotation.clientPhone}</td>
+                <td className="py-2 px-4 text-black">{quotation.city}</td>
+                <td className="py-2 px-4 text-black">{quotation.address}</td>
+                <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
+                <td className="py-2 px-4 text-black">{quotation.total}</td>
+                <td className="py-2 px-4 text-black">{quotation.date}</td>
+                <td className="py-2 px-4">
+                  <button
+                    className="bg-blue-500 text-white p-2 rounded"
+                    onClick={() => handleViewPDF(quotation)}
+                  >
+                    Ver PDF
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Modal con opciones de PDF */}
       {showModal && (
         <CustomModal show={showModal} onClose={() => setShowModal(false)}>
-          <div className="flex flex-col items-center mx-auto">
+          <div className="flex flex-col items-center ">
             <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
 
             <button

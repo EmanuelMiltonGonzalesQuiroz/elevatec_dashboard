@@ -54,11 +54,11 @@ const QuotationForm = () => {
   };
 
   return (
-    <div className="flex flex-col max-h-[75vh]">
+    <div className="flex flex-col ">
       {!fetching && !allData && <FetchAllCollections onDataFetched={handleDataFetched} />}
       {allData && (
         <>
-          <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg  max-h-[40vh] ">
+          <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg max-h-[70vh] overflow-auto">
             <ClientColumn
               formData={formData}
               setFormData={setFormData}
@@ -66,7 +66,7 @@ const QuotationForm = () => {
               handleReset={handleReset}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg shadow-lg flex-grow max-h-[60vh] overflow-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white p-4 rounded-lg shadow-lg flex-grow overflow-auto max-h-[80vh]">
             <MainFormColumn1 formData={formData} setFormData={setFormData} handleReset={handleReset} />
             <MainFormColumn2 formData={formData} setFormData={setFormData} allData={allData} />
             <AdvancedOptionsColumn formData={formData} setFormData={setFormData} allData={allData}  />

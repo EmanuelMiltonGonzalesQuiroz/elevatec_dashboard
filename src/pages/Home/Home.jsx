@@ -42,7 +42,7 @@ const Home = () => {
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
           {/* Contenido con restricciones de tamaño y scrolls si es necesario */}
-          <div className="max-w-[80vw] max-h-[10vh]">
+          <div className="max-w-[80vw] ">
             {activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
             {userRole !== 'Usuario' && activeContent === 'Ajustes' && <Settings />}
