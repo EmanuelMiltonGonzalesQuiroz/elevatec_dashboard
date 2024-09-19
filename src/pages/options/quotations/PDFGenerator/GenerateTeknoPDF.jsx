@@ -88,7 +88,7 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   // Especificaciones técnicas
   startY = checkAddPage(doc, startY); 
-  startY = TechnicalSpecifications({ doc, formData, startY });
+  startY = TechnicalSpecifications({ doc, formData, startY, config });
 
   // Detalles técnicos
   startY = checkAddPage(doc, startY); 

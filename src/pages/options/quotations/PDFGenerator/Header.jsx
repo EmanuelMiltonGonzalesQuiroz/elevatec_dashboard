@@ -1,41 +1,34 @@
 const Header = ({ doc, config, startY }) => {
   const { leftMargin, city, date, refNumber, recipient } = config;
+  const pageWidth = doc.internal.pageSize.getWidth(); 
+  const rightMargin = 20; 
+  const maxTextWidth = pageWidth - leftMargin - rightMargin; 
 
-  // Iniciar desde la posición pasada
   let currentY = startY;
-  const lineSpacing = 10; // Espaciado entre líneas
+  const lineSpacing = 10; 
 
   doc.setFontSize(12);
-  
-  // Ciudad y fecha
-  if (city && city.toLowerCase().includes("transporte por el cliente")) {
-    doc.text(`_____________ , ${date}`, leftMargin, currentY); // Espacio agregado antes de la coma
-} else {
-    doc.text(`${city}, ${date}`, leftMargin, currentY);
-}
 
-
+  const cityText = city && city.toLowerCase().includes("transporte por el cliente") 
+    ? `_____________ , ${date}` 
+    : `${city}, ${date}`;
+  doc.text(cityText, leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
 
-  // Referencia
-  doc.text(refNumber, leftMargin, currentY);
+  doc.text(refNumber, leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
 
-  // Destinatario
-  doc.text("Señor:", leftMargin, currentY);
+  doc.text("Señor:", leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
 
-  // Nombre del destinatario
   doc.setFont("Helvetica", "bold");
-  doc.text(recipient, leftMargin, currentY);
+  doc.text(recipient, leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
 
-  // Presente
   doc.setFont("Helvetica", "normal");
-  doc.text("Presente.-", leftMargin, currentY);
+  doc.text("Presente.-", leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
 
-  // Retornar la nueva posición Y para continuar el contenido después del header
   return currentY;
 };
 

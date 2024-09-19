@@ -15,7 +15,7 @@ export const generateBasePDF = (doc, formData, values, config) => {
 
   // Especificaciones técnicas
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-  startY = TechnicalSpecifications({ doc, formData, startY });
+  startY = TechnicalSpecifications({ doc, formData, startY , config});
 
   // Detalles técnicos
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página

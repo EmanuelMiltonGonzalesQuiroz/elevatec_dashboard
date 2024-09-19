@@ -1,8 +1,15 @@
 import 'jspdf-autotable';
 
-const TechnicalSpecifications = ({ doc, formData, startY }) => {
+const TechnicalSpecifications = ({ doc, formData, startY, config }) => {
+  const { leftMargin = 20, rightMargin = 20, topMargin = 20, bottomMargin = 20 } = config; // Obtener márgenes de config
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const tableWidth = pageWidth - leftMargin - rightMargin; // Calcular el ancho disponible para la tabla
+
+  const maxTableHeight = pageHeight - topMargin - bottomMargin - startY; // Altura máxima disponible para la tabla
+
   const pisosAtender = formData['09_PISOS A ANTENDER']?.split('-') || [];
-  
+
   // Generar filas dinámicas para pisos
   const pisosFilas = pisosAtender.map((piso, index) => (
     [{ content: `Piso de la parada ${index + 1}`, styles: { fontStyle: 'bold' } }, piso || "N/A"]
@@ -12,12 +19,11 @@ const TechnicalSpecifications = ({ doc, formData, startY }) => {
     [{ 
       content: "Ciudad de Instalación", 
       styles: { fontStyle: 'bold' } 
-  }, 
-  formData['Ciudad']?.nombre?.toLowerCase().includes("transporte por el cliente") 
+    }, 
+    formData['Ciudad']?.nombre?.toLowerCase().includes("transporte por el cliente") 
       ? "_____________" 
       : formData['Ciudad']?.nombre || "Falta"
-  ],
-  
+    ],
     [{ content: "Marca", styles: { fontStyle: 'bold' } }, "Elevatec"],
     [{ content: "Componentes principales de fabricación europea. Acabados y estética de cabina de fabricación boliviana", colSpan: 2, styles: { halign: 'center' } }],
     [{ content: "Cantidad", styles: { fontStyle: 'bold' } }, formData['08_Número de ascensores'] || "Falta"],
@@ -36,15 +42,20 @@ const TechnicalSpecifications = ({ doc, formData, startY }) => {
     ...pisosFilas
   ];
 
+  // Calcular el espacio disponible antes de agregar la tabla
   doc.autoTable({
     startY: startY + 10, // Añadir 10 puntos a la posición inicial Y
     head: [[{ content: "ESPECIFICACIONES TÉCNICAS", colSpan: 2, styles: { halign: 'center', fillColor: [22, 160, 133] } }]],
     body: technicalSpecifications,
     theme: 'grid',
+    tableWidth: tableWidth, // Asegurar que la tabla respete los márgenes laterales
+    styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes verticales
+    pageBreak: 'auto', // Romper la tabla si no cabe en la página
   });
 
-  // Retornar la nueva posición de Y
-  return doc.lastAutoTable.finalY + 10; // Devuelve la nueva posición Y actualizada
+  // Retornar la nueva posición de Y, considerando si la tabla continúa en una nueva página
+  return doc.lastAutoTable.finalY + 10;
 };
 
 export default TechnicalSpecifications;

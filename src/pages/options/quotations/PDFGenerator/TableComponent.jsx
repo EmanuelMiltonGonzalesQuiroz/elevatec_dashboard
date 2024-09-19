@@ -16,7 +16,7 @@ const TableComponent = ({ doc, formData, values, startY }) => {
   const valorFormateadoUnitario = parseFloat(values["VAR6"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const rowsFromFormData = [
-    ["Ascensor de pasajeros Eléctrico" +formData.Tipo.nombre, formData["08_Número de ascensores"], 0,valorFormateadoUnitario,valorFormateado ],
+    ["Ascensor de pasajeros Eléctrico " +formData.Tipo.nombre, formData["08_Número de ascensores"], 0,valorFormateadoUnitario,valorFormateado ],
       ];
   
   

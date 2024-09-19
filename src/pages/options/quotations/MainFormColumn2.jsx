@@ -74,7 +74,10 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       </label>
       <select
         id={fieldName}
-        className="p-2 border rounded focus:outline-none w-full mb-4"
+        className={`p-2 border rounded focus:outline-none w-full mb-4 ${
+          !formData[fieldName]?.nombre ? 'bg-red-200' : '' // Se pone rojo si NO hay valor seleccionado
+        }`}
+        
         value={formData[fieldName]?.nombre || ''}
         onChange={(e) => handleSelectChange(fieldName, className, options, e)}
       >
@@ -87,6 +90,7 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       </select>
     </div>
   );
+  
 
   return (
     <div className="col-span-1 gap-4 overflow-auto ">

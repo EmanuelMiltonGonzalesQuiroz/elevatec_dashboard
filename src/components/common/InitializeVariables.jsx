@@ -1,5 +1,5 @@
-// InitializeVariables.jsx
 import { useState, useEffect } from 'react';
+import modifyVariables from './ModifyVariables';  // Importamos el nuevo archivo
 
 const initializeVariable = () => ({
   UNIDADES: 0,
@@ -11,11 +11,12 @@ const initializeVariable = () => ({
   COSTO_FINAL: 0,
 });
 
-const useInitializeVariables = () => {
+const useInitializeVariables = (allData) => {
   const [variables, setVariables] = useState({});
- 
+
   useEffect(() => {
-    const initVars = {
+    // Inicializar las variables base
+    let initVars = {
       "01_PARADAS": 0,
       "02_CLIENTE": "",
       "03_RECORRIDO": 0,
@@ -26,10 +27,10 @@ const useInitializeVariables = () => {
       "07_Huida": 0,
       "08_Número de ascensores": 0,
       "09_PISOS A ANTENDER": "",
-      'Solicitante':[],
-      "Ubicacion":[],
-      "Ubicacion_nombre":[],
-      'Vendedor':[],
+      'Solicitante': [],
+      "Ubicacion": [],
+      "Ubicacion_nombre": [],
+      'Vendedor': [],
       Ramplus: initializeVariable(),
       Brakets: initializeVariable(),
       Pernos_brakets: initializeVariable(),
@@ -111,8 +112,13 @@ const useInitializeVariables = () => {
       Interpisos: "Si"
     };
 
+    // Modificamos las variables utilizando el archivo ModifyVariables.js
+    if (allData) {
+      initVars = modifyVariables(initVars, allData);
+    }
+
     setVariables(initVars);
-  }, []);
+  }, [allData]);
 
   return variables;
 };

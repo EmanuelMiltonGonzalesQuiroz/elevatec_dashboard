@@ -123,7 +123,9 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
       </label>
       <select
         id={fieldName}
-        className="p-2 border rounded focus:outline-none w-full"
+        className={`p-2 border rounded focus:outline-none w-full mb-4 ${
+          !formData[fieldName]?.nombre ? 'bg-red-200' : '' // Se pone rojo si NO hay valor seleccionado
+        }`}
         value={formData[fieldName]?.nombre || ''}
         onChange={(e) => handleSelectChange(fieldName, className, options, e)}
       >
@@ -154,7 +156,7 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
   );
 
   return (
-    <div className="col-span-1 grid grid-cols-1 gap-4 overflow-y-auto max-h-full text-black" style={{ alignItems: 'start' }}>
+    <div className="col-span-1 gap-4 overflow-auto ">
       <label className="text-black font-bold">{advancedOptionsText.title}</label>
 
       {renderCheckboxForElements()}
@@ -178,7 +180,9 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
         </label>
         <select
           id="locks"
-          className="p-2 border rounded focus:outline-none w-full mb-4"
+          className={`p-2 border rounded focus:outline-none w-full mb-4 ${
+            formData["Llavines_con_llave"]?.UNIDADES ? '' : 'bg-red-200'  // Fondo rojo si el valor es 0
+          }`}
           onChange={handleLocksChange}
         >
           {[...Array(16).keys()].map((num) => (
