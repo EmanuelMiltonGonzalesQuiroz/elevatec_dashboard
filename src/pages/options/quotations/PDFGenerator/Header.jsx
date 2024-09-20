@@ -27,6 +27,7 @@ const Header = ({ doc, config, startY }) => {
 
   doc.setFont("Helvetica", "normal");
   doc.text("Presente.-", leftMargin, currentY, { maxWidth: maxTextWidth });
+  doc.setLineWidth(0.5); 
   currentY += lineSpacing;
 
   return currentY;

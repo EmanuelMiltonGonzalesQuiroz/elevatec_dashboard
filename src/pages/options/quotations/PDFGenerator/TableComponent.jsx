@@ -1,4 +1,5 @@
 import 'jspdf-autotable';
+import { convertNumberToWords } from '../../../../components/layout/convertNumberToWords';
 
 // Función para verificar si se necesita un salto de página
 const checkAddPage = (doc, currentY, additionalSpace = 20, config) => {
@@ -18,6 +19,8 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
 
   // Definir los datos principales
   const valorFormateado = parseFloat(values["VAR7"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const var7 = values["VAR7"].toFixed(2);
+  const [entero, decimales] = var7.split('.'); 
   const valorFormateadoUnitario = parseFloat(values["VAR6"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const rowsFromFormData = [
@@ -36,13 +39,18 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       row[0] || "0",
       row[1] || "0",
       formData?.Velocidad?.nombre || "0",
-      formData["03_PERSONAS"] || "0",
+      formData["03_PERSONAS"]*75+"Kg." || "0",
       formData["01_PARADAS"] || "0",
       row[3] || "0",
       row[4] || "0",
     ]),
     [{ content: "Valor Total del Equipo Instalado y Funcionando", colSpan: 7, styles: { halign: 'center', fontStyle: 'bold' } }, valorFormateado || " "],
-    [{ content: "TIPO DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }, ""],
+    [{
+      content: "Son: " + convertNumberToWords(entero) + " " + decimales + "/100 Dólares Americanos",
+      colSpan: 7,
+      styles: { halign: 'center', fontStyle: 'bold' }
+    }, " "],
+    [{ content: "TIPO DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }, " "],
     [
       { content: "Efectivo", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, getCheckOrEmpty("Efectivo"),
       { content: "Depósito", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold' } }, getCheckOrEmpty("Deposito"),

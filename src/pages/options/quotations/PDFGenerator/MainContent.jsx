@@ -7,9 +7,15 @@ const MainContent = ({ doc, config, formData, startY }) => {
 
   const validProposalTitle = config.proposalTitle || 'Propuesta de Instalación'; // Título por defecto
   const numAscensores = formData['08_Número de ascensores'] || 1; // Valor por defecto
+  
+  // Función para convertir números a palabras
+  const numberToWords = (num) => {
+    const words = ['Cero', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve'];
+    return words[num] || num.toString();
+  };
 
-  // Texto dinámico basado en el número de ascensores
-  const installationDescription = `De acuerdo a su solicitud, tenemos el agrado de poner en su consideración la Provisión e Instalación de ${numAscensores}, marca ELEVATEC, de última tecnología, que cumple todos los requerimientos necesarios para su obra.`;
+  // Texto dinámico basado en el número de ascensores (incluyendo número en palabras y en formato numérico)
+  const installationDescription = `De acuerdo a su solicitud, tenemos el agrado de poner en su consideración la Provisión e Instalación de ${numberToWords(numAscensores)} (${numAscensores}) Ascensores Sociales, marca ELEVATEC de última tecnología, que cumple con todos los requerimientos necesarios para su obra.`;
 
   // Texto fijo adicional
   const additionalInfo = `Ascensores Elevatec, fabricados por Teknolift SRL, del grupo Empresarial Jaldin, cumple con Normativa europea EN 81, compatible con la Norma Boliviana NB 135001, Sistema de Gestión de Calidad ISO 9001: 2015 y Sistema de Gestión Ambiental ISO 14001: 2015.`;

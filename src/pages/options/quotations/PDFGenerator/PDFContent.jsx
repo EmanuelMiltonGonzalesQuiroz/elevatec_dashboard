@@ -24,7 +24,6 @@ const getCityAbbreviation = (cityName) => {
 };
 
 const PDFContent = ({ formData, values, timestamp, type }) => {
-  console.log(timestamp)
   const [quotationCode, setQuotationCode] = useState('');
   const [isGenerating, setIsGenerating] = useState(true); // Estado para mostrar el mensaje de espera
 
@@ -162,7 +161,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setFontSize(10);
-      doc.text(`Página ${i} de ${totalPages}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, { align: 'right' });
     }
 
     const pdfBlob = doc.output('blob');
