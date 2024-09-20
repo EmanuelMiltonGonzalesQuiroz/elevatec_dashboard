@@ -81,11 +81,11 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
 
   // Detalles técnicos
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-  startY = TechnicalDetails({ doc, formData, startY });
+  startY = TechnicalDetails({ doc, formData, startY , config});
 
   // Tabla de componentes finales
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-  startY = TableComponent({ doc, formData, values, startY });
+  startY = TableComponent({ doc, formData, values, startY , config});
 
   // Sección final
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página

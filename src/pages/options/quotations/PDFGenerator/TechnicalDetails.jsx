@@ -1,6 +1,12 @@
 import 'jspdf-autotable';
 
-const TechnicalDetails = ({ doc, formData, startY }) => {
+const TechnicalDetails = ({ doc, formData, startY, config }) => {
+  const { leftMargin = 20, rightMargin = 20, topMargin = 20, bottomMargin = 20 } = config; // Obtener márgenes de config
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const tableWidth = pageWidth - leftMargin - rightMargin; // Calcular el ancho disponible para la tabla
+  const maxTableHeight = pageHeight - topMargin - bottomMargin - startY; // Altura máxima disponible para la tabla
+
   const technicalDetails = [
     [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
     ["FRENTE", formData['04_Frente'] || " ", "PROFUNDIDAD", formData['05_ProfundidadR'] || " "],
@@ -40,11 +46,18 @@ const TechnicalDetails = ({ doc, formData, startY }) => {
   ];
 
   doc.autoTable({
-    startY: startY, // Usar startY proporcionado para la posición inicial
+    startY: startY + 10, // Añadir un poco de espacio desde el punto inicial
     head: [[{ content: "INFORMACIÓN TÉCNICA", colSpan: 4, styles: { halign: 'center', fillColor: [22, 160, 133] } }]],
     body: technicalDetails,
     theme: 'grid',
+    tableWidth: tableWidth, // Asegurar que la tabla respete los márgenes laterales
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes verticales
+    styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
+    pageBreak: 'auto', // Romper la tabla si no cabe en la página
   });
+
+  // Retornar la nueva posición de Y
+  return doc.lastAutoTable.finalY + 10;
 };
 
 export default TechnicalDetails;

@@ -1,25 +1,28 @@
 import 'jspdf-autotable';
 
 // Función para verificar si se necesita un salto de página
-const checkAddPage = (doc, currentY, additionalSpace = 20) => {
+const checkAddPage = (doc, currentY, additionalSpace = 20, config) => {
+  const { bottomMargin = 20 } = config; // Obtener margen inferior de la configuración
   const pageHeight = doc.internal.pageSize.height;
-  if (currentY + additionalSpace > pageHeight) {
+  if (currentY + additionalSpace > pageHeight - bottomMargin) {
     doc.addPage();
     return 30; // Reinicia la posición Y en la nueva página
   }
   return currentY;
 };
 
-const TableComponent = ({ doc, formData, values, startY }) => {
+const TableComponent = ({ doc, formData, values, startY, config }) => {
+  const { leftMargin = 20, rightMargin = 20, topMargin = 20, bottomMargin = 20 } = config; // Obtener márgenes desde config
+  const pageWidth = doc.internal.pageSize.width;
+  const tableWidth = pageWidth - leftMargin - rightMargin;
+
   // Definir los datos principales
   const valorFormateado = parseFloat(values["VAR7"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const valorFormateadoUnitario = parseFloat(values["VAR6"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const rowsFromFormData = [
-    ["Ascensor de pasajeros Eléctrico " +formData.Tipo.nombre, formData["08_Número de ascensores"], 0,valorFormateadoUnitario,valorFormateado ],
-      ];
-  
-  
+    ["Ascensor de pasajeros Eléctrico " + formData.Tipo.nombre, formData["08_Número de ascensores"], 0, valorFormateadoUnitario, valorFormateado],
+  ];
 
   const metodosDePago = formData.MetodoDePago ? formData.MetodoDePago.split('_') : [];
 
@@ -49,10 +52,14 @@ const TableComponent = ({ doc, formData, values, startY }) => {
   ];
 
   doc.autoTable({
-    startY: startY,
-    head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }]],
+    startY: startY + 10, // Añadir un poco de espacio desde el punto inicial
+    head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold', fillColor: [22, 160, 133] } }]],
     body: tableData,
     theme: 'grid',
+    tableWidth: tableWidth, // Asegurar que respete los márgenes
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes verticales y horizontales
+    styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
+    pageBreak: 'auto', // Romper la tabla si no cabe en la página
   });
 
   // Añadir texto adicional "Opcionales Incluidos"
@@ -69,18 +76,18 @@ const TableComponent = ({ doc, formData, values, startY }) => {
 
   const opcionalesIncluidos = opcionales.filter(item => formData[item.key]?.valor !== 0 && formData[item.key]?.valor !== undefined);
 
-  currentYPosition = checkAddPage(doc, currentYPosition);
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("Opcionales Incluidos:", 20, currentYPosition);
+  currentYPosition = checkAddPage(doc, currentYPosition, 10, config);
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("Opcionales Incluidos:", leftMargin, currentYPosition);
   currentYPosition += 10;
 
   if (opcionalesIncluidos.length > 0) {
     opcionalesIncluidos.forEach(opcional => {
-      doc.setFontSize(12).setFont("Helvetica", "normal").text(`* ${opcional.nombre}`, 20, currentYPosition);
+      doc.setFontSize(12).setFont("Helvetica", "normal").text(`* ${opcional.nombre}`, leftMargin, currentYPosition);
       currentYPosition += 10;
     });
     currentYPosition += opcionalesIncluidos.length * 5;
   } else {
-    doc.setFontSize(12).setFont("Helvetica", "normal").text("No se agregó ningún opcional", 20, currentYPosition);
+    doc.setFontSize(12).setFont("Helvetica", "normal").text("No se agregó ningún opcional", leftMargin, currentYPosition);
     currentYPosition += 20;
   }
 
@@ -106,51 +113,54 @@ const TableComponent = ({ doc, formData, values, startY }) => {
     ["5", "5%", { content: "A ser pagado contra entrega en funcionamiento del ascensor", colSpan: 5 }, cuota5],
     [{ content: "TOTAL", colSpan: 7, styles: { fontStyle: 'bold' } }, { content: total, styles: { fontStyle: 'bold' } }]
   ];
+
   // Añadir la tabla "FORMA DE PAGO"
-currentYPosition = doc.lastAutoTable.finalY + 60;
-currentYPosition = checkAddPage(doc, currentYPosition); // Verificar si se necesita nueva página
+  currentYPosition = doc.lastAutoTable.finalY + 60;
+  currentYPosition = checkAddPage(doc, currentYPosition, 60, config); // Verificar si se necesita nueva página
 
   doc.autoTable({
-    startY: currentYPosition,
-    head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }]],
+    startY: currentYPosition+10,
+    head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold', fillColor: [22, 160, 133] } }]],
     body: paymentPlanData,
     theme: 'grid',
     columnStyles: {
       0: { cellWidth: 20 },
       1: { cellWidth: 20 },
-      2:      { cellWidth: 40 },  // DESCRIPCIÓN
+      2: { cellWidth: 40 },  // DESCRIPCIÓN
       3: { cellWidth: 30 }   // Monto $us
-    }
+    },
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes
+    styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
+    pageBreak: 'auto', // Romper la tabla si no cabe en la página
   });
 
   // Añadir más textos después de la tabla con separación entre ellos y verificando espacio
   currentYPosition = doc.lastAutoTable.finalY + 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("TIEMPO DE ENTREGA:", 20, currentYPosition);
+  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("TIEMPO DE ENTREGA:", leftMargin, currentYPosition);
   currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("El equipo se entregará funcionando en seis (6) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", 20, currentYPosition, { maxWidth: 170, align: "justify" });
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("El equipo se entregará funcionando en seis (6) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
 
   currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE EQUIPO O FABRICACIÓN", 20, currentYPosition);
+  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE EQUIPO O FABRICACIÓN", leftMargin, currentYPosition);
   currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
 
   currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE INSTALACIÓN Y MONTAJE", 20, currentYPosition);
+  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE INSTALACIÓN Y MONTAJE", leftMargin, currentYPosition);
   currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Jalmeco Ltda., responsable de la instalación y montaje...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Jalmeco Ltda., responsable de la instalación y montaje...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
 
   currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("OBLIGACIONES DEL COMPRADOR", 20, currentYPosition);
+  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
+  doc.setFontSize(12).setFont("Helvetica", "bold").text("OBLIGACIONES DEL COMPRADOR", leftMargin, currentYPosition);
   currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Todas las obras civiles adecuadas para la instalación de los ascensores...", 20, currentYPosition, { maxWidth: 170, align: "justify" });
+  doc.setFontSize(12).setFont("Helvetica", "normal").text("Todas las obras civiles adecuadas para la instalación de los ascensores...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
 
   // Devolver la última posición Y actualizada para que `Final` comience justo después
-  return currentYPosition + 80;
+  return currentYPosition + 60;
 };
 
 export default TableComponent;
-

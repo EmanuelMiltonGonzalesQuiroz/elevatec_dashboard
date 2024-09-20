@@ -16,8 +16,9 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
   const headerHeight = 40; 
   const footerHeight = 30; 
   const rightImageWidth = 40; // Ajusta el ancho de la imagen del lado derecho según sea necesario
+  const { topMargin = 30, bottomMargin = 20 } = config; // Obtener márgenes de config
 
-  let startY = headerHeight + 20; 
+  let startY = topMargin + 20; 
 
   // Función para añadir la imagen del encabezado
   const addHeaderImage = (doc, imageBase64, x = 0, y = 0, width, height) => {
@@ -65,13 +66,13 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   // Función para verificar si se necesita una nueva página
   const checkAddPage = (doc, currentY) => {
-    if (currentY + 20 > pageHeight) {
+    if (currentY + 20 > pageHeight - bottomMargin) { // Usar el margen inferior de config
       doc.addPage();
       addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight); 
       addRightImage(doc, teknoliftRight, pageWidth - rightImageWidth, headerHeight, pageHeight - headerHeight - footerHeight); // Ajusta la imagen del lado derecho para ocupar toda la altura disponible
       addWatermark(doc, teknoliftWaterMark); 
       addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); 
-      return headerHeight + 20; 
+      return topMargin + 20; // Usar el margen superior de config al reiniciar la posición Y
     }
     return currentY;
   };
@@ -92,11 +93,11 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   // Detalles técnicos
   startY = checkAddPage(doc, startY); 
-  startY = TechnicalDetails({ doc, formData, startY });
+  startY = TechnicalDetails({ doc, formData, startY , config});
 
   // Tabla de componentes finales
   startY = checkAddPage(doc, startY); 
-  startY = TableComponent({ doc, formData, values, startY });
+  startY = TableComponent({ doc, formData, values, startY , config});
 
   // Sección final
   startY = checkAddPage(doc, startY); 
