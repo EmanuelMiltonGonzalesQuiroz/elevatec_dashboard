@@ -6,7 +6,7 @@ import TableComponent from './TableComponent'; // Importar el componente de tabl
 import Final from './Final'; // Importar la sección final
 
 import jalmecoHeaderJPG from '../../../../assets/images/jalmecoHeader.jpg'; // Importar el encabezado
-import teknoliftWaterMark from '../../../../assets/images/teknoliftWaterMark.jpg'; // Importar la marca de agua
+import jalmecoWaterMark from '../../../../assets/images/jalmecoWaterMark.jpg'; // Importar la marca de agua
 import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg'; // Importar el footer
 
 export const generateJalmecoPDF = (doc, formData, values, config) => {
@@ -30,8 +30,8 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
   // Función interna para añadir la marca de agua detrás del contenido
   const addWatermark = (doc, imageBase64) => {
     try {
-      const watermarkWidth = pageWidth * 0.8; // Ajustar tamaño de la marca de agua
-      const watermarkHeight = pageHeight * 0.8;
+      const watermarkWidth = pageWidth ; // Ajustar tamaño de la marca de agua
+      const watermarkHeight = pageHeight ;
       const watermarkX = (pageWidth - watermarkWidth) / 2; // Centrar la marca de agua
       const watermarkY = (pageHeight - watermarkHeight) / 2;
 
@@ -59,7 +59,7 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
     if (currentY + 20 > pageHeight) {
       doc.addPage();
       addHeaderImage(doc, jalmecoHeaderJPG, 0, 0, pageWidth, headerHeight); // Añadir el encabezado a la nueva página
-      addWatermark(doc, teknoliftWaterMark); // Añadir la marca de agua a la nueva página
+      addWatermark(doc, jalmecoWaterMark); // Añadir la marca de agua a la nueva página
       addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); // Añadir el footer a la nueva página
       return headerHeight + 20; // Reiniciar la posición Y después del encabezado
     }
@@ -68,7 +68,7 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
 
   // Añadir la imagen de encabezado y la marca de agua a la primera página
   addHeaderImage(doc, jalmecoHeaderJPG, 0, 0, pageWidth, headerHeight); // Colocar la imagen en (0, 0)
-  addWatermark(doc, teknoliftWaterMark); // Añadir marca de agua centrada
+  addWatermark(doc, jalmecoWaterMark); // Añadir marca de agua centrada
   addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); // Añadir footer
 
   // Página 1: Cabecera y contenido principal
@@ -97,7 +97,7 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
     doc.setPage(i);
     addHeaderImage(doc, jalmecoHeaderJPG, 0, 0, pageWidth, headerHeight); // Añadir encabezado
     addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); // Añadir footer
-    addWatermark(doc, teknoliftWaterMark); // Añadir marca de agua
+    addWatermark(doc, jalmecoWaterMark); // Añadir marca de agua
     // Añadir el número de página // Ajustar para que el número de página esté por encima del footer
   }
 };

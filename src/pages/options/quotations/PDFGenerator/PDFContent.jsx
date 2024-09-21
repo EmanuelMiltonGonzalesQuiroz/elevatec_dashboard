@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
+import { PDFDocument } from 'pdf-lib';
 import { generateJalmecoPDF } from './GenerateJalmecoPDF';
 import { generateTeknoPDF } from './GenerateTeknoPDF';
 import { generateBasePDF } from './GenerateBasePDF';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../../connection/firebase.js';
+import extraPDFJalmeco from '../../../../assets/images/extraPdfJalmeco.pdf'; 
 
 // Función para obtener la abreviatura de la ciudad
 const getCityAbbreviation = (cityName) => {
@@ -71,7 +73,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     
       setIsGenerating(false); // PDF generado
     };
-    
     
     fetchQuotations();
   }, [timestamp, formData]);
@@ -154,27 +155,45 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       generateBasePDF(doc, formData, values, config);
     }
 
-    // Total de páginas generadas
-    const totalPages = doc.getNumberOfPages();
+    return doc;
+  };
 
-    // Agregar el número de página en cada página al final del documento
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFontSize(10);
-    }
+  const mergePDFs = async (generatedDoc) => {
+    const pdfDoc = await PDFDocument.load(await generatedDoc.output('arraybuffer'));
+    const extraPDFBytes = await fetch(extraPDFJalmeco).then(res => res.arrayBuffer());
+    const extraPdf = await PDFDocument.load(extraPDFBytes);
 
-    const pdfBlob = doc.output('blob');
+    const copiedPages = await pdfDoc.copyPages(extraPdf, extraPdf.getPageIndices());
+    copiedPages.forEach(page => pdfDoc.addPage(page));
+
+    const pdfBytes = await pdfDoc.save();
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
     return URL.createObjectURL(pdfBlob);
   };
 
-  const pdfUrl = generatePDF();
+  const generateAndMergePDF = async () => {
+    const generatedDoc = generatePDF();
+    const mergedPdfUrl = await mergePDFs(generatedDoc);
+    return mergedPdfUrl;
+  };
+
+  const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
+
+  useEffect(() => {
+    const generateMergedPDF = async () => {
+      const pdfUrl = await generateAndMergePDF();
+      setMergedPdfUrl(pdfUrl);
+    };
+
+    generateMergedPDF();
+  }, [timestamp, formData]);
 
   return (
     <>
       {isGenerating ? (
-        <div>Abriendo PDF, por favor espera...</div> // Mostrar mensaje mientras se genera el PDF
+        <div>Abriendo PDF, por favor espera...</div>
       ) : (
-        <iframe src={pdfUrl} width="100%" height="600px" title="Vista PDF" />
+        mergedPdfUrl && <iframe src={mergedPdfUrl} width="100%" height="600px" title="Vista PDF" />
       )}
     </>
   );

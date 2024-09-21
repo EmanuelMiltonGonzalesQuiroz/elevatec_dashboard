@@ -16,7 +16,7 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
   const headerHeight = 40; 
   const footerHeight = 30; 
   const rightImageWidth = 40; // Ajusta el ancho de la imagen del lado derecho según sea necesario
-  const { topMargin = 30, bottomMargin = 20 } = config; // Obtener márgenes de config
+  const { topMargin = 30, bottomMargin = 20, leftMargin = 20, rightMargin = 20 } = config; // Obtener márgenes de config
 
   let startY = topMargin + 20; 
 
@@ -40,13 +40,13 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   // Función para añadir la marca de agua detrás del contenido
   const addWatermark = (doc, imageBase64) => {
-    try {
-      const watermarkWidth = pageWidth * 0.8; 
-      const watermarkHeight = pageHeight * 0.8;
+    try { 
+      const watermarkWidth = pageWidth - leftMargin - rightMargin;
+      const watermarkHeight = pageHeight;
       const watermarkX = (pageWidth - watermarkWidth) / 2; 
       const watermarkY = (pageHeight - watermarkHeight) / 2;
 
-      doc.setGState(new doc.GState({ opacity: 0.2 })); 
+      doc.setGState(new doc.GState({ opacity: 0.05 })); 
       doc.addImage(imageBase64, 'JPEG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
       doc.setGState(new doc.GState({ opacity: 1 })); 
     } catch (error) {
