@@ -27,7 +27,9 @@ const getCityAbbreviation = (cityName) => {
 
 const PDFContent = ({ formData, values, timestamp, type }) => {
   const [quotationCode, setQuotationCode] = useState('');
+  const [isFetchingQuotations, setIsFetchingQuotations] = useState(true); // Nuevo estado para controlar cuando se terminen de obtener las cotizaciones
   const [isGenerating, setIsGenerating] = useState(true); // Estado para mostrar el mensaje de espera
+  const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
 
   useEffect(() => {
     const convertTimestampToDate = (timestamp) => {
@@ -64,14 +66,12 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         // Asignar el código de cotización con el índice adecuado
         quotation.code = `COT-${index + 101}/${year}/${cityAbbreviation}`;
     
-        // Mostrar en consola la fecha y el índice asignado
-    
         if (quotation.data.timestamp === timestamp) {
           setQuotationCode(quotation.code);
         }
       });
     
-      setIsGenerating(false); // PDF generado
+      setIsFetchingQuotations(false); // Finaliza el proceso de obtención de cotizaciones
     };
     
     fetchQuotations();
@@ -111,9 +111,9 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     if (type.toLowerCase().includes('jalmeco')) {
       config = {
         leftMargin: 20,
-        rightMargin: 20,      // Sin margen derecho
-        topMargin: 40,       // Margen superior de 50 mm
-        bottomMargin: 35,    // Margen inferior de 35 mm
+        rightMargin: 20,
+        topMargin: 40,
+        bottomMargin: 35,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -123,9 +123,9 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     } else if (type.toLowerCase().includes('tekno') || type.toLowerCase().includes('tecno')) {
       config = {
         leftMargin: 20,
-        rightMargin: 45,     // Margen derecho de 60 mm para la imagen
-        topMargin: 40,       // Margen superior de 50 mm
-        bottomMargin: 30,    // Margen inferior de 30 mm
+        rightMargin: 45,
+        topMargin: 40,
+        bottomMargin: 30,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -135,9 +135,9 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     } else {
       config = {
         leftMargin: 20,
-        rightMargin: 20,     // Márgenes estándar
-        topMargin: 30,       // Margen superior de 30 mm
-        bottomMargin: 20,    // Margen inferior de 20 mm
+        rightMargin: 20,
+        topMargin: 30,
+        bottomMargin: 20,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -146,7 +146,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       };
     }
 
-    // Lógica para elegir el tipo de PDF según `type`
     if (type.toLowerCase().includes('jalmeco')) {
       generateJalmecoPDF(doc, formData, values, config);
     } else if (type.toLowerCase().includes('tekno') || type.toLowerCase().includes('tecno')) {
@@ -177,21 +176,22 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     return mergedPdfUrl;
   };
 
-  const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
-
   useEffect(() => {
     const generateMergedPDF = async () => {
-      const pdfUrl = await generateAndMergePDF();
-      setMergedPdfUrl(pdfUrl);
+      if (!isFetchingQuotations) { // Esperar hasta que las cotizaciones se obtengan
+        const pdfUrl = await generateAndMergePDF();
+        setMergedPdfUrl(pdfUrl);
+        setIsGenerating(false); // Finalizar el estado de generación del PDF
+      }
     };
 
     generateMergedPDF();
-  }, [timestamp, formData]);
+  }, [timestamp, formData, isFetchingQuotations]);
 
   return (
     <>
-      {isGenerating ? (
-        <div>Abriendo PDF, por favor espera...</div>
+      {isGenerating || isFetchingQuotations ? (
+        <div>Abriendo PDF, por favor espera...</div> 
       ) : (
         mergedPdfUrl && <iframe src={mergedPdfUrl} width="100%" height="600px" title="Vista PDF" />
       )}
