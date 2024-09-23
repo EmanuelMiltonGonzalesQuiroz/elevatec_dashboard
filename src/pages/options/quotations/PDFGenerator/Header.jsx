@@ -4,7 +4,7 @@ const Header = ({ doc, config, startY }) => {
   const rightMargin = 20; 
   const maxTextWidth = pageWidth - leftMargin - rightMargin; 
 
-  let currentY = startY;
+  let currentY = startY-10;
   const lineSpacing = 10; 
 
   doc.setFontSize(12);

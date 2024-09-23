@@ -28,7 +28,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   ];
 
   const metodosDePago = formData.MetodoDePago ? formData.MetodoDePago.split('_') : [];
-
+ 
   // Función para agregar un check si el método de pago está presente
   const getCheckOrEmpty = (metodo) => metodosDePago.includes(metodo) ? "X" : "";
 
@@ -61,43 +61,52 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
 
   doc.autoTable({
     startY: startY + 10, // Añadir un poco de espacio desde el punto inicial
-    head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold', fillColor: [22, 160, 133] } }]],
+    head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'left', fontStyle: 'boldunderline', fillColor: [255,255, 255], textColor: [0, 0, 0] } }]],
     body: tableData,
     theme: 'grid',
     tableWidth: tableWidth, // Asegurar que respete los márgenes
     margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes verticales y horizontales
     styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
-    pageBreak: 'auto', // Romper la tabla si no cabe en la página
+    pageBreak: 'avoid', // Romper la tabla si no cabe en la página
   });
 
   // Añadir texto adicional "Opcionales Incluidos"
   let currentYPosition = doc.lastAutoTable.finalY + 10;
-  const opcionales = [
-    { nombre: "Aire acondicionado", key: "Aire_acondicionado" },
-    { nombre: "Indicador de solo boton", key: "Indicador_de_solo_boton" },
-    { nombre: "Pesacarga", key: "Pesacarga" },
-    { nombre: "Pre Apertura de puertas", key: "Pre_Apertura_de_puertas" },
-    { nombre: "Regenerador de energia", key: "Regenerador_de_energia" },
-    { nombre: "Sistema de monitoreo", key: "Sistema_de_monitoreo" },
-    { nombre: "Ventilación", key: "Ventiladores" },
-  ];
+const opcionales = [
+  { nombre: "Aire acondicionado", key: "Aire_acondicionado" },
+  { nombre: "Indicador de solo boton", key: "Indicador_de_solo_boton" },
+  { nombre: "Pesacarga", key: "Pesacarga" },
+  { nombre: "Pre Apertura de puertas", key: "Pre_Apertura_de_puertas" },
+  { nombre: "Regenerador de energia", key: "Regenerador_de_energia" },
+  { nombre: "Sistema de monitoreo", key: "Sistema_de_monitoreo" },
+  { nombre: "Ventilación", key: "Ventiladores" }
+];
 
-  const opcionalesIncluidos = opcionales.filter(item => formData[item.key]?.valor !== 0 && formData[item.key]?.valor !== undefined);
+const opcionalesIncluidos = opcionales.filter(item => formData[item.key]?.valor !== 0 && formData[item.key]?.valor !== undefined);
 
-  currentYPosition = checkAddPage(doc, currentYPosition, 10, config);
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("Opcionales Incluidos:", leftMargin, currentYPosition);
-  currentYPosition += 10;
+// Añadir el título
+currentYPosition = checkAddPage(doc, currentYPosition, 10, config);
+doc.setFontSize(12).setFont("Helvetica", "bold").text("Opcionales Incluidos:", leftMargin, currentYPosition);
 
-  if (opcionalesIncluidos.length > 0) {
-    opcionalesIncluidos.forEach(opcional => {
-      doc.setFontSize(12).setFont("Helvetica", "normal").text(`* ${opcional.nombre}`, leftMargin, currentYPosition);
-      currentYPosition += 10;
-    });
-    currentYPosition += opcionalesIncluidos.length * 5;
-  } else {
-    doc.setFontSize(12).setFont("Helvetica", "normal").text("No se agregó ningún opcional", leftMargin, currentYPosition);
-    currentYPosition += 20;
-  }
+// Crear la tabla con los opcionales incluidos
+const opcionalesRows = opcionalesIncluidos.length > 0 
+  ? opcionalesIncluidos.map(opcional => [`* ${opcional.nombre}`]) 
+  : [["No se agregó ningún opcional"]];
+
+// Generar la tabla con 'plain' y evitar la división de filas
+doc.autoTable({
+  startY: currentYPosition,
+  body: opcionalesRows,
+  theme: 'plain',  // Tabla sin bordes
+  margin: { left: leftMargin },
+  pageBreak: 'auto',  // Saltos automáticos de página
+  rowPageBreak: 'avoid',  // Evitar dividir celdas entre páginas
+  styles: { fontSize: 12, font: "Helvetica", overflow: 'linebreak' }
+});
+
+// Actualizar la posición Y después de la tabla
+currentYPosition = doc.lastAutoTable.finalY + 10;
+
 
   // Definir los datos de la tabla "FORMA DE PAGO"
   const cuota1 = (parseFloat(values["VAR7"]) * 0.3).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -123,12 +132,12 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   ];
 
   // Añadir la tabla "FORMA DE PAGO"
-  currentYPosition = doc.lastAutoTable.finalY + 60;
+  currentYPosition = doc.lastAutoTable.finalY ;
   currentYPosition = checkAddPage(doc, currentYPosition, 60, config); // Verificar si se necesita nueva página
 
   doc.autoTable({
     startY: currentYPosition+10,
-    head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold', fillColor: [22, 160, 133] } }]],
+    head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'left', fontStyle: 'boldunderline', fillColor: [255,255, 255], textColor: [0, 0, 0] } }]],
     body: paymentPlanData,
     theme: 'grid',
     columnStyles: {
@@ -139,7 +148,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     },
     margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin }, // Márgenes
     styles: { overflow: 'linebreak' }, // Hacer que el texto largo haga saltos de línea
-    pageBreak: 'auto', // Romper la tabla si no cabe en la página
+    pageBreak: 'avoid', // Romper la tabla si no cabe en la página
   });
 
   // Añadir más textos después de la tabla con separación entre ellos y verificando espacio

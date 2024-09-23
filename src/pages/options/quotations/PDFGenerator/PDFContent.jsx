@@ -113,7 +113,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         leftMargin: 20,
         rightMargin: 20,
         topMargin: 40,
-        bottomMargin: 35,
+        bottomMargin: 30,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -136,7 +136,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       config = {
         leftMargin: 20,
         rightMargin: 20,
-        topMargin: 30,
+        topMargin: 15,
         bottomMargin: 20,
         city: city,
         date: formattedDate,
@@ -186,6 +186,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     };
 
     generateMergedPDF();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timestamp, formData, isFetchingQuotations]);
 
   return (
