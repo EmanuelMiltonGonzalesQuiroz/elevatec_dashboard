@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../connection/firebase';
+import { db } from '../../../../connection/firebase';
+import CustomSelect from '../../../../components/UI/CustomSelect';
 
 const Selects = ({ handleAddItem }) => {
   const [liftsData, setLiftsData] = useState([]);
@@ -8,6 +9,7 @@ const Selects = ({ handleAddItem }) => {
   const [forkliftsData, setForkliftsData] = useState([]);
   const [escalatorsData, setEscalatorsData] = useState([]);
   const [liftClasses, setLiftClasses] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
   const [selectedLiftClass, setSelectedLiftClass] = useState(null);
   const [selectedLiftFloor, setSelectedLiftFloor] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null); // Solo puede haber un plan seleccionado
@@ -116,6 +118,10 @@ const Selects = ({ handleAddItem }) => {
       </div>
     </div>
   );
+  const handleClientChange = (selectedClient) => {
+    setSelectedClient(selectedClient); // Actualizar el estado del cliente seleccionado
+    handleAddItem({ type: 'Client', client: selectedClient }); // Añadir a la tabla el cliente seleccionado
+  };
 
   useEffect(() => {
     fetchLiftsData();
@@ -125,10 +131,15 @@ const Selects = ({ handleAddItem }) => {
   }, []);
 
   return (
-    <div className="min-h-[85vh] max-h-[86vh] w-1/4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto">
+    <div className="min-h-[85vh] max-h-[112vh] w-1/4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Seleccionar Datos</h2>
 
-      {/* Clase de Ascensor */}
+      <CustomSelect
+        collectionName="clients"
+        placeholder="Buscar Cliente"
+        onChange={(option) => handleClientChange(option)}
+        selectedValue={selectedClient}
+      />
       <div className="mb-4">
         <label className="block mb-2 text-gray-700">Ascensor Clase</label>
         <select

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Selects from './Selects';
-import Location from './Location';
-import Table from './Table';
+import Selects from './MaintenanceForm/Selects';
+import Location from './MaintenanceForm/Location';
+import Table from './MaintenanceForm/Table';
 
 const MaintenanceForm = () => {
   const [selectedItems, setSelectedItems] = useState([]);

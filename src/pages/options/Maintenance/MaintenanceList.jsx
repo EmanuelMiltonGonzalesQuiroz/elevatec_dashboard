@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from '../quotations//Calculation/Modal';
 
-// Función para formatear la fecha a partir del campo `date` en la colección
+// Función para formatear la fecha
 const formatDate = (dateString) => {
   const dateObj = new Date(dateString);
   const day = String(dateObj.getDate()).padStart(2, '0');
@@ -32,10 +33,15 @@ const MaintenanceList = () => {
 
       const maintenanceData = maintenanceSnapshot.docs.map((doc) => {
         const data = doc.data();
+        const client = data.client || {};
 
         return {
           id: doc.id,
           buildingName: data.buildingName || 'N/A',
+          clientName: client.name || 'N/A',
+          clientPhone: client.phone || 'N/A',
+          clientEmail: client.email || 'N/A',
+          clientAddress: client.address || 'N/A',
           date: formatDate(data.date),
           finalTotal: data.finalTotal || 'N/A',
           plan: data.plan || 'N/A',
@@ -108,11 +114,13 @@ const MaintenanceList = () => {
       </div>
 
       <div className="overflow-auto">
-        <table className="bg-white">
+        <table className="bg-white w-full">
         <thead>
           <tr>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">#</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Edificio</th>
+            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cliente</th>
+            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Teléfono Cliente</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Plan</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Precio Total</th>
             <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Fecha</th>
@@ -124,6 +132,8 @@ const MaintenanceList = () => {
             <tr key={maintenance.id} className="bg-gray-100">
               <td className="py-2 px-4 text-black">{index + 1}</td>
               <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
+              <td className="py-2 px-4 text-black">{maintenance.clientName}</td>
+              <td className="py-2 px-4 text-black">{maintenance.clientPhone}</td>
               <td className="py-2 px-4 text-black">{maintenance.plan}</td>
               <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
               <td className="py-2 px-4 text-black">{maintenance.date}</td>
@@ -181,7 +191,10 @@ const MaintenanceList = () => {
       {/* Modal para mostrar el PDF */}
       {showPDFModal && (
         <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
-          
+          <PDFContent
+            formData={selectedMaintenance} // Usamos los datos del mantenimiento seleccionado
+            type={""} // La opción de PDF seleccionada
+          />
         </Modal>
       )}
     </div>

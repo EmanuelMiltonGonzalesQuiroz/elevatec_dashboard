@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, LoadScriptNext, MarkerF } from '@react-google-maps/api';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../connection/firebase'; // Importar la conexión a Firestore
-import { calculateDistance } from '../../../components/layout/calculateDistance'; // Asegúrate de tener la función de cálculo de distancia.
+import { db } from '../../../../connection/firebase'; // Importar la conexión a Firestore
+import { calculateDistance } from '../../../../components/layout/calculateDistance'; // Asegúrate de tener la función de cálculo de distancia.
 
 const MapComponentM = ({ mapCenter, markerPosition, handleMapClick }) => {
   const [locations, setLocations] = useState([]); // Estado para guardar las ubicaciones existentes

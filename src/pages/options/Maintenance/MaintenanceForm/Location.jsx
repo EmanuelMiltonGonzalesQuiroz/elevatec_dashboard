@@ -39,7 +39,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
   };
 
   return (
-    <div className="h-[28vh] bg-gray-200 rounded-lg p-4 overflow-auto">
+    <div className="h-[55vh] bg-gray-200 rounded-lg p-4 overflow-auto">
       <h2 className="text-lg font-bold text-black">Localización</h2>
       <div className="flex flex-col">
         <label
@@ -58,7 +58,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
       </div>
 
       {/* Mapa */}
-      <div className="h-[40vh] mt-2">
+      <div className="h-[30vh] mt-2">
         <MapComponentM
           mapCenter={markerPosition} // Pasamos la posición inicial aquí
           markerPosition={markerPosition}
