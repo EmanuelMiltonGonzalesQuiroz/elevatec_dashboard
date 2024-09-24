@@ -1,5 +1,5 @@
 const MainContent = ({ doc, config, formData, startY }) => {
-  const { leftMargin = 20, rightMargin = 20, fontSize = 12 } = config; // Asegurar márgenes y tamaño de fuente
+  const { leftMargin = 20, rightMargin = 20, fontSize = 12,experience } = config; // Asegurar márgenes y tamaño de fuente
   const pageWidth = doc.internal.pageSize.getWidth();
   const maxTextWidth = pageWidth - leftMargin - rightMargin; // Ajustar el ancho de texto respetando los márgenes
 
@@ -18,9 +18,9 @@ const MainContent = ({ doc, config, formData, startY }) => {
   const installationDescription = `De acuerdo a su solicitud, tenemos el agrado de poner en su consideración la Provisión e Instalación de ${numberToWords(numAscensores)} (${numAscensores}) Ascensores Sociales, marca ELEVATEC de última tecnología, que cumple con todos los requerimientos necesarios para su obra.`;
 
   // Texto fijo adicional
-  const additionalInfo = `Ascensores Elevatec, fabricados por Teknolift SRL, del grupo Empresarial Jaldin, cumple con Normativa europea EN 81, compatible con la Norma Boliviana NB 135001, Sistema de Gestión de Calidad ISO 9001: 2015 y Sistema de Gestión Ambiental ISO 14001: 2015.`;
+  const additionalInfo = `Los equipos ofertados cumplen con Normativa internacional, en fabricación de Ascensores, y cuentan con la certificación del Sistema de Gestión de Calidad ISO9001, certificación en Sistemas de Gestión Ambiental (SGA) ISO 14001, Certificación en Sistemas de gestión de la seguridad y salud en el trabajo ISO45001.`;
 
-  const experienceInfo = `La experiencia de más de 10 años en el mercado de nuestra Empresa, y los más de 500 equipos instalados a nivel nacional, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`;
+  const experienceInfo = `La experiencia de más de ${experience} años en el mercado de nuestra Empresa, y los más de 500 equipos instalados a nivel nacional, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`;
 
   // Ajustar la posición de las líneas
   const lineSpacing = 10; // Espaciado entre líneas
@@ -34,7 +34,7 @@ const MainContent = ({ doc, config, formData, startY }) => {
 
   // De nuestra mayor consideración
   doc.text("De nuestra mayor consideración:", leftMargin, currentY, { maxWidth: maxTextWidth });
-  currentY += lineSpacing;
+  currentY += lineSpacing+5;
 
   // Descripción de instalación
   doc.text(installationDescription, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });
@@ -42,7 +42,7 @@ const MainContent = ({ doc, config, formData, startY }) => {
 
   // Información adicional
   doc.text(additionalInfo, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });
-  currentY += lineSpacing * 2;
+  currentY += (lineSpacing * 2)+5;
 
   // Información de experiencia
   doc.text(experienceInfo, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });

@@ -3,7 +3,6 @@ import MainContent from './MainContent';
 import TechnicalSpecifications from './TechnicalSpecifications'; 
 import TechnicalDetails from './TechnicalDetails'; 
 import TableComponent from './TableComponent'; 
-import Final from './Final'; 
 
 import teknoliftHeader from '../../../../assets/images/teknoliftHeader.jpg'; 
 import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg'; 
@@ -99,9 +98,6 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
   startY = checkAddPage(doc, startY); 
   startY = TableComponent({ doc, formData, values, startY , config});
 
-  // Sección final
-  startY = checkAddPage(doc, startY); 
-  Final({ doc, config, startY });
 
   // Añadir encabezado, footer, marca de agua e imagen lateral en todas las páginas
   const totalPages = doc.getNumberOfPages();

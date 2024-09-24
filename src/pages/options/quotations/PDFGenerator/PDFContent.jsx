@@ -20,15 +20,15 @@ const getCityAbbreviation = (cityName) => {
     "tarija": "TJ",
     "sucre": "SU",
     "beni": "BN",
-    "transporte por el cliente": "OT" // Abreviatura OT para transporte por el cliente u otros
+    "transporte por el cliente": "OT" 
   };
   return cityMap[cityName.toLowerCase()] || "OT";
 };
 
 const PDFContent = ({ formData, values, timestamp, type }) => {
   const [quotationCode, setQuotationCode] = useState('');
-  const [isFetchingQuotations, setIsFetchingQuotations] = useState(true); // Nuevo estado para controlar cuando se terminen de obtener las cotizaciones
-  const [isGenerating, setIsGenerating] = useState(true); // Estado para mostrar el mensaje de espera
+  const [isFetchingQuotations, setIsFetchingQuotations] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(true);
   const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
 
   useEffect(() => {
@@ -43,27 +43,19 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       const collectionRef = collection(db, 'list of quotations');
       const snapshot = await getDocs(collectionRef);
     
-      // Convertir el timestamp a fecha y ordenar las cotizaciones
       const quotations = snapshot.docs
         .map((doc) => {
           const data = doc.data();
           const timestamp = data.timestamp;
-    
-          // Convertir el timestamp personalizado a un objeto Date
           const formattedDate = convertTimestampToDate(timestamp);
-    
           return { id: doc.id, data, date: formattedDate };
         })
-        // Ordenar las fechas correctamente
         .sort((a, b) => a.date - b.date);
     
-      // Asignar códigos y mostrar los índices de cada cotización
       quotations.forEach((quotation, index) => {
         const year = quotation.data.timestamp.split('T')[0].split('_')[0];
         const city = formData['Ciudad']?.nombre || 'Desconocido';
         const cityAbbreviation = getCityAbbreviation(city);
-    
-        // Asignar el código de cotización con el índice adecuado
         quotation.code = `COT-${index + 101}/${year}/${cityAbbreviation}`;
     
         if (quotation.data.timestamp === timestamp) {
@@ -71,20 +63,18 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         }
       });
     
-      setIsFetchingQuotations(false); // Finaliza el proceso de obtención de cotizaciones
+      setIsFetchingQuotations(false);
     };
     
     fetchQuotations();
   }, [timestamp, formData]);
 
   const generatePDF = () => {
-    // Configurar el tamaño de la página en 'letter'
     const doc = new jsPDF({
-      format: 'letter', // Establece el tamaño a carta (Letter)
+      format: 'letter',
       unit: 'mm',
     });
 
-    // Parsear timestamp
     let formattedDate;
     if (timestamp) {
       try {
@@ -98,7 +88,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       formattedDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // Obtener el número de ascensores
     const numAscensoresRaw = formData['08_Número de ascensores'];
     const numAscensores = parseInt(numAscensoresRaw, 10);
     const cantidadAscensores = isNaN(numAscensores) || numAscensores < 1 ? 1 : numAscensores;
@@ -106,7 +95,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     const city = formData['Ciudad']?.nombre || "Ciudad Desconocida";
     const recipient = formData['02_CLIENTE'] || "Cliente Desconocido";
 
-    // Configuraciones dinámicas según el tipo de PDF
     let config;
     if (type.toLowerCase().includes('jalmeco')) {
       config = {
@@ -114,6 +102,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         rightMargin: 20,
         topMargin: 40,
         bottomMargin: 30,
+        experience: 30,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -127,6 +116,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         topMargin: 40,
         bottomMargin: 30,
         city: city,
+        experience: 10,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
         recipient: recipient,
@@ -139,6 +129,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         topMargin: 15,
         bottomMargin: 20,
         city: city,
+        experience: 10,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
         recipient: recipient,
@@ -176,12 +167,33 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     return mergedPdfUrl;
   };
 
+  const handleSave = () => {
+    const numCotizaciones = quotationCode.split('-')[1]; // Extract the number from the quotation code
+    const nombreCliente = formData['02_CLIENTE'] || "ClienteDesconocido";
+    const cantidadPersonas = formData['03_PERSONAS'] || "CantidadDesconocida";
+    const cantidadParadas = formData['01_PARADAS'] || "ParadasDesconocidas";
+
+    const fileName = `Cotización ${numCotizaciones} Cliente ${nombreCliente} Personas ${cantidadPersonas} Paradas ${cantidadParadas}.pdf`;
+
+
+    const downloadPDF = async () => {
+      const generatedDoc = generatePDF();
+      const pdfBlob = await mergePDFs(generatedDoc);
+      const link = document.createElement('a');
+      link.href = pdfBlob;
+      link.download = fileName;
+      link.click();
+    };
+
+    downloadPDF();
+  };
+
   useEffect(() => {
     const generateMergedPDF = async () => {
-      if (!isFetchingQuotations) { // Esperar hasta que las cotizaciones se obtengan
+      if (!isFetchingQuotations) {
         const pdfUrl = await generateAndMergePDF();
         setMergedPdfUrl(pdfUrl);
-        setIsGenerating(false); // Finalizar el estado de generación del PDF
+        setIsGenerating(false);
       }
     };
 
@@ -191,10 +203,25 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
 
   return (
     <>
+      <button 
+        onClick={handleSave} 
+        style={{
+          width: '100%', 
+          backgroundColor: 'green', 
+          color: 'white', 
+          textAlign: 'center', 
+          padding: '10px', 
+          fontSize: '16px',
+          border: 'none',
+          cursor: 'pointer'
+        }}>
+        Guardar
+      </button>
+
       {isGenerating || isFetchingQuotations ? (
         <div>Abriendo PDF, por favor espera...</div> 
       ) : (
-        mergedPdfUrl && <iframe src={mergedPdfUrl} width="100%" height="600px" title="Vista PDF" />
+        mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} width="100%" height="600px" title="Vista PDF" />
       )}
     </>
   );

@@ -106,8 +106,14 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
   };
 
   const handleLocksChange = (e) => {
-    const selectedValue = parseInt(e.target.value, 10);
-    setFormData(prev => ({
+    let selectedValue = parseInt(e.target.value, 10);
+    
+    // Asegurar que el valor ingresado sea un entero positivo o 0
+    if (isNaN(selectedValue) || selectedValue < 0) {
+      selectedValue = 0; // Si el valor no es válido, lo ponemos en 0
+    }
+  
+    setFormData((prev) => ({
       ...prev,
       Llavines_con_llave: {
         ...prev.Llavines_con_llave,
@@ -176,22 +182,23 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
       
       <div>
         <label htmlFor="locks" className="mb-2 font-semibold text-black">
-          <InfoButton title={advancedOptionsText.locks} concept={advancedOptionsText.locksConcept} />
+          <InfoButton
+            title={advancedOptionsText.locks}
+            concept={advancedOptionsText.locksConcept}
+          />
         </label>
-        <select
+        <input
           id="locks"
+          type="number"
+          min="0" // Asegura que el número sea positivo
+          step="1" // Solo permite enteros
           className={`p-2 border rounded focus:outline-none w-full mb-4 ${
-            formData["Llavines_con_llave"]?.UNIDADES ? '' : 'bg-red-200'  // Fondo rojo si el valor es 0
+            formData["Llavines_con_llave"]?.UNIDADES > 0 ? '' : 'bg-red-200' // Fondo rojo si es 0 o negativo
           }`}
           onChange={handleLocksChange}
-        >
-          {[...Array(16).keys()].map((num) => (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          ))}
-        </select>
-      </div>
+          value={formData["Llavines_con_llave"]?.UNIDADES || 0} // Muestra el valor actual o 0 si no está definido
+        />
+      </div>;
     </div>
   );
 };

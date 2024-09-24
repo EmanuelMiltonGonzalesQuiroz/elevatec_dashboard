@@ -152,32 +152,61 @@ currentYPosition = doc.lastAutoTable.finalY + 10;
   });
 
   // Añadir más textos después de la tabla con separación entre ellos y verificando espacio
-  currentYPosition = doc.lastAutoTable.finalY + 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("TIEMPO DE ENTREGA:", leftMargin, currentYPosition);
-  currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("El equipo se entregará funcionando en seis (6) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
+  currentYPosition = doc.lastAutoTable.finalY +5;
 
-  currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE EQUIPO O FABRICACIÓN", leftMargin, currentYPosition);
-  currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
-
-  currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("GARANTÍA DE INSTALACIÓN Y MONTAJE", leftMargin, currentYPosition);
-  currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Jalmeco Ltda., responsable de la instalación y montaje...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
-
-  currentYPosition += 20;
-  currentYPosition = checkAddPage(doc, currentYPosition, 20, config); // Verificar si se necesita nueva página
-  doc.setFontSize(12).setFont("Helvetica", "bold").text("OBLIGACIONES DEL COMPRADOR", leftMargin, currentYPosition);
-  currentYPosition += 10;
-  doc.setFontSize(12).setFont("Helvetica", "normal").text("Todas las obras civiles adecuadas para la instalación de los ascensores...", leftMargin, currentYPosition, { maxWidth: 170, align: "justify" });
-
-  // Devolver la última posición Y actualizada para que `Final` comience justo después
-  return currentYPosition + 60;
+  const termsData = [
+    [
+      { content: "TIEMPO DE ENTREGA:", styles: { fontStyle: 'bold', fontSize: 12 } }
+    ],
+    [
+      { content: "El equipo se entregará funcionando en Siete (7) meses a partir de la firma de contrato y recepción del anticipo establecido en el mismo.", styles: {  fontSize: 12 } }
+    ],
+    [
+      { content: "GARANTÍA DE EQUIPO O FABRICACIÓN", styles: { fontStyle: 'bold', fontSize: 12 } }
+    ],
+    [
+      { content: "Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación, a partir de la puesta en funcionamiento de los ascensores. Quedan excluidos de la garantía los daños ocasionados por uso indebido, daños maliciosos ocasionados por terceros, daños por incidencias de agua, rayos o tormentas y otros no relacionados con defectos de fabricación.", styles: {  fontSize: 12 } }
+    ],
+    [
+      { content: "GARANTÍA DE INSTALACIÓN Y MONTAJE", styles: { fontStyle: 'bold', fontSize: 12 } }
+    ],
+    [
+      { content: "Jalmeco Ltda., responsable de la instalación y Montaje, realizará el mantenimiento preventivo y correctivo de forma gratuita por Dieciocho (18) meses calendario, tiempo en el cual subsanará cualquier defecto en forma gratuita por el tiempo indicado.", styles: {  fontSize: 12 } }
+    ],
+    [
+      { content: "OBLIGACIONES DEL COMPRADOR", styles: { fontStyle: 'bold', fontSize: 12 } }
+    ],
+    [
+      { content: "Todas las obras civiles adecuadas para la instalación de los ascensores, así como la instalación eléctrica hasta el cuadro de maniobra del Ascensor, serán realizadas por cuenta del comprador.", styles: {  fontSize: 12 } }
+    ],
+    [
+      { content: "VALIDEZ DE LA OFERTA", styles: { fontStyle: 'bold', textDecoration: 'underline', fontSize: 12 } }
+    ],
+    [
+      { content: "La oferta tiene una validez de siete (7) días a partir de la fecha, concluido este periodo, se tendrá que realizar una actualización de la presente cotización.", styles: {  fontSize: 12 } }
+    ],
+    // Espacio para la firma
+    [{ content: " ", styles: { minCellHeight: 40 } }],
+    // Firma
+    [{ content: "Ing. Frank Jaldin Navia", styles: { halign: 'center', fontStyle: 'bold', fontSize: 12 } }],
+    [{ content: "GERENTE REGIONAL", styles: { halign: 'center', fontSize: 12 } }]
+  ];
+  
+  doc.autoTable({
+    startY: currentYPosition,
+    body: termsData,
+    theme: 'plain',
+    tableWidth: tableWidth,
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
+    styles: { overflow: 'linebreak', fontSize: 12 },
+    pageBreak: 'auto',
+    rowPageBreak: 'avoid',
+  });
+  
+  currentYPosition = doc.lastAutoTable.finalY;
+  
+  
+ return currentYPosition;
 };
 
 export default TableComponent;

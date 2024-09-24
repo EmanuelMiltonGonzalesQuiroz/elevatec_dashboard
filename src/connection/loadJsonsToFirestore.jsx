@@ -11,23 +11,21 @@ import carLiftsData from './Jsons/Car lifts M.json';
 import escalatorData from './Jsons/Escalator M.json';
 import forkliftsData from './Jsons/Forklifts M.json';
 import liftsData from './Jsons/Lifts M.json';
-import maneuverData from './Jsons/maneuver.json'; // Nueva colección importada
-
+import maneuverData from './Jsons/maneuver.json'; 
 // Función para sanitizar los IDs de los documentos
 const sanitizeDocId = (id) => {
-    return id ? id.replace(/\//g, '_') : 'unknown_id'; // Reemplaza '/' por '_' para garantizar IDs válidos
+    return id ? id.replace(/\//g, '_') : 'unknown_id';
 };
 
 // Función que verifica si la colección existe y contiene documentos
 const collectionExists = async (collectionName) => {
     const querySnapshot = await getDocs(collection(db, collectionName));
-    return !querySnapshot.empty; // Si hay documentos, la colección existe
+    return !querySnapshot.empty;
 };
 
 // Función principal que carga los archivos JSON a Firestore
-const loadJsonFilesToFirestore = async () => {
+const processTask = async () => {
 
-    // Lista de archivos JSON a cargar en Firestore
     const jsonFiles = [
         { data: groupsData, collectionName: 'groups' },
         { data: elementsData, collectionName: 'elements' },
@@ -40,7 +38,7 @@ const loadJsonFilesToFirestore = async () => {
         { data: escalatorData, collectionName: 'escalator_m' },
         { data: forkliftsData, collectionName: 'forklifts_m' },
         { data: liftsData, collectionName: 'lifts_m' },
-        { data: maneuverData, collectionName: 'maneuver' } // Nueva colección 'maneuver'
+        { data: maneuverData, collectionName: 'maneuver' } 
     ];
 
     // Itera sobre cada archivo JSON y carga su contenido a Firestore
@@ -84,4 +82,4 @@ const loadJsonFilesToFirestore = async () => {
     }
 };
 
-export default loadJsonFilesToFirestore;
+export default processTask;

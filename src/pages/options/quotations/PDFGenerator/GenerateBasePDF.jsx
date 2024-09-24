@@ -3,7 +3,6 @@ import MainContent from './MainContent';
 import TechnicalSpecifications from './TechnicalSpecifications';
 import TechnicalDetails from './TechnicalDetails';
 import TableComponent from './TableComponent';
-import Final from './Final';
 import { checkAddPage } from './utils'; // Utiliza checkAddPage desde un archivo de utilidades si lo necesitas
 
 export const generateBasePDF = (doc, formData, values, config) => {
@@ -26,6 +25,5 @@ export const generateBasePDF = (doc, formData, values, config) => {
   startY = TableComponent({ doc, formData, values, startY, config });
 
   // Sección final
-  startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página
-  Final({ doc, config, startY });
+ 
 };

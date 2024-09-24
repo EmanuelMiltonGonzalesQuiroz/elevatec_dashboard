@@ -3,7 +3,6 @@ import MainContent from './MainContent'; // Importar el contenido principal
 import TechnicalSpecifications from './TechnicalSpecifications'; // Importar las especificaciones técnicas
 import TechnicalDetails from './TechnicalDetails'; // Importar los detalles técnicos
 import TableComponent from './TableComponent'; // Importar el componente de tabla
-import Final from './Final'; // Importar la sección final
 
 import jalmecoHeaderJPG from '../../../../assets/images/jalmecoHeader.jpg'; // Importar el encabezado
 import jalmecoWaterMark from '../../../../assets/images/jalmecoWaterMark.jpg'; // Importar la marca de agua
@@ -29,19 +28,16 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
 
   // Función interna para añadir la marca de agua detrás del contenido
   const addWatermark = (doc, imageBase64) => {
-    try {
       const watermarkWidth = pageWidth ; // Ajustar tamaño de la marca de agua
       const watermarkHeight = pageHeight ;
       const watermarkX = (pageWidth - watermarkWidth) / 2; // Centrar la marca de agua
       const watermarkY = (pageHeight - watermarkHeight) / 2;
 
       // Ajustar la opacidad y añadir la marca de agua
-      doc.setGState(new doc.GState({ opacity: 0.4 })); // Aumentar la opacidad para mayor visibilidad
+      doc.setGState(new doc.GState({ opacity: 0.2 })); // Aumentar la opacidad para mayor visibilidad
       doc.addImage(imageBase64, 'JPEG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
       doc.setGState(new doc.GState({ opacity: 1 })); // Restaurar opacidad
-    } catch (error) {
-      console.error("Error al añadir la marca de agua: ", error.message);
-    }
+    
   };
 
   // Función interna para añadir el footer detrás del número de página
@@ -86,10 +82,6 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
   // Tabla de componentes finales
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
   startY = TableComponent({ doc, formData, values, startY , config});
-
-  // Sección final
-  startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
-  Final({ doc, config, startY });
 
   // Añadir encabezado, footer y marca de agua en todas las páginas generadas
   const totalPages = doc.getNumberOfPages();
