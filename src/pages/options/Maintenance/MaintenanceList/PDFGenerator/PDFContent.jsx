@@ -68,7 +68,8 @@ const PDFContent = ({ recipe, type }) => {
   };
 
   const handleSave = () => {
-    const fileName = `Mantenimiento_${recipe.date.split('T')[0]}.pdf`;
+    const documentIdPart = recipe.documentId.split('/')[0];
+const fileName = `0${documentIdPart}_Mantenimiento_${recipe.date.split('T')[0]}.pdf`;
 
     const downloadPDF = async () => {
       const generatedDoc = generatePDF();

@@ -67,7 +67,7 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
               <MarkerF
                 key={location.id}
                 position={{ lat: location.location.lat, lng: location.location.lng }}
-                icon={`http://maps.google.com/mapfiles/ms/icons/${stateColors[location.state] || 'red'}-dot.png`}
+                icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
               />
             ) : null
           ))

@@ -3,18 +3,21 @@ import { db } from '../../../connection/firebase';
 import { collection, getDocs, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 
 const colorOptions = [
-  { name: 'red', color: '#FF0000', label: 'Rojo' },       // Eliminar
-  { name: 'green', color: '#00FF00', label: 'Verde' },    // Construcción
-  { name: 'blue', color: '#0000FF', label: 'Azul' },      // Cotización M
-  { name: 'yellow', color: '#FFFF00', label: 'Amarillo' },// Mantenimiento
-  { name: 'gray', color: '#808080', label: 'Gris' },      // Competencia
-  { name: 'white', color: '#FFFFFF', label: 'Blanco' },   // Color adicional
-  { name: 'magenta', color: '#FF00FF', label: 'Magenta' },// Color adicional
-  { name: 'cyan', color: '#00FFFF', label: 'Cian' },      // Color adicional
-  { name: 'olive', color: '#808000', label: 'Oliva' },    // Color adicional
+  { name: 'red', color: '#FF0000', label: 'Rojo' },       // Eliminar (Red)
+  { name: 'green', color: '#008000', label: 'Verde' },    // Construcción (Green)
+  { name: 'blue', color: '#0000FF', label: 'Azul' },      // Cotización M (Blue)
+  { name: 'yellow', color: '#FBBC04', label: 'Amarillo' },// Mantenimiento (Yellow)
+  { name: 'gray', color: '#808080', label: 'Gris' },      // Competencia (Gray)
+  { name: 'white', color: '#FFFFFF', label: 'Blanco' },   // Default (White)
+  { name: 'skyblue', color: '#ADD8E6', label: 'Celeste' },// Cotización A (Light Blue)
+  { name: 'purple', color: '#800080', label: 'Púrpura' },  // Modernización (Purple)
+  { name: 'magenta', color: '#FF00FF', label: 'Magenta' },// Additional
+  { name: 'cyan', color: '#00FFFF', label: 'Cian' },      // Additional
+  { name: 'olive', color: '#808000', label: 'Oliva' },    // Additional
   { name: 'skyblue', color: '#87CEEB', label: 'Celeste' },// Cotización A
-  { name: 'purple', color: '#800080', label: 'Púrpura' }  // Modernización
+  { name: 'purple', color: '#800080', label: 'Púrpura' }
 ];
+
 
 const EditStatesModal = ({ onClose }) => {
   const [locationStates, setLocationStates] = useState([]);
@@ -42,15 +45,14 @@ const EditStatesModal = ({ onClose }) => {
     fetchStates();
   }, []);
 
-  // Función para filtrar los colores ya usados
+  // Filter available colors
   const getAvailableColors = (currentColor) => {
     return colorOptions.filter(
-      (option) => !locationStates.some((state) => state.color === option.name) || option.name === currentColor
+      (option) => !locationStates.some((state) => state.color === option.color) || option.color === currentColor
     );
   };
 
   const handleStateChange = (id, key, value) => {
-    // Verificar que el color no esté asignado a otro estado
     if (key === 'color' && locationStates.some((state) => state.color === value && state.id !== id)) {
       setError('El color ya está asignado a otro estado');
       return;
@@ -59,7 +61,7 @@ const EditStatesModal = ({ onClose }) => {
     setLocationStates((prevStates) =>
       prevStates.map((state) => (state.id === id ? { ...state, [key]: value } : state))
     );
-    setError(''); // Resetear el error si todo está bien
+    setError(''); // Reset error
   };
 
   const handleSave = async () => {
@@ -118,7 +120,7 @@ const EditStatesModal = ({ onClose }) => {
       <div className="bg-white p-6 rounded shadow-lg w-[600px] space-y-6">
         <h2 className="text-2xl font-bold mb-4">Editar Estados</h2>
 
-        {/* Tabla de edición de estados */}
+        {/* State Edit Table */}
         <div className="max-h-[50vh] overflow-auto">
           <table className="table-auto w-full mb-4">
             <thead>
@@ -146,7 +148,7 @@ const EditStatesModal = ({ onClose }) => {
                       onChange={(e) => handleStateChange(state.id, 'color', e.target.value)}
                       className="p-2 border rounded w-full"
                       style={{
-                        backgroundColor: colorOptions.find((opt) => opt.name === state.color)?.color,
+                        backgroundColor: colorOptions.find((opt) => opt.color === state.color)?.color,
                         border: '1px solid black',
                         color: 'black',
                       }}
@@ -154,10 +156,10 @@ const EditStatesModal = ({ onClose }) => {
                       {getAvailableColors(state.color).map((option) => (
                         <option
                           key={option.name}
-                          value={option.name}
+                          value={option.color}
                           style={{ backgroundColor: option.color, color: 'black' }}
                         >
-                          {""}
+                          {option.label}
                         </option>
                       ))}
                     </select>
@@ -198,7 +200,7 @@ const EditStatesModal = ({ onClose }) => {
             onChange={(e) => setNewState({ ...newState, color: e.target.value })}
             className="p-2 border rounded w-1/2"
             style={{
-              backgroundColor: colorOptions.find((opt) => opt.name === newState.color)?.color,
+              backgroundColor: colorOptions.find((opt) => opt.color === newState.color)?.color,
               border: '1px solid black',
               color: 'black',
             }}
@@ -207,8 +209,8 @@ const EditStatesModal = ({ onClose }) => {
               Selecciona un color
             </option>
             {getAvailableColors().map((option) => (
-              <option key={option.name} value={option.name} style={{ backgroundColor: option.color, color: 'black' }}>
-                {""}
+              <option key={option.color} value={option.color} style={{ backgroundColor: option.color, color: 'black' }}>
+                {option.label}
               </option>
             ))}
           </select>

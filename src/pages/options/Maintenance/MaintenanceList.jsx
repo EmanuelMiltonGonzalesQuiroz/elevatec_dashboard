@@ -37,17 +37,39 @@ const MaintenanceList = () => {
 
         return {
           id: doc.id,
+          approvalPercentage: data.approvalPercentage || 0,
           buildingName: data.buildingName || 'N/A',
-          clientName: client.name || 'N/A',
-          clientPhone: client.phone || 'N/A',
-          clientEmail: client.email || 'N/A',
-          clientAddress: client.address || 'N/A',
+          client: {
+              address: data.client?.address || 'N/A',
+              ciNIT: data.client?.ciNIT || 'N/A',
+              email: data.client?.email || 'N/A',
+              label: data.client?.label || 'N/A',
+              name: data.client?.name || 'N/A',
+              phone: data.client?.phone || 'N/A',
+              value: data.client?.value || 'N/A',
+          },
           date: formatDate(data.date),
+          directPercentage: data.directPercentage || 0,
+          documentId: data.documentId || 'N/A',
+          filteredItems: data.filteredItems?.map(item => ({
+              displayType: item.displayType || 'N/A',
+              finalPrice: item.finalPrice || 0,
+              type: {
+                  basePrice: item.type?.basePrice || 0,
+                  finalPrice: item.type?.finalPrice || 0,
+                  floor: item.type?.floor || 'N/A',
+                  type: item.type?.type || 'N/A',
+              }
+          })) || [],
           finalTotal: data.finalTotal || 'N/A',
+          location: {
+              lat: data.location?.lat || 'N/A',
+              lng: data.location?.lng || 'N/A'
+          },
           plan: data.plan || 'N/A',
-          location: data.location ? { lat: data.location.lat, lng: data.location.lng } : { lat: 'N/A', lng: 'N/A' },
-          totalPriceByPlan: data.totalPriceByPlan || 'N/A',
-        };
+          totalPriceByPlan: data.totalPriceByPlan || 'N/A'
+      };
+      
       });
 
       setMaintenanceList(maintenanceData);
@@ -133,8 +155,8 @@ const MaintenanceList = () => {
             <tr key={maintenance.id} className="bg-gray-100">
               <td className="py-2 px-4 text-black">{index + 1}</td>
               <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
-              <td className="py-2 px-4 text-black">{maintenance.clientName}</td>
-              <td className="py-2 px-4 text-black">{maintenance.clientPhone}</td>
+              <td className="py-2 px-4 text-black">{maintenance.client.name}</td>
+              <td className="py-2 px-4 text-black">{maintenance.client.phone}</td>
               <td className="py-2 px-4 text-black">{maintenance.plan}</td>
               <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
               <td className="py-2 px-4 text-black">{maintenance.date}</td>

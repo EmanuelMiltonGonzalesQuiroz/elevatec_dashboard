@@ -86,7 +86,7 @@ const MapComponentM = ({ mapCenter, markerPosition, handleMapClick }) => {
                 key={location.id}
                 position={{ lat: location.location.lat, lng: location.location.lng }}
                 // Usa el color basado en el estado de la ubicación
-                icon={`http://maps.google.com/mapfiles/ms/icons/${stateColors[location.state] || 'red'}-dot.png`}
+                icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
               />
             ) : null
           ))

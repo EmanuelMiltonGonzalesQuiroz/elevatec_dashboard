@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
-import { collection, onSnapshot, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, getDocs,setDoc, updateDoc, doc } from 'firebase/firestore';
 import LocationHeader from './LocationHeader';
 import LocationTable from './LocationTable';
 import LocationMap from './LocationMap';
@@ -9,6 +9,17 @@ import EditStatesModal from './EditStatesModal';
 import EditLocationModal from './EditLocationModal';
 import DirectionsModal from './DirectionsModal'; // Importamos el nuevo modal
 import { useAuth } from '../../../context/AuthContext';
+
+const defaultStates = [
+  { id: 'Cotizacion_A', state: true, color: '#ADD8E6' },   // Light Blue
+  { id: 'Cotizacion_M', state: true, color: '#0000FF' },   // Blue
+  { id: 'Construccion', state: true, color: '#008000' },   // Green
+  { id: 'Mantenimiento', state: true, color: '#FBBC04' },  // Yellow
+  { id: 'Modernizacion', state: true, color: '#800080' },  // Purple
+  { id: 'Competencia', state: true, color: '#808080' },    // Gray
+  { id: 'Eliminar', state: true, color: '#FF0000' },       // Red
+  { id: 'default', state: true, color: '#FFFFFF' }         // White (default)
+];
 
 const Location = () => {
   const [locations, setLocations] = useState([]); 
@@ -29,6 +40,30 @@ const Location = () => {
       setLocations(locationList);
       setMapLocations(locationList);
     });
+
+    const fetchLocationStates = async () => { 
+      try {
+        const locationStatesCol = collection(db, 'locationStates');
+        const locationStatesSnapshot = await getDocs(locationStatesCol);
+        
+    
+        // If the collection is empty, add the default states
+        if (locationStatesSnapshot.empty ) {
+          await Promise.all(
+            defaultStates.map(async (state) => {
+              const stateDocRef = doc(db, 'locationStates', state.id);
+              await setDoc(stateDocRef, { state: state.state, color: state.color });
+
+            })
+          ); // Load default states
+
+        } 
+
+      } catch (error) {
+        console.error('Error fetching location states: ', error);
+      }
+    };
+    fetchLocationStates();
 
     const fetchStateColors = async () => {
       const statesCol = collection(db, 'locationStates');
