@@ -1,5 +1,5 @@
 import { db } from '../../../../../connection/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 
 // Función para limpiar el objeto y eliminar propiedades con valores undefined o null
 const cleanData = (data) => {
@@ -22,7 +22,9 @@ const saveToFirestore = async ({
   plan, buildingName, location, filteredItems, totalPriceByPlan,
   directPercentage, approvalPercentage, finalTotal, client
 }) => {
-  const getCurrentDate = () => new Date().toISOString();
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const formattedDate = currentDate.toISOString();
 
   // Limpiar los datos antes de enviarlos a Firestore
   const sanitizedItems = cleanData(filteredItems.filter(item => 
@@ -42,12 +44,29 @@ const saveToFirestore = async ({
     approvalPercentage,
     finalTotal,
     client,
-    date: getCurrentDate(),
+    date: formattedDate,
   });
 
   try {
-    await addDoc(collection(db, 'list of maintenance'), cleanedData);
-    return 'Los datos se guardaron correctamente.';
+    // Consultar documentos del año actual
+    const maintenanceCollection = collection(db, 'list of maintenance');
+    const yearQuery = query(
+      maintenanceCollection,
+      where('date', '>=', `${currentYear}-01-01`),
+      where('date', '<', `${currentYear + 1}-01-01`)
+    );
+
+    const querySnapshot = await getDocs(yearQuery);
+    const documentCountForYear = querySnapshot.size + 1; // Sumar 1 para el nuevo documento
+
+    // Formato N/año
+    const documentId = `${String(documentCountForYear).padStart(2, '0')}/${currentYear}`;
+    cleanedData.documentId = documentId; // Asignar el valor del identificador
+
+    // Guardar los datos en Firestore
+    await addDoc(maintenanceCollection, cleanedData);
+
+    return `Los datos se guardaron correctamente con el ID: ${documentId}.`;
   } catch (error) {
     console.error('Error al guardar los datos:', error);
     return 'Error al guardar los datos.';

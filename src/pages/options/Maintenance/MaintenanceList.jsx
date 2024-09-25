@@ -3,7 +3,7 @@ import CustomSelect from '../../../components/UI/CustomSelect';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
-import Modal from '../quotations//Calculation/Modal';
+import Modal from '../quotations/Calculation/Modal';
 
 // Función para formatear la fecha
 const formatDate = (dateString) => {
@@ -22,7 +22,7 @@ const MaintenanceList = () => {
   const [filteredMaintenance, setFilteredMaintenance] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
-  const [setSelectedPDFOption] = useState(null);
+  const [selectedPDFOption, setSelectedPDFOption] = useState(null); // Fix para el uso de PDF option
   const [showPDFModal, setShowPDFModal] = useState(false);
 
   useEffect(() => {
@@ -75,7 +75,9 @@ const MaintenanceList = () => {
   };
 
   const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+    let selectedDate = new Date(event.target.value + "T00:00:00");
+    selectedDate.setDate(selectedDate.getDate() + 1); // Sumar un día
+    setSelectedDate(selectedDate.toISOString().split('T')[0]);
   };
 
   const handleViewPDF = (maintenance) => {
@@ -85,7 +87,6 @@ const MaintenanceList = () => {
 
   const handlePDFOption = (maintenanceData, option) => {
     setSelectedPDFOption({ data: maintenanceData, option });
-    setShowModal(false);
     setShowPDFModal(true);
   };
 
@@ -94,10 +95,10 @@ const MaintenanceList = () => {
       <h1 className="text-xl font-bold mb-4">Lista de Mantenimientos</h1>
       
       <div className="mb-4">
-        <label htmlFor="building" className="mr-2 text-black">Seleccionar Edificio</label>
+        <label htmlFor="building" className="mr-2 text-black">Seleccionar Cliente</label>
         <CustomSelect
-          collectionName="buildings"
-          placeholder="Buscar edificio"
+          collectionName="clients"
+          placeholder="Buscar Cliente"
           onChange={handleBuildingChange}
           selectedValue={selectedBuilding}
         />
@@ -192,8 +193,8 @@ const MaintenanceList = () => {
       {showPDFModal && (
         <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
           <PDFContent
-            formData={selectedMaintenance} // Usamos los datos del mantenimiento seleccionado
-            type={""} // La opción de PDF seleccionada
+            recipe={selectedMaintenance} // Usamos los datos del mantenimiento seleccionado
+            type={selectedPDFOption?.option || ''} // Usamos la opción de PDF seleccionada
           />
         </Modal>
       )}

@@ -1,15 +1,10 @@
-import Header from './Header'; 
-import MainContent from './MainContent'; 
-import TechnicalSpecifications from './TechnicalSpecifications'; 
-import TechnicalDetails from './TechnicalDetails'; 
-import TableComponent from './TableComponent'; 
-
 import teknoliftHeader from '../../../../../assets/images/teknoliftHeader.jpg'; 
 import teknoliftRight from '../../../../../assets/images/teknoliftRight.jpg'; 
 import teknoliftWaterMark from '../../../../../assets/images/teknoliftWaterMark.jpg'; 
 import teknoliftFooterJPG from '../../../../../assets/images/teknoliftFooter.jpg'; 
+import MainContent from './MainContent';
 
-export const generateTeknoPDF = (doc, formData, values, config) => {
+export const generateTeknoPDF = (doc, recipe, config) => {
   const pageWidth = doc.internal.pageSize.getWidth(); 
   const pageHeight = doc.internal.pageSize.getHeight(); 
   const headerHeight = 40; 
@@ -17,7 +12,6 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
   const rightImageWidth = 40; // Ajusta el ancho de la imagen del lado derecho según sea necesario
   const { topMargin = 30, bottomMargin = 20, leftMargin = 20, rightMargin = 20 } = config; // Obtener márgenes de config
 
-  let startY = topMargin + 20; 
 
   // Función para añadir la imagen del encabezado
   const addHeaderImage = (doc, imageBase64, x = 0, y = 0, width, height) => {
@@ -63,40 +57,16 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
     }
   };
 
-  // Función para verificar si se necesita una nueva página
-  const checkAddPage = (doc, currentY) => {
-    if (currentY + 20 > pageHeight - bottomMargin) { // Usar el margen inferior de config
-      doc.addPage();
-      addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight); 
-      addRightImage(doc, teknoliftRight, pageWidth - rightImageWidth, headerHeight, pageHeight - headerHeight - footerHeight); // Ajusta la imagen del lado derecho para ocupar toda la altura disponible
-      addWatermark(doc, teknoliftWaterMark); 
-      addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); 
-      return topMargin + 20; // Usar el margen superior de config al reiniciar la posición Y
-    }
-    return currentY;
-  };
 
   // Añadir el encabezado, la imagen del lado derecho y la marca de agua en la primera página
   addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight); 
   addRightImage(doc, teknoliftRight, pageWidth - rightImageWidth, headerHeight, pageHeight - headerHeight - footerHeight); 
   addWatermark(doc, teknoliftWaterMark); 
   addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); 
+  let currentYPosition = topMargin;
 
-  // Generar el contenido del PDF
-  startY = Header({ doc, config, startY });
-  startY = MainContent({ doc, config, formData, startY });
-
-  // Especificaciones técnicas
-  startY = checkAddPage(doc, startY); 
-  startY = TechnicalSpecifications({ doc, formData, startY, config });
-
-  // Detalles técnicos
-  startY = checkAddPage(doc, startY); 
-  startY = TechnicalDetails({ doc, formData, startY , config});
-
-  // Tabla de componentes finales
-  startY = checkAddPage(doc, startY); 
-  startY = TableComponent({ doc, formData, values, startY , config});
+  // Llamar a TableComponent para generar el contenido del contrato
+  MainContent({ doc, config, startY: currentYPosition, recipe });
 
 
   // Añadir encabezado, footer, marca de agua e imagen lateral en todas las páginas

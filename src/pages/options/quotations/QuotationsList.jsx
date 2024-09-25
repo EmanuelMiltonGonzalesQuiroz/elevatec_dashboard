@@ -120,7 +120,6 @@ const QuotationList = () => {
   const handlePDFOption = (quotationData, option) => {
     // Guardar la opción seleccionada de PDF y cerrar el primer modal
     setSelectedPDFOption({ data: quotationData, option });
-    setShowModal(false); // Cerrar el primer modal
     setShowPDFModal(true); // Abrir el segundo modal para ver el PDF
   };
 
@@ -199,7 +198,7 @@ const QuotationList = () => {
 
       {/* Modal con opciones de PDF */}
       {showModal && (
-        <CustomModal show={showModal} onClose={() => setShowModal(false)}>
+        <CustomModal show={showModal} >
           <div className="flex flex-col items-center ">
             <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
 
