@@ -97,7 +97,7 @@ const QuotationList = () => {
         ? quotation.date === formatDate(selectedDate)
         : true;
       return matchesClient && matchesDate;
-    });
+    }); 
     setFilteredQuotations(filtered);
   }, [selectedClient, selectedDate, quotations]);
 

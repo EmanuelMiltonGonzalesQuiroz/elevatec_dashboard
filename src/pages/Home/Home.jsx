@@ -19,7 +19,6 @@ const Home = () => {
   useEffect(() => {
     const loadData = async () => {
         await loadJsonFilesToFirestore(); // Load data only once
-      
     };
 
     loadData(); // Call loadData when component mounts
@@ -30,26 +29,27 @@ const Home = () => {
     return null;
   }
 
-  // Obtener el rol del usuario desde el currentUser o localStorage
+  // Get the user's role from currentUser or localStorage
   const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
 
+  // Logic for which components to show based on roles
   return (
     <div className="flex flex-col h-screen">
-      {/* Header fijo con altura del 10% de la pantalla */}
+      {/* Header with a height of 10% of the screen */}
       <Header className="h-[10%] flex-shrink-0" />
       <div className="flex flex-grow">
-        {/* Sidebar con ancho fijo del 15% */}
+        {/* Sidebar with fixed width of 15% */}
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
-          {/* Contenido con restricciones de tamaño y scrolls si es necesario */}
-          <div className="max-w-[80vw] ">
+          {/* Content with size constraints and scrolls if needed */}
+          <div className="max-w-[80vw]">
             {activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
-            {userRole !== 'Usuario' && activeContent === 'Ajustes' && <Settings />}
+            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Mantenimiento' && <Maintenance />}
-            {userRole !== 'Usuario' && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
+            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
             {activeContent === 'Usuarios' && <Users />}
-            {userRole !== 'Usuario' && activeContent === 'Clientes' && <Clients />}
+            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

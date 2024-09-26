@@ -86,7 +86,7 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     theme: 'plain',
     tableWidth: tableWidth,
     margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
-    styles: { overflow: 'linebreak', fontSize: 12 },
+    styles: { overflow: 'linebreak', fontSize: 12,cellPadding: { top: 3, bottom: 3 }  },
     pageBreak: 'auto',
     rowPageBreak: 'avoid',
   });
@@ -149,7 +149,7 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     [" ", "5.", "Una vez autorizado el cambio de los repuestos que se encuentren en mal estado, estos deberán ser devueltos al CLIENTE."],
 
     [{ content: "CUARTA: (DE LAS OBLIGACIONES DEL PROVEEDOR).-", styles: { fontStyle: 'bold' }, colSpan: 3 }],
-    [" ", "•", "Realizar el servicio objeto del presente contrato en forma eficiente, oportuna y en el lugar de destino convenido."],
+    [" ", "•", { content: "Realizar el servicio objeto del presente contrato en forma eficiente, oportuna y en el lugar de destino convenido.", styles: { halign: 'left'  }}],
     [" ", "•", "Durante cada mantenimiento preventivo se realizarán trabajos de limpieza, regulación, ajuste, control de instrumental eléctrico y/o electrónico para el funcionamiento de piezas vitales como ser: Máquina de tracción y polea de desvío, freno, regulador de velocidad, llaves y fusibles en sala de máquinas, cuadro de comando y conexiones del mismo, iluminación de botones y señalización de cabinas, operador de puerta, regla de seguridad, techo y puertas de cabinas, corredizas de cabina y contrapeso, aparato de seguridad, llaves de inducción, placas, emisores, receptores, piso, guías y soportes de contrapeso, límites de curso, cables de tracción, cierre electromecánico, polea de regulador de velocidad."],
     [" ", "•", "Limpieza de cabinas de Ascensor."],
     [" ", "•", "Engrase y lubricado de todos aquellos componentes del ascensor que lo requieran en cada revisión programada."],
@@ -185,41 +185,38 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     startY: currentYPosition,
     body: serviceDescription,
     theme: 'plain',
-    tableWidth: tableWidth,
     margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
     styles: {
-        fontSize: 12,
-        overflow: 'linebreak',
-        halign: 'justify',
-        cellPadding: { top: 2, bottom: 2 } // Reduces padding between rows
+      fontSize: 12,
+      lineHeightFactor: 1.5,
+      cellPadding: { top: 3, bottom: 3 }// Adjust line height
     },
     columnStyles: {
       0: { cellWidth: 2 },
-      1: { cellWidth: 8 }, // Adjusts width for bullets/numbers
-      2: { halign: 'justify' } // Text justification
+      1: { cellWidth: 8 },
+      2: { halign: 'justify' }
     },
     pageBreak: 'auto',
     rowPageBreak: 'avoid',
   });
-
   currentYPosition = doc.lastAutoTable.finalY + 10;
 
   // Signature table (3 columns with equal width and 3 cm height for each)
   const signatureTable = [
     [{ content: " ", colSpan: 3, styles: { minCellHeight: 30 } }],
     [
-      { content: "Sr. Alvaro G. Jaldin Navia", styles: { halign: 'center', cellWidth: 'auto' } },
-      { content: " ", styles: { halign: 'center', cellWidth: 'auto' } },
+      { content: "Sr. Alvaro G. Jaldin Navia", styles: { halign: 'center', cellWidth: 60 } },
+      { content: " ", styles: { halign: 'center', cellWidth: 30 } },
       { content: recipe.client.name || "……………………………………………", styles: { halign: 'center', cellWidth: 'auto' } }
     ],
     [
-      { content: "C.I. 6550173 Cbba", styles: { halign: 'center', cellWidth: 'auto' } },
+      { content: "C.I. 6550173 Cbba", styles: { halign: 'center', cellWidth: 60 } },
       { content: " ", styles: { halign: 'center', cellWidth: 30 } },
       { content: "C.I " + recipe.client.ciNIT || "…………………………………..", styles: { halign: 'center', cellWidth: 'auto' } }
     ],
     [
-      { content: "PROVEEDOR", styles: { halign: 'center', cellWidth: 'auto' } },
-      { content: " ", styles: { halign: 'center', cellWidth: 'auto' } },
+      { content: "PROVEEDOR", styles: { halign: 'center', cellWidth: 60 } },
+      { content: " ", styles: { halign: 'center', cellWidth: 30 } },
       { content: "CLIENTE", styles: { halign: 'center', cellWidth: 'auto' } }
     ]
   ];

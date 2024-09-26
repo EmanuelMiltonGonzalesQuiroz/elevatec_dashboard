@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import { LoadScriptNext, DirectionsRenderer, GoogleMap } from '@react-google-maps/api';
+import { LoadScriptNext, DirectionsRenderer, GoogleMap, Marker } from '@react-google-maps/api';
 
 const DirectionsModal = ({ location, onClose }) => {
   const [directions, setDirections] = useState(null);
   const [currentLocation, setCurrentLocation] = useState({ lat: null, lng: null });
-  const [locationError, setLocationError] = useState(null); // Estado para manejar errores de ubicación
+  const [locationError, setLocationError] = useState(null);
 
-  // Obtener la ubicación actual del usuario
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -15,7 +14,7 @@ const DirectionsModal = ({ location, onClose }) => {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        setLocationError(null); // Resetear error si la ubicación es obtenida correctamente
+        setLocationError(null);
       },
       (error) => {
         console.error('Error obteniendo la ubicación:', error);
@@ -24,7 +23,6 @@ const DirectionsModal = ({ location, onClose }) => {
     );
   }, []);
 
-  // Calcular la ruta utilizando Google Maps Directions API
   useEffect(() => {
     if (currentLocation.lat && currentLocation.lng) {
       const directionsService = new window.google.maps.DirectionsService();
@@ -51,7 +49,9 @@ const DirectionsModal = ({ location, onClose }) => {
         <button className="absolute top-4 right-4 text-red-500" onClick={onClose}>
           <FaTimes />
         </button>
-        <h2 className="text-xl font-bold mb-4">Cómo llegar a {location.client}</h2>
+        <h2 className="text-xl font-bold mb-4">
+          Cómo llegar desde <strong>tu ubicación</strong> a {location.client}
+        </h2>
         <div className="h-[68vh] w-full">
           {locationError ? (
             <div className="text-red-500 text-center">
@@ -64,8 +64,48 @@ const DirectionsModal = ({ location, onClose }) => {
                 mapContainerStyle={{ width: '100%', height: '100%' }}
                 center={currentLocation}
                 zoom={14}
+                onLoad={(map) => {
+                  if (directions) {
+                    const bounds = new window.google.maps.LatLngBounds();
+                    bounds.extend(directions.routes[0].legs[0].start_location);
+                    bounds.extend(directions.routes[0].legs[0].end_location);
+                    map.fitBounds(bounds);
+                  }
+                }}
               >
-                {directions && <DirectionsRenderer directions={directions} />}
+                {directions && (
+                  <>
+                    <Marker
+                      position={directions.routes[0].legs[0].start_location}
+                      label={{
+                        text: "Tu",
+                        color: "orange", // Color del texto
+                        fontSize: "20px", // Tamaño del texto
+                        fontWeight: "bold" // Negrita para que destaque
+                      }}
+                      icon={{
+                        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", // Ícono personalizado (puedes subir tu propio icono si prefieres)
+                        scaledSize: new window.google.maps.Size(50, 50), // Tamaño del icono para que sea más grande
+                      }}
+                    />
+
+                    <Marker
+                      position={directions.routes[0].legs[0].end_location}
+                      label={{
+                        text: location.client,
+                        color: "blue",
+                        fontSize: "20px",
+                        fontWeight: "bold"
+                      }}
+                      icon={{
+                        url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png", // Otro ícono para el destino
+                        scaledSize: new window.google.maps.Size(50, 50),
+                      }}
+                    />
+
+                    <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
+                  </>
+                )}
               </GoogleMap>
             </LoadScriptNext>
           )}

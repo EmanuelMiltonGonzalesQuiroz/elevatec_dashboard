@@ -27,19 +27,24 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                 <td className="py-3 px-6 text-left">
                   <div className="flex flex-col">
                     <span>{location.Tipo ? location.Tipo[0] || 0 : 0}</span>
-                    <span>{location.Tipo ? location.Tipo[1] || 0 : 0}</span>
                     <span>{location.Tipo ? location.Tipo[2] || 0 : 0}</span>
                   </div>
                 </td>
 
                 <td className="py-3 px-6 text-left">{location.client}</td>
                 <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
-                <td className="py-3 px-6 text-left">
+                <td className="py-3 px-6 text-left"> 
                   <span
                     className="inline-block w-4 h-4 rounded-full mr-2"
                     style={{ backgroundColor: stateColors[location.state] || 'black' }}
                   ></span>
-                  <span>{location.state}</span>
+                  <span>
+                    {location.state === 'Cotizacion_A' 
+                      ? 'Cotización Ascensor' 
+                      : location.state === 'Cotizacion_M' 
+                      ? 'Cotización Mantenimiento' 
+                      : location.state}
+                  </span>
                 </td>
                 <td className="py-3 px-6 text-left">
                   {(userRole === 'Administrador' || userRole === 'Gerencia') && (

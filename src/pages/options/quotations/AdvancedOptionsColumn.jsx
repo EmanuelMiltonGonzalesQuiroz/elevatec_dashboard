@@ -192,13 +192,11 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
           type="number"
           min="0" // Asegura que el número sea positivo
           step="1" // Solo permite enteros
-          className={`p-2 border rounded focus:outline-none w-full mb-4 ${
-            formData["Llavines_con_llave"]?.UNIDADES > 0 ? '' : 'bg-red-200' // Fondo rojo si es 0 o negativo
-          }`}
+          className={`p-2 border rounded focus:outline-none w-full mb-4 `}
           onChange={handleLocksChange}
           value={formData["Llavines_con_llave"]?.UNIDADES || 0} // Muestra el valor actual o 0 si no está definido
         />
-      </div>;
+      </div>
     </div>
   );
 };

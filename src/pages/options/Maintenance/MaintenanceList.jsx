@@ -16,7 +16,6 @@ const formatDate = (dateString) => {
 };
 
 const MaintenanceList = () => {
-  const [selectedBuilding, setSelectedBuilding] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [maintenanceList, setMaintenanceList] = useState([]);
   const [filteredMaintenance, setFilteredMaintenance] = useState([]);
@@ -24,6 +23,7 @@ const MaintenanceList = () => {
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
   const [selectedPDFOption, setSelectedPDFOption] = useState(null); // Fix para el uso de PDF option
   const [showPDFModal, setShowPDFModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null); // For client filter
 
   useEffect(() => {
     const fetchMaintenanceList = async () => {
@@ -33,8 +33,6 @@ const MaintenanceList = () => {
 
       const maintenanceData = maintenanceSnapshot.docs.map((doc) => {
         const data = doc.data();
-        const client = data.client || {};
-
         return {
           id: doc.id,
           approvalPercentage: data.approvalPercentage || 0,
@@ -81,19 +79,21 @@ const MaintenanceList = () => {
 
   useEffect(() => {
     const filtered = maintenanceList.filter((maintenance) => {
-      const matchesBuilding = selectedBuilding
-        ? maintenance.buildingName === selectedBuilding.label
+      
+      const matchesClient = selectedClient
+        ? maintenance.client.name === selectedClient.label
         : true;
       const matchesDate = selectedDate
         ? maintenance.date === formatDate(selectedDate)
         : true;
-      return matchesBuilding && matchesDate;
+      return  matchesClient && matchesDate;
     });
     setFilteredMaintenance(filtered);
-  }, [selectedBuilding, selectedDate, maintenanceList]);
+  }, [selectedDate, selectedClient, maintenanceList]);
 
-  const handleBuildingChange = (selectedOption) => {
-    setSelectedBuilding(selectedOption);
+
+  const handleClientChange = (selectedOption) => {
+    setSelectedClient(selectedOption);
   };
 
   const handleDateChange = (event) => {
@@ -121,8 +121,8 @@ const MaintenanceList = () => {
         <CustomSelect
           collectionName="clients"
           placeholder="Buscar Cliente"
-          onChange={handleBuildingChange}
-          selectedValue={selectedBuilding}
+          onChange={handleClientChange}
+          selectedValue={selectedClient}
         />
       </div>
       

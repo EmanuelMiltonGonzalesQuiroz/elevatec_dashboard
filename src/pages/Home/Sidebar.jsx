@@ -16,7 +16,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
       setIsMinimized(window.innerWidth < 1160);
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // Llamar inmediatamente para ajustar al tamaño inicial
+    handleResize(); // Immediately call to adjust to initial size
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -45,9 +45,10 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
     );
   };
 
+  const userRole = getUserRole();
+
   return (
     <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-full ${isMinimized ? 'w-16 items-center justify-center' : 'w-[15%]'}`}>
-
       <div className="p-4 flex justify-between items-center">
         {!isMinimized && <span className="text-lg font-bold">{homeText.company}</span>}
         <button onClick={handleToggleSidebar} className="text-white">
@@ -56,13 +57,14 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
       </div>
       <nav className="flex-grow overflow-y-auto">
         <ul>
+          {/* Common options for all users */}
           {renderItem(homeText.location, <FaLocationArrow />, 'Ubicación')}
-          {renderItem(homeText.quotations, <FaFileInvoiceDollar />, 'Cotizaciones')}
-          {getUserRole() !== 'Usuario' && renderItem(homeText.settings, <FaCog />, 'Ajustes')}
-          {renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
-          {getUserRole() !== 'Usuario' && renderItem(homeText.maintenanceSettings, <FaTools />, 'Ajustes M.')}
-          {renderItem(homeText.users, <FaUser />, 'Usuarios')}
-          {getUserRole() !== 'Usuario' && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
+          {userRole !== 'Trabajador' && renderItem(homeText.quotations, <FaFileInvoiceDollar />, 'Cotizaciones')}
+          {userRole === 'Administrador' || userRole === 'Gerencia' ? renderItem(homeText.settings, <FaCog />, 'Ajustes') : null}
+          {userRole !== 'Trabajador' && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
+          {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.maintenanceSettings, <FaTools />, 'Ajustes M.')}
+          {userRole !== 'Trabajador' && renderItem(homeText.users, <FaUser />, 'Usuarios')}
+          {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
         </ul>
       </nav>
