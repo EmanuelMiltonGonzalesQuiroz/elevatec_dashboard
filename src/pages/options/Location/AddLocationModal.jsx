@@ -6,23 +6,26 @@ import CustomSelect from '../../../components/UI/CustomSelect';
 import MapComponent from '../../../components/UI/MapComponent';
 
 const typeOptions = {
-  CONSTRUCCION: [
+  Construccion: [
     { id: 'CA', label: 'C. ASCENSORES' },
     { id: 'CM', label: 'C. MONTA COCHES' },
     { id: 'CE', label: 'C. ESCALERAS MECANIMAS' },
     { id: 'C.MC', label: 'C. MONTA CARGAS' },
   ],
-  MANTENIMIENTO: [
+  Mantenimiento: [
     { id: 'MA', label: 'M. ASCENSORES' },
     { id: 'MM', label: 'M. MONTA COCHES' },
     { id: 'ME', label: 'M. ESCALERAS MECANIMAS' },
     { id: 'M.MC', label: 'M. MONTA CARGAS' },
   ],
-  MODERNIZACION: [
+  Modernizacion: [
     { id: 'MMA', label: 'M. ASCENSORES' },
     { id: 'MMM', label: 'M. MONTA COCHES' },
     { id: 'MME', label: 'M. ESCALERAS MECANIMAS' },
     { id: 'ME.MC', label: 'M. MONTA CARGAS' },
+  ],
+  Competencia: [
+    { id: 'CO', label: 'COMPETENCIA' }, // Solo una opción para este tipo
   ],
 };
 
@@ -94,7 +97,7 @@ const AddLocationModal = ({ onClose }) => {
           lng: markerPosition.lng,
         },
         Tipo: [formData.Tipo0, formData.Tipo1, formData.Tipo2],
-        state: 'Construccion',
+        state: formData.Tipo0 || 'Construccion', // Estado basado en el tipo
         createdAt: currentDate,
       });
 
@@ -107,7 +110,7 @@ const AddLocationModal = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[90%] text-black">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[90%] text-black overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Agregar Ubicación</h2>
           <button className="text-red-500" onClick={onClose}>
@@ -132,7 +135,7 @@ const AddLocationModal = ({ onClose }) => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="mb-4">
           <label className="block text-black">Tipo</label>
           <select
@@ -152,23 +155,6 @@ const AddLocationModal = ({ onClose }) => {
           </select>
         </div>
 
-        {/* Segundo select oculto */}
-        <div className="hidden">
-          <select
-            name="Tipo1"
-            value={formData.Tipo1}
-            onChange={handleChange}
-            className="p-2 border rounded w-full"
-          >
-            {typeOptions[formData.Tipo0]?.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.id}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Tercer select basado en el segundo tipo */}
         {formData.Tipo0 && (
           <div className="mb-4">
             <label className="block text-black">Descripción</label>
@@ -189,8 +175,11 @@ const AddLocationModal = ({ onClose }) => {
             </select>
           </div>
         )}
+        </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-lg h-[20%] text-black">
+        
+
+        <div className="bg-white p-6 rounded-lg shadow-lg h-[45%] text-black">
           <MapComponent
             mapCenter={markerPosition}
             markerPosition={markerPosition}

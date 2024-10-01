@@ -115,7 +115,8 @@ const calculateValues = (formData, allData) => {
 
 
   // Revisar si Interpisos es "Sí" y ajustar VAR1 basado en el número de personas
-  if (formData["Interpiso"] === "Sí" || formData["Interpiso"] === undefined) {
+
+  if (formData["Interpisos"] === "Si") {
     const paradas = formData["01_PARADAS"] || 0;
 
     // Buscar el valor correcto en allData.groups["Interpisos"]
@@ -127,9 +128,10 @@ const calculateValues = (formData, allData) => {
     let valorMasDe20Pisos = 297.18;
 
     // Buscar los valores en los items de Interpisos
-    const itemMenosDe10Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR DE PISOS") && item.descripcion.includes("10 PISOS O MENO"));
-    const itemEntre10Y20Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR INTERPISOS") && item.descripcion.includes("10 A 20 PISOS"));
-    const itemMasDe20Pisos = interpisosItems.find(item => item.nombre.includes("TARJETADE INTER PISOS") && item.descripcion.includes("más de 20 pisos"));
+    const itemMenosDe10Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR DE PISOS"));
+    const itemEntre10Y20Pisos = interpisosItems.find(item => item.nombre.includes("CONTROLADOR INTERPISOS + TRANSFORMADOR") );
+    const itemMasDe20Pisos = interpisosItems.find(item => item.nombre.includes("TARJETADE INTER PISOS"));
+    
 
     // Si existen los valores en los datos, actualizarlos
     if (itemMenosDe10Pisos) {
@@ -146,9 +148,9 @@ const calculateValues = (formData, allData) => {
     if (paradas <= 10) {
       VAR1 += valorMenosDe10Pisos;
     } else if (paradas <= 20) {
-      VAR1 += valorEntre10Y20Pisos;
+      VAR1 = VAR1+valorEntre10Y20Pisos+valorMasDe20Pisos;
     } else if (paradas <= 30) {
-      VAR1 += valorMasDe20Pisos;
+      VAR1 = VAR1+2*valorMasDe20Pisos+valorMasDe20Pisos;
     }
   }
 

@@ -56,8 +56,8 @@ const QuotationsModal = ({ clientId, onClose }) => {
           const clientName = data.quotationDetails?.['02_CLIENTE'] || 'N/A';
           const clientPhone = await loadClientPhone(clientName);
 
-          const total = data.calculatedValues?.valor8
-            ? data.calculatedValues.valor8.toFixed(2)
+          const total = data.calculatedValues?.VAR7
+            ? data.calculatedValues.VAR7.toFixed(2)
             : 'N/A';
           const date = formatDateFromDocId(doc.id);
 

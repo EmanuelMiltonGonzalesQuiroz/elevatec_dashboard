@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { LoadScriptNext, DirectionsRenderer, GoogleMap, Marker } from '@react-google-maps/api';
+import { useAuth } from '../../../context/AuthContext';
 
 const DirectionsModal = ({ location, onClose }) => {
   const [directions, setDirections] = useState(null);
   const [currentLocation, setCurrentLocation] = useState({ lat: null, lng: null });
   const [locationError, setLocationError] = useState(null);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -78,14 +80,15 @@ const DirectionsModal = ({ location, onClose }) => {
                     <Marker
                       position={directions.routes[0].legs[0].start_location}
                       label={{
-                        text: "Tu",
-                        color: "orange", // Color del texto
-                        fontSize: "20px", // Tamaño del texto
-                        fontWeight: "bold" // Negrita para que destaque
+                        text: currentUser.username || JSON.parse(localStorage.getItem('user'))?.username,
+                        color: "black",
+                        fontSize: "20px",
+                        fontWeight: "bold",
                       }}
                       icon={{
-                        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", // Ícono personalizado (puedes subir tu propio icono si prefieres)
-                        scaledSize: new window.google.maps.Size(50, 50), // Tamaño del icono para que sea más grande
+                        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                        scaledSize: new window.google.maps.Size(50, 50),
+                        labelOrigin: new window.google.maps.Point(25, -10) // Move label slightly above the icon
                       }}
                     />
 
@@ -95,14 +98,14 @@ const DirectionsModal = ({ location, onClose }) => {
                         text: location.client,
                         color: "blue",
                         fontSize: "20px",
-                        fontWeight: "bold"
+                        fontWeight: "bold",
                       }}
                       icon={{
-                        url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png", // Otro ícono para el destino
+                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
                         scaledSize: new window.google.maps.Size(50, 50),
+                        labelOrigin: new window.google.maps.Point(25, -10) // Adjust label position above the icon
                       }}
                     />
-
                     <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
                   </>
                 )}

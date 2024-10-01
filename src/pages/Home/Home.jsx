@@ -14,7 +14,7 @@ import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore'; //
 
 const Home = () => {
   const { currentUser } = useAuth();
-  const [activeContent, setActiveContent] = useState('Cotizaciones');
+  const [activeContent, setActiveContent] = useState('');
 
   useEffect(() => {
     const loadData = async () => {

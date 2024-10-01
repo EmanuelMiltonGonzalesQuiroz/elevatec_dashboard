@@ -212,7 +212,7 @@ const EditLocationModal = ({ location, onClose }) => {
               <div className="flex items-center">
                 <select
                   name="state"
-                  value={formData.state}
+                  value={formData.state} 
                   onChange={handleChange}
                   className="p-2 border rounded w-full"
                 >
@@ -221,7 +221,12 @@ const EditLocationModal = ({ location, onClose }) => {
                   </option>
                   {locationStates.map((state) => (
                     <option key={state.id} value={state.id}>
-                      {state.id}
+                      
+                      {state.id=== 'Cotizacion_A' 
+                      ? 'Cotización Ascensor' 
+                      : state.id === 'Cotizacion_M' 
+                      ? 'Cotización Mantenimiento' 
+                      : state.id}
                     </option>
                   ))}
                 </select>

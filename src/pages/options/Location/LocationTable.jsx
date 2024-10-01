@@ -1,6 +1,7 @@
 import React from 'react';
 
 const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, onShowDirections }) => {
+  
   return (
     <div className="w-full overflow-auto h-[30vh]">
       <table className="table-auto w-full bg-white shadow-md rounded-lg border-collapse">
@@ -19,7 +20,7 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
             .filter((location) => location.state !== 'Eliminar') // Filtrar los eliminados
             .map((location) => (
               <tr
-                key={location.id}
+                key={location.id} 
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                 onClick={() => onRowClick(location)} // Al hacer clic en la fila, centrar el mapa
               >

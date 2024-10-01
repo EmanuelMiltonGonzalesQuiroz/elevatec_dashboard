@@ -140,14 +140,14 @@
         "name": "Puerta de cabina",
         "volumen_x_pieza_m3": 2,
         "precio_unitario": 0,
-        "unidades": 4
+        "unidades": 0
       },
       {
         "index": 21,
         "name": "Puertas en inoxidable",
         "volumen_x_pieza_m3": 0.375,
         "precio_unitario": 0,
-        "unidades": 1
+        "unidades": 0
       },
       {
         "index": 22,
