@@ -35,6 +35,6 @@ const RenderCalculatedValuesTable = ({ calculatedValues }) => {
       </tbody>
     </table>
   );
-};
+}; 
 
 export default RenderCalculatedValuesTable;
