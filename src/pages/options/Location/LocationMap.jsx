@@ -16,7 +16,7 @@ const LocationMap = ({ mapLocations, stateColors, mapCenter }) => (
             const pinSVG = `
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="${color}">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 4.88 7 13 7 13s7-8.12 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
-                <circle cx="12" cy="9" r="2.5" fill="#F9A603"/> <!-- Orange circle for glyph -->
+                <circle cx="12" cy="9" r="2.5" fill="#000000"/> <!-- Orange circle for glyph -->
               </svg>`;
 
             return location.location && location.location.lat && location.location.lng ? (
@@ -25,7 +25,7 @@ const LocationMap = ({ mapLocations, stateColors, mapCenter }) => (
                 position={{ lat: location.location.lat, lng: location.location.lng }}
                 icon={{
                   url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(pinSVG)}`, // Custom SVG icon with dynamic color
-                  labelOrigin: new window.google.maps.Point(0, -30) // Adjust label position
+                  labelOrigin: new window.google.maps.Point(15, -10) // Adjust label position
                 }}
                 label={{
                   text: location.client,

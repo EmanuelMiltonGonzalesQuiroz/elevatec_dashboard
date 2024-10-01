@@ -14,7 +14,7 @@ const CustomSelect = ({ collectionName, placeholder, onChange, selectedValue }) 
           const data = doc.data();
           const label = data.name || data.nombre || data.username || 'Sin nombre';
           
-          return {
+          return { 
             label: label,
             value: doc.id,
             ...data,

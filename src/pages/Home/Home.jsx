@@ -48,8 +48,8 @@ const Home = () => {
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
-            {activeContent === 'Usuarios' && <Users />}
-            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Clientes' && <Clients />}
+            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
+            {['Administrador', 'Gerencia', 'Usuario'].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

@@ -30,7 +30,7 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
               doorsOptions.push({
                 nombre: `${doorType} - ${item.medida}`,
                 data: item,
-              });
+              }); 
             });
           }
         }
@@ -152,7 +152,6 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
           <input
             type="checkbox"
             id={element.name}
-            checked={formData[element.name.replace(/\s+/g, '_')]?.UNIDADES > 0 || false}
             onChange={(e) => handleElementCheckboxChange(element, e.target.checked)}
           />
           <label htmlFor={element.name} className="ml-2">{element.name}</label>

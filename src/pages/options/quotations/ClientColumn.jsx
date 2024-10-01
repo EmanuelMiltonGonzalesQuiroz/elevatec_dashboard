@@ -5,11 +5,11 @@ import { useUpdateFormData } from '../../../hooks/useUpdateFormData';
 import NewClientModal from './NewClientModal';
 import MapComponent from './ClientColumn/MapComponent';
 import { useClientHandlers } from './ClientColumn/useClientHandlers';
+import CustomLoginSelect from './ClientColumn/CustomLoginSelect';
 
 const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleReset, onReset }) => {
   const { updateFormData } = useUpdateFormData();
   const { handleClientChange } = useClientHandlers(formData, setFormData, updateFormData);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSolicitante, setSelectedSolicitante] = useState(null);
@@ -113,12 +113,14 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchSolicitante}
           </label>
-          <CustomSelect
-            collectionName="login firebase"
-            placeholder={clientColumnText.searchSolicitante}
-            onChange={(option) => handleClientChange(option, 'Solicitante')}
-            selectedValue={selectedSolicitante}
-          />
+          <CustomLoginSelect
+  placeholder={clientColumnText.searchSolicitante}
+  onChange={(option) => handleClientChange(option, 'Solicitante')}
+  selectedValue={selectedSolicitante} // Permitimos pasar el valor ya seleccionado
+  setFormData={setFormData} // Asegura que formData se actualice correctamente
+  formData={formData} // Pasamos el formData actual
+/>
+
 
           <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
