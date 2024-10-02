@@ -36,14 +36,16 @@ const CustomLoginSelect = ({ placeholder, onChange, selectedValue, setFormData, 
   useEffect(() => {
     if (!selectedValue && currentUser) {
       setFormData((prevFormData) => ({
-        ...prevFormData,
+        ...prevFormData, 
         Solicitante: currentUser.username, // Establecer el username en formData
       }));
     }
   }, [currentUser, selectedValue, setFormData]);
+  const storedUser = localStorage.getItem('user');
+  console.log(storedUser)
 
   // Determinar el valor preseleccionado: usa el seleccionado o el username
-  const defaultValue = selectedValue || options.find(option => option.label === currentUser?.username) || null;
+  const defaultValue = selectedValue || options.find(option => option.label === currentUser?.username) || storedUser.username || null;
 
   return (
     <Select
