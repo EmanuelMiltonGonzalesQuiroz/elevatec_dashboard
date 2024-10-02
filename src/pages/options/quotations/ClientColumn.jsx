@@ -5,11 +5,13 @@ import { useUpdateFormData } from '../../../hooks/useUpdateFormData';
 import NewClientModal from './NewClientModal';
 import MapComponent from './ClientColumn/MapComponent';
 import { useClientHandlers } from './ClientColumn/useClientHandlers';
-import CustomLoginSelect from './ClientColumn/CustomLoginSelect';
+import logo from '../../../assets/images/COTA LOGO/elevatec_logo_sin_fondo.png';
+import { useAuth } from '../../../context/AuthContext';
 
 const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleReset, onReset }) => {
   const { updateFormData } = useUpdateFormData();
   const { handleClientChange } = useClientHandlers(formData, setFormData, updateFormData);
+  const { currentUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedSolicitante, setSelectedSolicitante] = useState(null);
@@ -85,6 +87,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     const vendedor = e.target.value;
     setSelectedVendedor(vendedor);
     updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData);
+    const storedUser = localStorage.getItem('user');
+    const name =  storedUser.username
+    updateFormData({ field: 'Solicitante', value: currentUser.username ||  name}, formData, setFormData);
   };
 
   const handlePaymentMethodChange = (method) => {
@@ -110,18 +115,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
     <div className="flex flex-col ">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  flex-grow overflow-auto max">
         <div className="flex flex-col">
-          <label htmlFor="solicitanteName" className="mb-2 font-semibold text-black">
-            {clientColumnText.searchSolicitante}
-          </label>
-          <CustomLoginSelect
-  placeholder={clientColumnText.searchSolicitante}
-  onChange={(option) => handleClientChange(option, 'Solicitante')}
-  selectedValue={selectedSolicitante} // Permitimos pasar el valor ya seleccionado
-  setFormData={setFormData} // Asegura que formData se actualice correctamente
-  formData={formData} // Pasamos el formData actual
-/>
-
-
+          
+          <img src={logo} alt="Logo" className="w-full" />
           <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
           </label>

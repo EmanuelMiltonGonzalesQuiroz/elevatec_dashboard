@@ -110,7 +110,8 @@ const Clients = () => {
           + Agregar Nuevo Cliente
         </button>
       </div>
-      <table className="min-w-full bg-white border">
+      <div className="overflow-auto">
+        <table className="min-w-full bg-white border">
         <thead>
           <tr className='text-black font-bold'>
             <th className="border px-4 py-2">#</th>
@@ -153,6 +154,8 @@ const Clients = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">

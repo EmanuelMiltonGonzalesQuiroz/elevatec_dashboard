@@ -117,7 +117,7 @@ const EditLocationModal = ({ location, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[90%] text-black">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[70%] text-black">
         <h2 className="text-xl font-bold mb-4">Editar Ubicación</h2>
 
         {loading ? (

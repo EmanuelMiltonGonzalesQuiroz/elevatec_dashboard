@@ -131,7 +131,7 @@ const Selects = ({ handleAddItem }) => {
   }, []);
 
   return (
-    <div className="min-h-[85vh] max-h-[112vh] w-1/4 bg-white p-4 rounded-lg shadow-lg overflow-y-auto">
+    <div className="min-h-[85vh] max-h-[112vh] md:w-1/4 min-w-60 bg-white p-4 rounded-lg shadow-lg overflow-y-auto">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Seleccionar Datos</h2>
 
       <CustomSelect

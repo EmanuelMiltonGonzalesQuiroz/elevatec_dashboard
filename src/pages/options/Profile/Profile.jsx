@@ -115,17 +115,19 @@ const Profile = () => {
     <div className="p-6 bg-gray-100 text-black">
       <h2 className="text-2xl font-bold mb-6 text-center">Perfil de usuario</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold">Mi Información</h3>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-            >
-              Actualizar mis datos
-            </button>
-          )}
-        </div>
+      <div className="relative flex justify-center items-center mb-6">
+        <h3 className="text-xl font-semibold text-center w-full">Mi Información</h3>
+        
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="absolute right-0 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            Actualizar mis datos
+          </button>
+        )}
+      </div>
+
         <div className="space-y-4 flex flex-col items-center text-center">
           <div className="w-full max-w-md">
             <label className="font-semibold">Nombre:</label>

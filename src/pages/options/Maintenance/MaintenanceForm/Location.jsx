@@ -39,7 +39,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
   };
 
   return (
-    <div className="h-[55vh] bg-gray-200 rounded-lg p-4 overflow-auto">
+    <div className="h-[55vh] bg-gray-200 rounded-lg p-4 overflow-y min-w-80">
       <h2 className="text-lg font-bold text-black">Localización</h2>
       <div className="flex flex-col">
         <label

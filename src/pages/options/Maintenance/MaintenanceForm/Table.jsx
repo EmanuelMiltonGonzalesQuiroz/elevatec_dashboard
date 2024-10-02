@@ -113,7 +113,7 @@ const Table = ({ selectedItems, setSelectedItems }) => {
   const sortedAndIndexedItems = assignTypeIndexes(selectedItems);
 
   return (
-    <div className="h-[57vh] bg-white rounded-lg shadow-lg p-4 overflow-auto">
+    <div className="h-[57vh] bg-white rounded-lg shadow-lg p-4 overflow-auto min-w-80">
       <div className="mt-4 flex justify-between">
         <h2 className="text-xl font-bold mb-4 text-black">Tabla de Seleccionados</h2>
         <button

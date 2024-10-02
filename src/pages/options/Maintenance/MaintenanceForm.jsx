@@ -12,7 +12,7 @@ const MaintenanceForm = () => {
   };
 
   return (
-    <div className="flex items-start justify-between bg-gray-100 p-4">
+    <div className="flex items-start justify-between bg-gray-100 p-4 min-w-[80vh]">
       <Selects handleAddItem={handleAddItem} />
       <div className="flex flex-col justify-between w-3/4">
         <Location handleAddItem={handleAddItem}/>

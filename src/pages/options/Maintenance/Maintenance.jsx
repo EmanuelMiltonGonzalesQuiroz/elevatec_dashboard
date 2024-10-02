@@ -7,7 +7,7 @@ const Maintenance = () => {
   const [activeTab, setActiveTab] = useState('form');
 
   return (
-    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full  text-black ">
+    <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg w-full  text-black overflow-auto">
       <div className="flex space-x-4">
         <button
           className={`p-2 ${activeTab === 'form' ? 'text-black font-bold' : 'text-blue-600'}`}
