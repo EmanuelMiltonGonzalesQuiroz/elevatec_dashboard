@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import PDFContent from './PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from './Calculation/Modal';
+import { useAuth } from '../../../context/AuthContext';
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -23,11 +24,12 @@ const formatDateFromDocId = (docId) => {
   return formattedDate;
 };
 
-const QuotationList = () => {
+const QuotationList = ({ showDeleted }) => {
+  const { currentUser} = useAuth(); 
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [quotations, setQuotations] = useState([]);
-  const [filteredQuotations, setFilteredQuotations] = useState([]);
+  const [filteredQuotations, setFilteredQuotations] = useState([]); 
   const [showModal, setShowModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [selectedPDFOption, setSelectedPDFOption] = useState(null);
@@ -82,7 +84,6 @@ const QuotationList = () => {
       );
 
       setQuotations(quotationList.filter(Boolean));
-      setFilteredQuotations(quotationList.filter(Boolean));
     };
 
     fetchQuotations();
@@ -90,27 +91,40 @@ const QuotationList = () => {
 
   useEffect(() => {
     const filtered = quotations.filter((quotation) => {
-      const matchesClient = selectedClient
-        ? quotation.clientName === selectedClient.label
-        : true;
-      const matchesDate = selectedDate
-        ? quotation.date === formatDate(selectedDate)
-        : true;
-      return matchesClient && matchesDate;
-    }); 
+      const matchesDeletedState = showDeleted ? quotation.state === 'deleted' : quotation.state !== 'deleted';
+      const matchesClient = selectedClient ? quotation.clientName === selectedClient.label : true;
+      const matchesDate = selectedDate ? quotation.date === formatDate(selectedDate) : true;
+      return matchesDeletedState && matchesClient && matchesDate;
+    });
     setFilteredQuotations(filtered);
-  }, [selectedClient, selectedDate, quotations]);
+  }, [selectedClient, selectedDate, quotations, showDeleted]);
 
   const handleClientChange = (selectedOption) => {
     setSelectedClient(selectedOption);
   };
+  const updateQuotationStatus = async (id, status) => {
+    const db = getFirestore();
+    const quotationRef = doc(db, 'list of quotations', id);
+    
+    try {
+      await updateDoc(quotationRef, { state: status });
+  
+      // Actualizar el estado local para reflejar el cambio en la interfaz de usuario
+      setQuotations((prevQuotations) =>
+        prevQuotations.map((quotation) =>
+          quotation.id === id ? { ...quotation, state: status } : quotation
+        )
+      );
+    } catch (error) {
+      console.error('Error al actualizar el estado:', error);
+    }
+  };
 
   const handleDateChange = (event) => {
-    let selectedDate = new Date(event.target.value + "T00:00:00"); // Crear una nueva fecha a partir del valor seleccionado
-    selectedDate.setDate(selectedDate.getDate() + 1); // Sumar un día
-    setSelectedDate(selectedDate.toISOString().split('T')[0]); // Actualizar el estado con la nueva fecha
+    let selectedDate = new Date(event.target.value + "T00:00:00");
+    selectedDate.setDate(selectedDate.getDate() + 1);
+    setSelectedDate(selectedDate.toISOString().split('T')[0]);
   };
-  
 
   const handleViewPDF = (quotation) => {
     setSelectedQuotation(quotation);
@@ -118,7 +132,6 @@ const QuotationList = () => {
   };
 
   const handlePDFOption = (quotationData, option) => {
-    // Guardar la opción seleccionada de PDF y cerrar el primer modal
     setSelectedPDFOption({ data: quotationData, option });
     setShowPDFModal(true); // Abrir el segundo modal para ver el PDF
   };
@@ -156,7 +169,6 @@ const QuotationList = () => {
         />
       </div>
       <div className="overflow-auto">
-
         <table className="bg-white w-full">
           <thead>
             <tr>
@@ -172,7 +184,9 @@ const QuotationList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredQuotations.map((quotation, index) => (
+          {filteredQuotations
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Ordena por fecha, del más nuevo al más viejo
+            .map((quotation, index) => (
               <tr key={quotation.id} className="bg-gray-100">
                 <td className="py-2 px-4 text-black">{index + 1}</td>
                 <td className="py-2 px-4 text-black">{quotation.clientName}</td>
@@ -182,17 +196,35 @@ const QuotationList = () => {
                 <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
                 <td className="py-2 px-4 text-black">{quotation.total}</td>
                 <td className="py-2 px-4 text-black">{quotation.date}</td>
-                <td className="py-2 px-4">
+                <td className="py-2 px-4 flex space-x-2">
                   <button
                     className="bg-blue-500 text-white p-2 rounded"
                     onClick={() => handleViewPDF(quotation)}
                   >
                     Ver PDF
                   </button>
+                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario') && (
+                    showDeleted ? (
+                      <button
+                        className="bg-green-500 text-white p-2 rounded"
+                        onClick={() => updateQuotationStatus(quotation.id, 'active')}
+                      >
+                        Restaurar
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-red-500 text-white p-2 rounded"
+                        onClick={() => updateQuotationStatus(quotation.id, 'deleted')}
+                      >
+                        Eliminar
+                      </button>
+                    )
+                  )}
                 </td>
               </tr>
             ))}
-          </tbody>
+        </tbody>
+
         </table>
       </div>
 

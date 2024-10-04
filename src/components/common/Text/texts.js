@@ -70,6 +70,7 @@ export const usersText = {
 export const quotationsText = {
   tabQuotations: "Cotizar",
   tabQuotationsList: "Lista de cotizaciones",
+  tabQuotationsListE: "Lista de cotizaciones Eliminadas",
   generatePDF: "Generar PDF",
   selectDate: "Seleccione fecha",
   listOfQuotations: "Lista de cotizaciones",
@@ -213,8 +214,6 @@ export const mainFormColumn1Text = {
   doorError: "La suma de las puertas debe ser igual a las paradas",
 };
 
-
-
 export const mainFormColumn2Text = {
   cabin: <>{redAsterisk} Cabina</>,
   cabinConcept: "",
@@ -277,15 +276,16 @@ export const advancedOptionsText = {
 export const maintenanceText = {
   title: 'Ajustes de mantenimiento',
   description: 'Gestiona las opciones y parámetros de mantenimiento de la aplicación.',
-  ascensoresM: 'Ascensores M.',
-  montaCochesM: 'Monta coches M.',
-  montacargasM: 'Montacargas M.',
-  escaleraMecanicaM: 'Escalera mecánica M.',
+  ascensoresM: 'Ascensores Mantenimiento',
+  montaCochesM: 'Monta coches Mantenimiento',
+  montacargasM: 'Montacargas Mantenimiento',
+  escaleraMecanicaM: 'Escalera mecánica Mantenimiento',
   ascensoresMContent: 'Aquí puedes configurar las opciones de mantenimiento para Ascensores M.',
   montaCochesMContent: 'Aquí puedes configurar las opciones de mantenimiento para Monta coches M.',
   montacargasMContent: 'Aquí puedes configurar las opciones de mantenimiento para Montacargas M.',
   escaleraMecanicaMContent: 'Aquí puedes configurar las opciones de mantenimiento para Escalera mecánica M.',
   tabMaintenance: 'Cotización Mantenimiento',
   tabMaintenanceList: 'Lista de mantenimientos',
+  tabMaintenanceListE: 'Lista de mantenimientos Eliminados',
 };
 

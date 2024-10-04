@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../../context/AuthContext';
-import saveToFirestore from './Table/SaveMaintenance';  // Importar la función de guardado
+import saveToFirestore from './Table/SaveMaintenance';  
 import DiscountInputs from './Table/DiscountInputs';
+import { getDoc, doc, setDoc } from 'firebase/firestore';  // Importar setDoc para guardar en Firestore
+import { db } from '../../../../connection/firebase'; 
 
 const Table = ({ selectedItems, setSelectedItems }) => {
   const { currentUser } = useAuth();
@@ -13,8 +15,31 @@ const Table = ({ selectedItems, setSelectedItems }) => {
   const [approvalPercentage, setApprovalPercentage] = useState(0); 
   const [totalPriceByPlan, setTotalPriceByPlan] = useState(0); 
   const [finalTotal, setFinalTotal] = useState(0); 
-  const [client, setClient] = useState(null);  // Estado para almacenar la información del cliente
+  const [client, setClient] = useState(null);  
   const [message, setMessage] = useState(''); 
+  const [percentage, setPercentage] = useState(30);  // Valor predeterminado de porcentaje si no está en la BD
+  const [newPercentage, setNewPercentage] = useState(percentage);  // Estado para el input del nuevo porcentaje
+
+  // Obtener el porcentaje desde Firebase Firestore
+  useEffect(() => {
+    const fetchPercentage = async () => {
+      try {
+        const docRef = doc(db, 'percentage', 'percentage');  // Cambia el path según la estructura de tu BD
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const percentageData = docSnap.data().percentage || 30; // Valor predeterminado si no existe
+          setPercentage(percentageData);
+          setNewPercentage(percentageData); // Inicializar el valor del input con el porcentaje actual
+        } else {
+          console.log("No se encontró el porcentaje en la base de datos.");
+        }
+      } catch (error) {
+        console.error("Error al obtener el porcentaje:", error);
+      }
+    };
+
+    fetchPercentage();
+  }, []);
 
   useEffect(() => {
     const getLastPlan = (items) => {
@@ -34,7 +59,7 @@ const Table = ({ selectedItems, setSelectedItems }) => {
     // Buscar el cliente en los elementos seleccionados
     const clientItem = selectedItems.find(item => item.type?.type === 'Client');
     if (clientItem) {
-      setClient(clientItem.type.client);  // Guardamos la información del cliente
+      setClient(clientItem.type.client);  
     }
   }, [selectedItems, plan]);
 
@@ -46,6 +71,7 @@ const Table = ({ selectedItems, setSelectedItems }) => {
       return { ...item, displayType: `${type}.${typeCounters[type]}` };
     });
   };
+
   useEffect(() => {
     const sortedItems = [...selectedItems].sort((a, b) => {
         const priceA = parseFloat(a.basePrice || a.type?.basePrice || 0);
@@ -55,14 +81,14 @@ const Table = ({ selectedItems, setSelectedItems }) => {
 
     const updatedItems = sortedItems.map((item, index) => {
         const basePrice = parseFloat(item.basePrice || item.type?.basePrice || 0);
-        const finalPrice = index === 0 ? basePrice : basePrice * 0.7;
+        const finalPrice = index === 0 ? basePrice : basePrice * (1 - (percentage / 100));  // Usar el porcentaje de la BD
         return { ...item, finalPrice };
     });
 
     if (JSON.stringify(updatedItems) !== JSON.stringify(selectedItems)) {
         setSelectedItems(updatedItems);
     }
-}, [selectedItems, setSelectedItems]);
+  }, [selectedItems, setSelectedItems, percentage]);  
 
   const calculateTotals = () => {
     const totalFinalPrice = selectedItems.reduce((sum, item) => sum + parseFloat(item.finalPrice || 0), 0);
@@ -77,12 +103,11 @@ const Table = ({ selectedItems, setSelectedItems }) => {
   const handleSaveData = async () => {
     const filteredItems = assignTypeIndexes(selectedItems).filter(item => item.type?.type !== 'Plan');
 
-    // Validar si faltan campos, incluyendo el cliente
     let missingFields = [];
     if (!plan) missingFields.push('Plan');
     if (!buildingName) missingFields.push('Nombre del Edificio');
     if (!location) missingFields.push('Ubicación');
-    if (!client) missingFields.push('Cliente');  // Validación del cliente
+    if (!client) missingFields.push('Cliente');  
     if (!totalPriceByPlan) missingFields.push('Precio Total según Plan');
     if (!finalTotal) missingFields.push('Total Final');
     if (!filteredItems.length) missingFields.push('Items seleccionados');
@@ -92,9 +117,8 @@ const Table = ({ selectedItems, setSelectedItems }) => {
       return;
     }
 
-    setMessage('Guardando...');  // Mostrar mensaje de guardado en progreso
+    setMessage('Guardando...');  
 
-    // Llamar a la función de guardado
     const responseMessage = await saveToFirestore({
       plan,
       buildingName,
@@ -104,29 +128,66 @@ const Table = ({ selectedItems, setSelectedItems }) => {
       directPercentage,
       approvalPercentage,
       finalTotal,
-      client  // Pasamos el cliente al guardado
+      client 
     });
 
-    setMessage(responseMessage);  // Mostrar el resultado del guardado
+    setMessage(responseMessage);  
+  };
+
+  // Función para guardar el nuevo porcentaje en Firebase
+  const handleSavePercentage = async () => {
+    try {
+      const docRef = doc(db, 'percentage', 'percentage');
+      await setDoc(docRef, { percentage: newPercentage });
+      setPercentage(newPercentage);  // Actualizar el porcentaje en el estado
+      setMessage("Porcentaje actualizado correctamente");
+    } catch (error) {
+      console.error("Error al guardar el porcentaje:", error);
+      setMessage("Error al actualizar el porcentaje");
+    }
   };
 
   const sortedAndIndexedItems = assignTypeIndexes(selectedItems);
 
   return (
     <div className="h-[57vh] bg-white rounded-lg shadow-lg p-4 overflow-auto min-w-80">
-      <div className="mt-4 flex justify-between">
+      <div className="mt-4">
         <h2 className="text-xl font-bold mb-4 text-black">Tabla de Seleccionados</h2>
-        <button
-          className="bg-green-500 text-white px-4 py-2 ml-4 rounded"
-          onClick={handleSaveData}
-        >
-          Guardar Mantenimiento
-        </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={clearTable}>
-          Borrar Todos
-        </button>
+        <div className="flex justify-between">
+          {userRole === 'Administrador' || userRole === 'Gerencia' ? (
+            <div className="flex items-center">
+              <input
+                type="number"
+                value={newPercentage}
+                onChange={(e) => setNewPercentage(Number(e.target.value))}
+                className="border rounded px-2 py-1 mr-2 w-16 font-bold"
+              />
+              <p className="font-bold"> %</p>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handleSavePercentage}
+              >
+                Guardar Porcentaje
+              </button>
+            </div>
+          ) : <p className="text-xl mb-4 text-black">{percentage}%</p>}
+          
+          <div className="flex space-x-4">
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded"
+              onClick={handleSaveData}
+            >
+              Guardar Mantenimiento
+            </button>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded"
+              onClick={clearTable}
+            >
+              Borrar Todos
+            </button>
+          </div>
+        </div>
       </div>
-
       {message && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-yellow-300 text-black p-2 rounded shadow-lg">
           {message}
@@ -161,6 +222,7 @@ const Table = ({ selectedItems, setSelectedItems }) => {
                 <tr key={index}>
                     <td className="border px-4 py-2">{item.displayType}</td>
                     <td className="border px-4 py-2">
+              
                         Bs{parseFloat(item.basePrice?.toFixed(2)) || parseFloat(item.type?.basePrice || 0).toFixed(2)}
                     </td>
                     <td className="border px-4 py-2">Bs{item.finalPrice?.toFixed(2)}</td>

@@ -6,6 +6,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar los íconos
 import { MdAttachEmail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import logo from '../../assets/images/COTA LOGO/elevatec_logo_sin_fondo.png'; // Importar el logo
+import fondo from '../../assets/images/fondo.jpg'; // Importar la imagen de fondo
+
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -45,8 +47,15 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-900">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+    <div
+      className="flex items-center justify-center h-screen"
+      style={{
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg"> 
         <div className="flex justify-center mb-6">
           <img src={logo} alt="Logo" className="h-16" />
         </div>

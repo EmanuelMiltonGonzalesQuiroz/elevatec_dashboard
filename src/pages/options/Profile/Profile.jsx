@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import React, { useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase'; // Asegúrate de que esta sea tu configuración de Firebase
 import { useAuth } from '../../../context/AuthContext';
 import { RiLockPasswordLine, RiCloseLine } from 'react-icons/ri';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Profile = () => {
-  const { currentUser, updateUser } = useAuth();
+  const { currentUser, login } = useAuth(); // Usar 'login' para actualizar el usuario localmente
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -17,65 +17,35 @@ const Profile = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [userDocId, setUserDocId] = useState('');
-
-  // Cargar toda la colección y buscar el documento con el email correcto
-  useEffect(() => {
-    const fetchUserDoc = async () => {
-      try {
-        // Obtener toda la colección 'login firebase'
-        const loginCollection = collection(db, 'login firebase');
-        const querySnapshot = await getDocs(loginCollection);
-
-        let foundDoc = null;
-
-        // Buscar el documento que coincida con el email del currentUser
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.email === currentUser.email) {
-            foundDoc = doc.id; // Obtener el ID del documento encontrado
-          }
-        });
-
-        if (foundDoc) {
-          setUserDocId(foundDoc); // Guardar el ID del documento encontrado
-        } else {
-          setError('No se encontró el usuario con este correo electrónico.');
-        }
-      } catch (err) {
-        console.error('Error al buscar el documento del usuario: ', err);
-      }
-    };
-
-    fetchUserDoc();
-  }, [currentUser.email]);
 
   // Handle input changes for form data
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Update the user's data in Firebase and in the currentUser object
+  // Update the user's data in Firebase and also locally
   const handleUpdate = async () => {
     try {
-      // Validar si el nombre o los otros campos están indefinidos
       if (!formData.name || !formData.email || !formData.phone) {
         setError('Todos los campos son obligatorios.');
         return;
       }
 
-      if (userDocId) {
-        // Update user in Firebase Firestore using the document ID encontrado
-        const userDocRef = doc(db, 'login firebase', userDocId);
-
+      if (currentUser.id) {
+        const userDocRef = doc(db, 'login firebase', currentUser.id);
         await updateDoc(userDocRef, {
           username: formData.name,
           email: formData.email,
           phone: formData.phone,
         });
 
-        // Actualizar los datos locales del usuario
-        updateUser(formData);
+        // Actualizar el estado local con los nuevos datos
+        login({
+          ...currentUser,
+          username: formData.name,
+          email: formData.email,
+          phone: formData.phone
+        });
 
         setIsEditing(false);
       } else {
@@ -91,14 +61,12 @@ const Profile = () => {
   const handlePasswordChange = async () => {
     try {
       if (password.length > 0) {
-        if (userDocId) {
-          // Update password in Firestore
-          const userDocRef = doc(db, 'login firebase', userDocId);
+        if (currentUser.id) {
+          const userDocRef = doc(db, 'login firebase', currentUser.id);
           await updateDoc(userDocRef, {
             password: password,
           });
 
-          // Cerrar el modal y limpiar el campo de la contraseña
           setIsPasswordModalOpen(false);
           setPassword('');
         } else {
@@ -115,18 +83,18 @@ const Profile = () => {
     <div className="p-6 bg-gray-100 text-black">
       <h2 className="text-2xl font-bold mb-6 text-center">Perfil de usuario</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg">
-      <div className="relative flex justify-center items-center mb-6">
-        <h3 className="text-xl font-semibold text-center w-full">Mi Información</h3>
-        
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="absolute right-0 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-          >
-            Actualizar mis datos
-          </button>
-        )}
-      </div>
+        <div className="relative flex justify-center items-center mb-6">
+          <h3 className="text-xl font-semibold text-center w-full">Mi Información</h3>
+          
+          {!isEditing && (currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="absolute right-0 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+              Actualizar mis datos
+            </button>
+          )}
+        </div>
 
         <div className="space-y-4 flex flex-col items-center text-center">
           <div className="w-full max-w-md">
@@ -146,17 +114,7 @@ const Profile = () => {
           <div className="space-y-4 flex flex-col items-center text-center">
             <div className="w-full max-w-md">
               <label className="font-semibold">Rol de Usuario:</label>
-              {currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' ? (
-                <input
-                  type="text"
-                  name="role"
-                  value={currentUser.role}
-                  disabled
-                  className="p-2 border rounded w-full "
-                />
-              ) : (
-                <p>{currentUser.role}</p>
-              )}
+              <p>{currentUser.role}</p>
             </div>
           </div>
           <div className="w-full max-w-md">
@@ -207,7 +165,7 @@ const Profile = () => {
         </div>
 
         {/* Botón para abrir el modal de cambiar contraseña */}
-        {!isEditing && (
+        {!isEditing &&(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') &&  (
           <div className="mt-6 text-center">
             <h3 className="text-xl font-semibold mb-4">Administrar mi contraseña</h3>
             <button

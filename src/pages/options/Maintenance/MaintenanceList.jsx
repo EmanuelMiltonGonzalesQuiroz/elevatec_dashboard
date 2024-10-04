@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from '../quotations/Calculation/Modal';
+import { useAuth } from '../../../context/AuthContext';
 
 // Función para formatear la fecha
 const formatDate = (dateString) => {
@@ -15,15 +16,16 @@ const formatDate = (dateString) => {
   return `${day}/${monthNames[month]}/${year}`;
 };
 
-const MaintenanceList = () => {
+const MaintenanceList = ({ showDeleted }) => {
+  const { currentUser} = useAuth(); 
   const [selectedDate, setSelectedDate] = useState(null);
   const [maintenanceList, setMaintenanceList] = useState([]);
   const [filteredMaintenance, setFilteredMaintenance] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedMaintenance, setSelectedMaintenance] = useState(null);
-  const [selectedPDFOption, setSelectedPDFOption] = useState(null); // Fix para el uso de PDF option
+  const [selectedPDFOption, setSelectedPDFOption] = useState(null);
   const [showPDFModal, setShowPDFModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null); // For client filter
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     const fetchMaintenanceList = async () => {
@@ -35,43 +37,12 @@ const MaintenanceList = () => {
         const data = doc.data();
         return {
           id: doc.id,
-          approvalPercentage: data.approvalPercentage || 0,
-          buildingName: data.buildingName || 'N/A',
-          client: {
-              address: data.client?.address || 'N/A',
-              ciNIT: data.client?.ciNIT || 'N/A',
-              email: data.client?.email || 'N/A',
-              label: data.client?.label || 'N/A',
-              name: data.client?.name || 'N/A',
-              phone: data.client?.phone || 'N/A',
-              value: data.client?.value || 'N/A',
-          },
+          ...data,
           date: formatDate(data.date),
-          directPercentage: data.directPercentage || 0,
-          documentId: data.documentId || 'N/A',
-          filteredItems: data.filteredItems?.map(item => ({
-              displayType: item.displayType || 'N/A',
-              finalPrice: item.finalPrice || 0,
-              type: {
-                  basePrice: item.type?.basePrice || 0,
-                  finalPrice: item.type?.finalPrice || 0,
-                  floor: item.type?.floor || 'N/A',
-                  type: item.type?.type || 'N/A',
-              }
-          })) || [],
-          finalTotal: data.finalTotal || 'N/A',
-          location: {
-              lat: data.location?.lat || 'N/A',
-              lng: data.location?.lng || 'N/A'
-          },
-          plan: data.plan || 'N/A',
-          totalPriceByPlan: data.totalPriceByPlan || 'N/A'
-      };
-      
+        };
       });
 
       setMaintenanceList(maintenanceData);
-      setFilteredMaintenance(maintenanceData);
     };
 
     fetchMaintenanceList();
@@ -79,18 +50,13 @@ const MaintenanceList = () => {
 
   useEffect(() => {
     const filtered = maintenanceList.filter((maintenance) => {
-      
-      const matchesClient = selectedClient
-        ? maintenance.client.name === selectedClient.label
-        : true;
-      const matchesDate = selectedDate
-        ? maintenance.date === formatDate(selectedDate)
-        : true;
-      return  matchesClient && matchesDate;
+      const matchesDeletedState = showDeleted ? maintenance.state === 'deleted' : maintenance.state !== 'deleted';
+      const matchesClient = selectedClient ? maintenance.client.name === selectedClient.label : true;
+      const matchesDate = selectedDate ? maintenance.date === formatDate(selectedDate) : true;
+      return matchesDeletedState && matchesClient && matchesDate;
     });
     setFilteredMaintenance(filtered);
-  }, [selectedDate, selectedClient, maintenanceList]);
-
+  }, [selectedDate, selectedClient, maintenanceList, showDeleted]);
 
   const handleClientChange = (selectedOption) => {
     setSelectedClient(selectedOption);
@@ -98,7 +64,7 @@ const MaintenanceList = () => {
 
   const handleDateChange = (event) => {
     let selectedDate = new Date(event.target.value + "T00:00:00");
-    selectedDate.setDate(selectedDate.getDate() + 1); // Sumar un día
+    selectedDate.setDate(selectedDate.getDate() + 1);
     setSelectedDate(selectedDate.toISOString().split('T')[0]);
   };
 
@@ -110,6 +76,24 @@ const MaintenanceList = () => {
   const handlePDFOption = (maintenanceData, option) => {
     setSelectedPDFOption({ data: maintenanceData, option });
     setShowPDFModal(true);
+  };
+
+  const updateMaintenanceStatus = async (id, status) => {
+    const db = getFirestore();
+    const maintenanceRef = doc(db, 'list of maintenance', id);
+
+    try {
+      await updateDoc(maintenanceRef, { state: status });
+
+      // Actualizar el estado local para reflejar el cambio
+      setMaintenanceList((prevList) =>
+        prevList.map((maintenance) =>
+          maintenance.id === id ? { ...maintenance, state: status } : maintenance
+        )
+      );
+    } catch (error) {
+      console.error('Error al actualizar el estado:', error);
+    }
   };
 
   return (
@@ -138,40 +122,60 @@ const MaintenanceList = () => {
 
       <div className="overflow-auto">
         <table className="bg-white w-full">
-        <thead>
-          <tr>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">#</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Edificio</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cliente</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Teléfono Cliente</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Plan</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Precio Total</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Fecha</th>
-            <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredMaintenance.map((maintenance, index) => (
-            <tr key={maintenance.id} className="bg-gray-100">
-              <td className="py-2 px-4 text-black">{index + 1}</td>
-              <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
-              <td className="py-2 px-4 text-black">{maintenance.client.name}</td>
-              <td className="py-2 px-4 text-black">{maintenance.client.phone}</td>
-              <td className="py-2 px-4 text-black">{maintenance.plan}</td>
-              <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
-              <td className="py-2 px-4 text-black">{maintenance.date}</td>
-              <td className="py-2 px-4">
-                <button
-                  className="bg-blue-500 text-white p-2 rounded"
-                  onClick={() => handleViewPDF(maintenance)}
-                >
-                  Ver PDF
-                </button>
-              </td>
+          <thead>
+            <tr>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">#</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cliente</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Dirección</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Teléfono Cliente</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Plan</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Precio Total</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Fecha</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Acciones</th>
             </tr>
+          </thead>
+          <tbody>
+          {filteredMaintenance
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Ordena por fecha, del más nuevo al más viejo
+            .map((maintenance, index) => (
+              <tr key={maintenance.id} className="bg-gray-100">
+                <td className="py-2 px-4 text-black">{index + 1}</td>
+                <td className="py-2 px-4 text-black">{maintenance.client?.name}</td>
+                <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
+                <td className="py-2 px-4 text-black">{maintenance.client?.phone}</td>
+                <td className="py-2 px-4 text-black">{maintenance.plan}</td>
+                <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
+                <td className="py-2 px-4 text-black">{maintenance.date}</td>
+                <td className="py-2 px-4 flex space-x-2">
+                  <button
+                    className="bg-blue-500 text-white p-2 rounded"
+                    onClick={() => handleViewPDF(maintenance)}
+                  >
+                    Ver PDF
+                  </button>
+                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario') && (
+                    showDeleted ? (
+                      <button
+                        className="bg-green-500 text-white p-2 rounded"
+                        onClick={() => updateMaintenanceStatus(maintenance.id, 'active')}
+                      >
+                        Restaurar
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-red-500 text-white p-2 rounded"
+                        onClick={() => updateMaintenanceStatus(maintenance.id, 'deleted')}
+                      >
+                        Eliminar
+                      </button>
+                    )
+                  )}
+                </td>
+              </tr>
           ))}
-        </tbody>
-      </table>
+
+          </tbody>
+        </table>
       </div>
 
       {/* Modal con opciones de PDF */}
@@ -215,8 +219,8 @@ const MaintenanceList = () => {
       {showPDFModal && (
         <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
           <PDFContent
-            recipe={selectedMaintenance} // Usamos los datos del mantenimiento seleccionado
-            type={selectedPDFOption?.option || ''} // Usamos la opción de PDF seleccionada
+            recipe={selectedMaintenance}
+            type={selectedPDFOption?.option || ''}
           />
         </Modal>
       )}

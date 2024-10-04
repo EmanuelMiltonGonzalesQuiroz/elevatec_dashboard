@@ -16,7 +16,9 @@ const Selects = ({ handleAddItem }) => {
   const [selectedCarLift, setSelectedCarLift] = useState(null);
   const [selectedForklift, setSelectedForklift] = useState(null);
   const [selectedEscalator, setSelectedEscalator] = useState(null);
-  const [setOtros] = useState([]); // Para almacenar los elementos sin basePrice
+  // eslint-disable-next-line no-unused-vars
+  const [otros, setOtros] = useState([]); // Initialize the state correctly
+// Para almacenar los elementos sin basePrice
 
   const planesOptions = [
     { name: 'Trimensual', note: 'Alta demanda de uso: Hosp.Publicos, Edif. Judiciales, Hoteles de Alta Rent.' },
@@ -72,7 +74,7 @@ const Selects = ({ handleAddItem }) => {
 
   const addItemToTable = (type, floor, price, liftClass = null) => {
     if (!price || price === 0) {
-      // Si no tiene basePrice, agregarlo a la variable otros
+      // If there is no basePrice, add it to the "otros" state
       setOtros((prevOtros) => [...prevOtros, { type, floor, class: liftClass }]);
     } else {
       handleAddItem({ type, floor, basePrice: price, finalPrice: price, class: liftClass });
@@ -144,7 +146,11 @@ const Selects = ({ handleAddItem }) => {
         <label className="block mb-2 text-gray-700">Ascensor Clase</label>
         <select
           className="w-full p-2 border rounded text-black"
-          onChange={(e) => setSelectedLiftClass(e.target.value)}
+          onChange={(e) => {
+            const selectedClass = e.target.value;
+            setSelectedLiftClass(selectedClass);
+            addItemToTable('Ascensor Clase', null, 0, selectedClass); // Add to table with class name
+          }}
           value={selectedLiftClass}
         >
           <option value="">Seleccione una clase</option>
@@ -155,6 +161,7 @@ const Selects = ({ handleAddItem }) => {
           ))}
         </select>
       </div>
+
 
       {/* Select para Ascensor Pisos */}
       {renderSelectField(

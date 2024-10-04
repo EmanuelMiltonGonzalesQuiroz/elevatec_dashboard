@@ -42,13 +42,13 @@ const Home = () => {
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
           {/* Content with size constraints and scrolls if needed */}
-          <div className="max-w-[80vw]">
+          <div className="w-full">
             {activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
-            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
+            {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
             {['Administrador', 'Gerencia', 'Usuario'].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>

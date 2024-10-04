@@ -46,7 +46,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
           htmlFor="locationName"
           className="mt-1 font-semibold text-black text-sm"
         >
-          Nombre de Edificio:
+          Dirección:
         </label>
         <input
           type="text"

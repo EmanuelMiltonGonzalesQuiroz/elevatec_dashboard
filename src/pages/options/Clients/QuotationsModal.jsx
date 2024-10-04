@@ -101,7 +101,7 @@ const QuotationsModal = ({ clientId, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
-      <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
+      <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-[130vh]">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition"

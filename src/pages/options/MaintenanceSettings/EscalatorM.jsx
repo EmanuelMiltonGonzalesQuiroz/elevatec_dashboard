@@ -59,7 +59,7 @@ const EscalatorM = () => {
   return (
     <div className="p-4 bg-gray-100 text-black max-h-[80vh]">
       <div className="bg-white p-6 rounded-lg shadow-lg max-h-[65vh]">
-        <h2 className="text-2xl font-bold mb-6">Escaleras Mecanicas M.</h2>
+        <h2 className="text-2xl font-bold mb-6">Escaleras Mecanicas Mantenimiento</h2>
         <div className="overflow-x-auto max-h-[50vh]">
           <table className="min-w-full bg-white border">
             <thead>

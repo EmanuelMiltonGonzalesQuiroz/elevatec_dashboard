@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, doc,deleteDoc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
+import { useAuth } from '../../../context/AuthContext';
 import { usersText } from '../../../components/common/Text/texts';
 import QuotationsModal from './QuotationsModal';  // Importa el nuevo componente
 
 const Clients = () => {
+  
+  const { currentUser } = useAuth();
   const [clients, setClients] = useState([]);
   const [currentClientId, setCurrentClientId] = useState(null);
   const [formData, setFormData] = useState({
@@ -35,6 +38,14 @@ const Clients = () => {
       setClients(clientsList);
     } catch (error) {
       console.error('Error al cargar los clientes: ', error);
+    }
+  };
+  const handleDeleteClient = async (userId) => {
+    try {
+      await deleteDoc(doc(db, 'clients', userId));
+      loadClients();
+    } catch (error) {
+      console.error('Error al eliminar el usuario: ', error);
     }
   };
 
@@ -147,6 +158,15 @@ const Clients = () => {
                     >
                       Información
                     </button>
+                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mx-2"
+                      onClick={() => handleDeleteClient(client.id)}
+                    >
+                      Eliminiar
+                    </button>
+                  )}
+
                   </div>
                 </td>
               </td>

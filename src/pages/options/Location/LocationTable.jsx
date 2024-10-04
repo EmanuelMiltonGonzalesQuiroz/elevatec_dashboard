@@ -48,7 +48,7 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                   </span>
                 </td>
                 <td className="py-3 px-6 text-left">
-                  {(userRole === 'Administrador' || userRole === 'Gerencia') && (
+                  {(userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
                     <button
                       className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-4" // Espacio entre botones
                       onClick={() => onEdit(location)} // Abre el modal completo para editar la ubicación

@@ -8,16 +8,22 @@ export async function validateUserCredentials(email, password) {
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
+            console.log("No se encontró el email en Firestore.");
             return { success: false };
         } else {
             let userDoc;
+            let userId;
             querySnapshot.forEach((doc) => {
                 userDoc = doc.data();
+                userId = doc.id; // Obtener el UID del documento
+                console.log("Datos obtenidos de Firestore:", userDoc);
             });
 
             if (userDoc.password === password) {
-                return { success: true, userData: userDoc };
+                console.log("Credenciales correctas");
+                return { success: true, userData: { ...userDoc, id: userId } }; // Incluir el ID en los datos del usuario
             } else {
+                console.log("Password incorrecto.");
                 return { success: false };
             }
         }

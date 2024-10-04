@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -8,7 +8,6 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
-    // Recuperar el usuario del localStorage al cargar la página
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   });
@@ -23,10 +22,19 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('user');
   };
 
+  const updateUser = (updatedData) => {
+    setCurrentUser((prevUser) => {
+      const updatedUser = { ...prevUser, ...updatedData };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  };
+
   const value = {
     currentUser,
     login,
     logout,
+    updateUser, // Añadir la función updateUser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

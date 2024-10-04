@@ -5,6 +5,7 @@ export const generateBasePDF = (doc, recipe, config) => {
   let currentYPosition = 20;
 
   // Llamar a MainContent para generar el contenido del contrato
+  // eslint-disable-next-line no-unused-vars
   currentYPosition = MainContent({ doc, config, startY: currentYPosition, recipe });
 
   // Aquí puedes añadir contenido adicional si es necesario después de las tablas...

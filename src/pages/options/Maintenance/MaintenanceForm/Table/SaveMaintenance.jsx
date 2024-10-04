@@ -1,7 +1,7 @@
 import { db } from '../../../../../connection/firebase';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 
-// Función para limpiar el objeto y eliminar propiedades con valores undefined o null
+// Function to clean the object and remove properties with undefined or null values
 const cleanData = (data) => {
   if (Array.isArray(data)) {
     return data.map(cleanData);
@@ -20,35 +20,14 @@ const cleanData = (data) => {
 
 const saveToFirestore = async ({
   plan, buildingName, location, filteredItems, totalPriceByPlan,
-  directPercentage, approvalPercentage, finalTotal, client
+  directPercentage, approvalPercentage, finalTotal, client, description, formData, markerPosition
 }) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const formattedDate = currentDate.toISOString();
-
-  // Limpiar los datos antes de enviarlos a Firestore
-  const sanitizedItems = cleanData(filteredItems.filter(item => 
-    item.type?.type !== 'Plan' && 
-    item.type?.type !== 'Client' && 
-    typeof item.type !== 'function' && 
-    !(item.type?.name && item.type?.position)
-  ));
-
-  const cleanedData = cleanData({
-    plan,
-    buildingName,
-    location,
-    filteredItems: sanitizedItems,
-    totalPriceByPlan,
-    directPercentage,
-    approvalPercentage,
-    finalTotal,
-    client,
-    date: formattedDate,
-  });
-
+  
   try {
-    // Consultar documentos del año actual
+    // Save to 'list of maintenance' collection
     const maintenanceCollection = collection(db, 'list of maintenance');
     const yearQuery = query(
       maintenanceCollection,
@@ -57,19 +36,56 @@ const saveToFirestore = async ({
     );
 
     const querySnapshot = await getDocs(yearQuery);
-    const documentCountForYear = querySnapshot.size + 1; // Sumar 1 para el nuevo documento
-
-    // Formato N/año
+    const documentCountForYear = querySnapshot.size + 1; // Increment by 1 for the new document
     const documentId = `${String(documentCountForYear).padStart(2, '0')}/${currentYear}`;
-    cleanedData.documentId = documentId; // Asignar el valor del identificador
 
-    // Guardar los datos en Firestore
+    const sanitizedItems = cleanData(filteredItems.filter(item => 
+      item.type?.type !== 'Plan' && 
+      item.type?.type !== 'Client' && 
+      typeof item.type !== 'function' && 
+      !(item.type?.name && item.type?.position)
+    ));
+
+    const cleanedData = cleanData({
+      plan,
+      buildingName,
+      location,
+      filteredItems: sanitizedItems,
+      totalPriceByPlan,
+      directPercentage,
+      approvalPercentage,
+      finalTotal,
+      client,
+      date: formattedDate,
+      documentId,
+    });
+
     await addDoc(maintenanceCollection, cleanedData);
 
-    return `Los datos se guardaron correctamente con el ID: ${documentId}.`;
+    // Save to 'locations' collection
+    if (!client ) {
+      throw new Error('Missing required fields for location.');
+    }
+    const currentDate1 = new Date();
+      const formattedDate2 = currentDate1.toISOString().replace(/[:.]/g, '_');
+
+    const locationId = `${client.label}_${formattedDate2}`;
+    
+    await setDoc(doc(db, 'locations', locationId), {
+      client: client.label,
+      id: documentCountForYear,
+      Direccion: buildingName,
+      location: location,
+      Tipo: ["Mantenimiento", "", ""],
+      state: 'Mantenimiento', // Use 'Tipo0' to set the state
+      createdAt: currentDate1,
+    });
+
+    return `Guardado`;
+
   } catch (error) {
-    console.error('Error al guardar los datos:', error);
-    return 'Error al guardar los datos.';
+    console.error('Error saving data:', error);
+    return 'Error saving data.';
   }
 };
 

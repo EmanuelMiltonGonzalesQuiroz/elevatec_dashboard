@@ -99,6 +99,7 @@ const MainContent = ({ doc, config, startY, recipe }) => {
   ];
 
   // Dynamically generating rows for each item in filteredItems
+  console.log(recipe)
   recipe.filteredItems.forEach((item) => {
     // Initial structure with the common fields
     let equipoInfo = `Ciudad: ${getBoliviaCityByLocation(recipe.location.lat, recipe.location.lng)}\nMarca: ELEVATEC\nParadas: ${item.type.floor}\nTipo: Eléctrico`;
@@ -106,7 +107,7 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     // Determine the equipment type
     switch (item.type.type) {
       case 'ASC':
-        equipoInfo += `\nCapacidad: 3`;
+        equipoInfo += `\nCapacidad: ${item.type.class || "4"}`;
         break;
       case 'ESM':
         equipoInfo = `Ciudad: ${getBoliviaCityByLocation(recipe.location.lat, recipe.location.lng)}\nMarca: ELEVATEC\nMetros: ${item.type.floor}\nTipo: Eléctrico`;
