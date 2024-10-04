@@ -156,20 +156,21 @@ const Table = ({ selectedItems, setSelectedItems }) => {
         <div className="flex justify-between">
           {userRole === 'Administrador' || userRole === 'Gerencia' ? (
             <div className="flex items-center">
-              <input
-                type="number"
-                value={newPercentage}
-                onChange={(e) => setNewPercentage(Number(e.target.value))}
-                className="border rounded px-2 py-1 mr-2 w-16 font-bold"
-              />
-              <p className="font-bold"> %</p>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleSavePercentage}
-              >
-                Guardar Porcentaje
-              </button>
-            </div>
+            <input
+              type="number"
+              value={newPercentage}
+              onChange={(e) => setNewPercentage(Number(e.target.value))}
+              className="border rounded px-2 py-1 mr-2 w-16 font-bold"
+            />
+            <p className="font-bold mr-[20px]">%</p> {/* Separación de 5px */}
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={handleSavePercentage}
+            >
+              Guardar Porcentaje
+            </button>
+          </div>
+          
           ) : <p className="text-xl mb-4 text-black">{percentage}%</p>}
           
           <div className="flex space-x-4">
