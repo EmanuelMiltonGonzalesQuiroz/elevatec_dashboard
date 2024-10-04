@@ -64,7 +64,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {userRole !== 'Trabajador' && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.maintenanceSettings, <FaTools />, 'Ajustes M.')}
           {userRole === 'Administrador' && renderItem(homeText.users, <FaUser />, 'Usuarios')}
-          {['Administrador', 'Gerencia', 'Usuario'].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
+          {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
         </ul>
       </nav>

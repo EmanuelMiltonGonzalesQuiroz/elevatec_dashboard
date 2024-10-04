@@ -35,7 +35,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
       setSelectedSolicitante({ label: formData['Solicitante'] });
     }
   }, [formData, selectedClient, selectedSolicitante]);
-
+ 
   const handleResetAll = () => {
     handleReset();
     setSelectedClient(null);

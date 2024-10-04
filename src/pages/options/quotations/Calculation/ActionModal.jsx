@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProcedure, onViewPDFNoHeader,onViewPDFjalmeco,onViewPDFtecnolif, onViewPDFWithHeader }) => {
+const ActionModal = ({ show, onClose, onConfirm, onViewProcedure, onViewPDFNoHeader, onViewPDFjalmeco, onViewPDFtecnolif, handleCloseModal }) => {
   if (!show) {
     return null;
   }
@@ -24,14 +24,13 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
               Ver PDF Jalmeco
             </button>
 
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
-              onClick={onViewPDFtecnolif}
-            >
-              Ver PDF Tecnolift
-            </button>
+          <button
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewPDFtecnolif}
+          >
+            Ver PDF Tecnolift
+          </button>
 
-          
           <button
             className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onViewProcedure}
@@ -39,7 +38,6 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
             Ver Procedimiento
           </button>
 
-          {/* Confirm and Close buttons */}
           <button
             className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onConfirm}
@@ -47,9 +45,13 @@ const ActionModal = ({ show, onClose, onConfirm, onCancel, onViewPDF, onViewProc
             Confirmar
           </button>
 
+          {/* Este botón ahora llama a handleCloseModal para actualizar `isGenerated` a false */}
           <button
             className="bg-red-500 text-white py-2 px-4 mb-4 rounded hover:bg-red-700 transition w-full"
-            onClick={onClose}
+            onClick={() => { 
+              onClose();  // Llama a la función que cierra el modal
+              handleCloseModal();  // Establece isGenerated: false
+            }}
           >
             Cerrar
           </button>

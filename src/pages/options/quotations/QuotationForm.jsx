@@ -26,6 +26,13 @@ const QuotationForm = () => {
     setFormData({ ...initializedVariables });
     setMessage('');
   };
+  const handleCloseModal = () => {
+    setFormData(prevData => ({
+      ...prevData,
+      isGenerated: false,
+    }));
+  };
+  
 
   const handleGenerateQuotation = () => {
     setFormData(prevData => ({
@@ -49,7 +56,7 @@ const QuotationForm = () => {
       lastFetchTime.current = currentTime; 
       setAllData(fetchedData);
       setFetching(false);
-    } else {
+    } else { 
     }
   };
 
@@ -76,7 +83,8 @@ const QuotationForm = () => {
               formData={formData}
               setFormData={setFormData}
               onShowMessage={handleShowMessage}
-              allData={allData} 
+              allData={allData}
+              handleCloseModal ={handleCloseModal} 
             />
           )}
         </>

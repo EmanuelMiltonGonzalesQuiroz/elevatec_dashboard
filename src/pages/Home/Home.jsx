@@ -49,7 +49,7 @@ const Home = () => {
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
-            {['Administrador', 'Gerencia', 'Usuario'].includes(userRole) && activeContent === 'Clientes' && <Clients />}
+            {['Administrador', 'Gerencia', 'Usuario',"Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

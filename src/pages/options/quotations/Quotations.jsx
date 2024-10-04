@@ -23,7 +23,7 @@ const Quotations = () => {
         >
           <i className="fas fa-list"></i> {quotationsText.tabQuotationsList}
         </button>
-        {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia'|| currentUser.role === 'Super Usuario') && (
+        {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
           <button
             className={`p-2 ${activeTab === 'listE' ? 'text-black font-bold' : 'text-blue-600'}`}
             onClick={() => setActiveTab('listE')}

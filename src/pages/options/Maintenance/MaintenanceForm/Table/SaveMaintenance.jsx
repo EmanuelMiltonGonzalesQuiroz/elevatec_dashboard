@@ -3,6 +3,7 @@ import { collection, addDoc, query, where, getDocs, doc, setDoc } from 'firebase
 
 // Function to clean the object and remove properties with undefined or null values
 const cleanData = (data) => {
+  
   if (Array.isArray(data)) {
     return data.map(cleanData);
   } else if (typeof data === 'object' && data !== null) {
@@ -14,18 +15,18 @@ const cleanData = (data) => {
       }
     });
     return cleanedData;
-  }
+  } 
   return data;
 };
 
 const saveToFirestore = async ({
   plan, buildingName, location, filteredItems, totalPriceByPlan,
-  directPercentage, approvalPercentage, finalTotal, client, description, formData, markerPosition
+  directPercentage, approvalPercentage, finalTotal, client, currentUser
 }) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const formattedDate = currentDate.toISOString();
-  
+
   try {
     // Save to 'list of maintenance' collection
     const maintenanceCollection = collection(db, 'list of maintenance');
@@ -58,6 +59,7 @@ const saveToFirestore = async ({
       client,
       date: formattedDate,
       documentId,
+      createdBy: currentUser.username
     });
 
     await addDoc(maintenanceCollection, cleanedData);

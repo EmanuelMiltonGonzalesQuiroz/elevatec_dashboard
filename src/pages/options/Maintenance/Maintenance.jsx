@@ -24,7 +24,7 @@ const Maintenance = () => {
         >
           <i className="fas fa-list"></i> {maintenanceText.tabMaintenanceList}
         </button>
-        {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia'|| currentUser.role === 'Super Usuario') && (
+        {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
           <button
             className={`p-2 ${activeTab === 'listE' ? 'text-black font-bold' : 'text-blue-600'}`}
             onClick={() => { setActiveTab('listE'); setShowDeleted(true); }}

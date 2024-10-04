@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calculation from './Calculation';
 
-const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
+const Validate = ({ formData, setFormData, allData, onShowMessage, handleCloseModal }) => {
   
   
 
@@ -206,10 +206,10 @@ const Validate = ({ formData, setFormData, allData, onShowMessage }) => {
   return (
     <div>
       {isValid && (
-        <Calculation formData={formData} allData={allData} setFormData={setFormData} />
+        <Calculation formData={formData} allData={allData} setFormData={setFormData} handleCloseModal={handleCloseModal} />
       )}
     </div>
-  );
+  ); 
 };
 
 export default Validate;

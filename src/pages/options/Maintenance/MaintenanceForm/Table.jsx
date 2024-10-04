@@ -128,7 +128,8 @@ const Table = ({ selectedItems, setSelectedItems }) => {
       directPercentage,
       approvalPercentage,
       finalTotal,
-      client 
+      client,
+      currentUser 
     });
 
     setMessage(responseMessage);  

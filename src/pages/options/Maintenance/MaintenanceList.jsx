@@ -127,6 +127,7 @@ const MaintenanceList = ({ showDeleted }) => {
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">#</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cliente</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Dirección</th>
+              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cotizado por</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Teléfono Cliente</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Plan</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Precio Total</th>
@@ -142,6 +143,7 @@ const MaintenanceList = ({ showDeleted }) => {
                 <td className="py-2 px-4 text-black">{index + 1}</td>
                 <td className="py-2 px-4 text-black">{maintenance.client?.name}</td>
                 <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
+                <td className="py-2 px-4 text-black">{maintenance.createdBy}</td>
                 <td className="py-2 px-4 text-black">{maintenance.client?.phone}</td>
                 <td className="py-2 px-4 text-black">{maintenance.plan}</td>
                 <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
@@ -153,7 +155,7 @@ const MaintenanceList = ({ showDeleted }) => {
                   >
                     Ver PDF
                   </button>
-                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario') && (
+                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario'|| currentUser.role === 'Usuario') && (
                     showDeleted ? (
                       <button
                         className="bg-green-500 text-white p-2 rounded"

@@ -203,7 +203,7 @@ const QuotationList = ({ showDeleted }) => {
                   >
                     Ver PDF
                   </button>
-                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario') && (
+                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario' || currentUser.role === 'Usuario') && (
                     showDeleted ? (
                       <button
                         className="bg-green-500 text-white p-2 rounded"

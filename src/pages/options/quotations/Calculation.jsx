@@ -18,7 +18,7 @@ import updateGrupo7 from './Calculation/updateGrupo7';
 import updateGrupo8 from './Calculation/updateGrupo8';
 import updateGrupoCustom from './Calculation/updateGrupoCustom';
 
-const Calculation = ({ formData, allData, setFormData }) => {
+const Calculation = ({ formData, allData, setFormData,handleCloseModal }) => {
   const [previousFormData, setPreviousFormData] = useState(JSON.stringify(formData));
   const [showActionModal, setShowActionModal] = useState(true); 
   const [showProcedureModal, setShowProcedureModal] = useState(false);
@@ -93,10 +93,6 @@ const Calculation = ({ formData, allData, setFormData }) => {
     setShowActionModal(false);
   };
 
-  const handleCancel = () => {
-    setShowActionModal(false);
-  };
-
   const handleViewPDF = () => {
     const values = calculateValues(updatedFormData, allData);
     setModalContent(<PDFContent formData={updatedFormData} values={values} type="sin_membrete" />);
@@ -140,17 +136,17 @@ const Calculation = ({ formData, allData, setFormData }) => {
         show={showActionModal}
         onClose={() => setShowActionModal(false)}
         onConfirm={handleConfirm}
-        onCancel={handleCancel}
         onViewPDFNoHeader={handleViewPDF}  // Nuevo manejador
         onViewPDFtecnolif={handleViewPDFtecnolif} 
         onViewPDFjalmeco={handleViewPDFjalmeco}  // Nuevo manejador
         onViewProcedure={handleViewProcedure}
+        handleCloseModal = {handleCloseModal}
       />
 
       <Modal show={showProcedureModal} onClose={closeProcedureModal}>
         {modalContent}
       </Modal>
-    </div>
+    </div> 
   );
 };
 

@@ -96,7 +96,7 @@ const Users = () => {
         </button>
       </div>
       <div className="overflow-auto">
-<table className="w-full bg-white border ">
+      <table className="w-full bg-white border ">
         <thead>
           <tr className="text-black font-bold">
             <th className="border px-4 py-2">{usersText.index}</th>
@@ -207,7 +207,7 @@ const Users = () => {
                   <option value="Administrador">Administrador</option>
                   <option value="Gerencia">Gerencia</option>
                   <option value="Usuario">Usuario</option>
-                  <option value="Usuario">Super Usuario</option>
+                  <option value="Super Usuario">Super Usuario</option>
                   <option value="Trabajador">Trabajador</option>
                 </select>
               </div>
