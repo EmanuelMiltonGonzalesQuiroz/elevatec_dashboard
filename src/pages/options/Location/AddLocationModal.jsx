@@ -110,7 +110,7 @@ const AddLocationModal = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[50%] h-[90%] text-black overflow-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[60%] h-[90%] text-black overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Agregar Ubicación</h2>
           <button className="text-red-500" onClick={onClose}>

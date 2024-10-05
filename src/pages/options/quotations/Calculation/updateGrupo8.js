@@ -6,8 +6,8 @@ const updateGrupo8 = (formData, valor3, allData) => {
   const descriptions = {
     "Embarque_Simple_Doble_Triple": formData['Embarque']?.UNIDADES || 0,
     "MRL_MR": formData['Tipo']?.UNIDADES || 0,
-    "Pesacarga": formData['Pesacarga'].valor !== 0 ? 1 : 0,
-    "Regenerador_de_energia": formData['Regenerador_de_energia'].valor !== 0 ? 1 : 0,
+    "Pesacarga": formData['Pesacarga']?.valor === 0 || formData['Pesacarga']?.valor === undefined ? 0 : 1,
+    "Regenerador_de_energia": formData['Regenerador_de_energia']?.valor === 0 || formData['Regenerador_de_energia']?.valor === undefined ? 0 : 1,
     "Indicador_de_solo_boton": formData['Indicador_de_solo_boton']?.UNIDADES || 0 // Nueva adición
   };
 
@@ -20,9 +20,10 @@ const updateGrupo8 = (formData, valor3, allData) => {
       let unidades = descriptions[description];  // No buscar si ya tienen unidades
 
       // Solo realizar la búsqueda y los cálculos si `unidades` es 0
-      if (unidades === 0) {
+      if (unidades === 0 && description !== "Pesacarga" && description !== "Regenerador_de_energia") {
         unidades = typeof descriptions[description] === 'function' ? descriptions[description]() : descriptions[description];
-      }
+    }
+    
 
       // Para Embarque_Simple_Doble_Triple, se asegura que se usa formData['Embarque'].valor como precio unitario
       let precioUnitario;

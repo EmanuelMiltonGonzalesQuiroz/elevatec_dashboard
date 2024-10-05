@@ -150,7 +150,7 @@ const calculateValues = (formData, allData) => {
     } else if (paradas <= 20) {
       VAR1 = VAR1+valorEntre10Y20Pisos+valorMasDe20Pisos;
     } else if (paradas <= 30) {
-      VAR1 = VAR1+2*valorMasDe20Pisos+valorMasDe20Pisos;
+      VAR1 = VAR1+valorMasDe20Pisos+valorMasDe20Pisos*2;
     }
   }
 

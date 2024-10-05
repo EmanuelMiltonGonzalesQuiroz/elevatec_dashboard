@@ -117,7 +117,7 @@ const EditStatesModal = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg w-[600px] space-y-6">
+      <div className="bg-white p-6 rounded shadow-lg w-[60%] space-y-6 overflow-auto">
         <h2 className="text-2xl font-bold mb-4">Editar Estados</h2>
 
         {/* State Edit Table */}

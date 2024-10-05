@@ -47,12 +47,12 @@ const DirectionsModal = ({ location, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[80%] h-[80%] text-black relative">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] text-black relative">
         <button className="absolute top-4 right-4 text-red-500" onClick={onClose}>
           <FaTimes />
         </button>
         <h2 className="text-xl font-bold mb-4">
-          Cómo llegar desde <strong>tu ubicación</strong> a {location.client}
+          Cómo llegar desde tu ubicación a {location.client}
         </h2>
         <div className="h-[68vh] w-full">
           {locationError ? (

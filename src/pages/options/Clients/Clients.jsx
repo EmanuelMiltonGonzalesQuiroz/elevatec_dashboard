@@ -179,7 +179,7 @@ const Clients = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 w-[60%] max-h-[90%]">
             <h2 className="text-xl font-bold mb-4">
               {currentClientId ? "Editar Cliente" : "Agregar Cliente"}
             </h2>
