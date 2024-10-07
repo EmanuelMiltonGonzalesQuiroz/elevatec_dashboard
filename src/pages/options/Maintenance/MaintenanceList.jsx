@@ -5,7 +5,7 @@ import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from '../quotations/Calculation/Modal';
 import { useAuth } from '../../../context/AuthContext';
-
+import { db } from '../../../connection/firebase';
 // Función para formatear la fecha
 const formatDate = (dateString) => {
   const dateObj = new Date(dateString);
@@ -26,6 +26,7 @@ const MaintenanceList = ({ showDeleted }) => {
   const [selectedPDFOption, setSelectedPDFOption] = useState(null);
   const [showPDFModal, setShowPDFModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
     const fetchMaintenanceList = async () => {
@@ -48,19 +49,34 @@ const MaintenanceList = ({ showDeleted }) => {
     fetchMaintenanceList();
   }, []);
 
+  const planesOptions = [
+    { name: 'Trimensual' },
+    { name: 'Bimensual' },
+    { name: 'Mensual' },
+    { name: 'Bimestral' },
+    { name: 'Trimestral' }
+  ];
+
   useEffect(() => {
     const filtered = maintenanceList.filter((maintenance) => {
       const matchesDeletedState = showDeleted ? maintenance.state === 'deleted' : maintenance.state !== 'deleted';
       const matchesClient = selectedClient ? maintenance.client.name === selectedClient.label : true;
       const matchesDate = selectedDate ? maintenance.date === formatDate(selectedDate) : true;
-      return matchesDeletedState && matchesClient && matchesDate;
+      const matchesPlan = selectedPlan ? maintenance.plan === selectedPlan : true; // Comparar directamente con el valor
+      return matchesDeletedState && matchesClient && matchesDate && matchesPlan;
     });
     setFilteredMaintenance(filtered);
-  }, [selectedDate, selectedClient, maintenanceList, showDeleted]);
+  }, [selectedDate, selectedClient, selectedPlan, maintenanceList, showDeleted]);
+  
 
   const handleClientChange = (selectedOption) => {
     setSelectedClient(selectedOption);
   };
+
+  const handlePlanChange = (selectedValue) => {
+    setSelectedPlan(selectedValue);
+  };
+  
 
   const handleDateChange = (event) => {
     let selectedDate = new Date(event.target.value + "T00:00:00");
@@ -95,6 +111,29 @@ const MaintenanceList = ({ showDeleted }) => {
       console.error('Error al actualizar el estado:', error);
     }
   };
+  const [clientNames, setClientNames] = useState({});
+
+  useEffect(() => {
+    // Función para cargar los nombres de los clientes basados en el clientId
+    const fetchClientNames = async () => {
+      const clientsCollection = collection(db, 'clients');
+      const clientsSnapshot = await getDocs(clientsCollection);
+      
+      const clientsData = {};
+      clientsSnapshot.docs.forEach((doc) => {
+        clientsData[doc.id] = doc.data().name; // Crear un mapeo de clientId a nombre del cliente
+      });
+      
+      setClientNames(clientsData);
+    };
+
+    fetchClientNames();
+  }, []);
+
+  const getClientName = (clientId, clientName) => {
+    // Buscar el nombre del cliente basado en clientId primero, luego usar client.name si no se encuentra
+    return clientNames[clientId] || clientName || 'Cliente desconocido';
+  };
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg max-h-[75vh] text-black">
@@ -109,12 +148,28 @@ const MaintenanceList = ({ showDeleted }) => {
           selectedValue={selectedClient}
         />
       </div>
+      <div className="mb-4">
+      <label htmlFor="plan" className="mr-2 text-black">Seleccionar Plan</label>
+      <select
+        id="plan"
+        className="p-2 border rounded"
+        value={selectedPlan || ''} // Usar '' si no hay plan seleccionado
+        onChange={(e) => handlePlanChange(e.target.value)}
+      >
+        <option value="">Todos los Planes</option>
+        {planesOptions.map((plan) => (
+          <option key={plan.name} value={plan.name}>
+            {plan.name}
+          </option>
+        ))}
+      </select>
+    </div>
       
       <div className="mb-4">
         <label htmlFor="date" className="mr-2 text-black">Seleccionar Fecha</label>
         <input
           type="date"
-          id="date"
+          id="date" 
           className="p-2 border rounded"
           onChange={handleDateChange}
         />
@@ -141,8 +196,9 @@ const MaintenanceList = ({ showDeleted }) => {
             .map((maintenance, index) => (
               <tr key={maintenance.id} className="bg-gray-100">
                 <td className="py-2 px-4 text-black">{index + 1}</td>
-                <td className="py-2 px-4 text-black">{maintenance.client?.name}</td>
-                <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
+                <td className="py-3 px-6 text-left">
+                  {getClientName(maintenance.client.value, maintenance.client?.name)}
+                </td>
                 <td className="py-2 px-4 text-black">{maintenance.createdBy}</td>
                 <td className="py-2 px-4 text-black">{maintenance.client?.phone}</td>
                 <td className="py-2 px-4 text-black">{maintenance.plan}</td>

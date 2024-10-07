@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../../connection/firebase';
 
 const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, onShowDirections }) => {
-  
+  const [clientNames, setClientNames] = useState({});
+
+  useEffect(() => {
+    // Función para cargar los nombres de los clientes basados en el clientId
+    const fetchClientNames = async () => {
+      const clientsCollection = collection(db, 'clients');
+      const clientsSnapshot = await getDocs(clientsCollection);
+      
+      const clientsData = {};
+      clientsSnapshot.docs.forEach((doc) => {
+        clientsData[doc.id] = doc.data().name; // Crear un mapeo de clientId a nombre del cliente
+      });
+      
+      setClientNames(clientsData);
+    };
+
+    fetchClientNames();
+  }, []);
+
+  const getClientName = (location) => {
+    // Buscar el nombre del cliente basado en clientId primero, luego usar location.client si no se encuentra
+    return clientNames[location.clientId] || location.client || 'Cliente desconocido';
+  };
+
   return (
     <div className="w-full overflow-auto h-[30vh]">
       <table className="table-auto w-full bg-white shadow-md rounded-lg border-collapse">
@@ -31,10 +56,9 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                     <span>{location.Tipo ? location.Tipo[2] || 0 : 0}</span>
                   </div>
                 </td>
-
-                <td className="py-3 px-6 text-left">{location.client}</td>
+                <td className="py-3 px-6 text-left">{getClientName(location)}</td>
                 <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
-                <td className="py-3 px-6 text-left"> 
+                <td className="py-3 px-6 text-left">  
                   <span
                     className="inline-block w-4 h-4 rounded-full mr-2"
                     style={{ backgroundColor: stateColors[location.state] || 'black' }}
@@ -63,8 +87,6 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                     Cómo Llegar
                   </button>
                 </td>
-
-               
               </tr>
             ))}
         </tbody>

@@ -82,14 +82,31 @@ const AddLocationModal = ({ onClose }) => {
       alert('Por favor, completa todos los campos.');
       return;
     }
-
+  
     try {
+      // Buscar el clientId basado en el nombre del cliente seleccionado
+      const clientsCollection = collection(db, 'clients');
+      const clientsSnapshot = await getDocs(clientsCollection);
+  
+      // Encontrar el documento del cliente que coincide con el nombre seleccionado
+      const clientDoc = clientsSnapshot.docs.find(
+        (doc) => doc.data().name === selectedClient.label
+      );
+  
+      if (!clientDoc) {
+        alert('No se pudo encontrar el ID del cliente.');
+        return;
+      }
+  
+      const clientId = clientDoc.id; // Obtener el clientId del documento del cliente
+  
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().replace(/[:.]/g, '_');
       const locationId = `${selectedClient.label}_${formattedDate}`;
-
+  
       await setDoc(doc(db, 'locations', locationId), {
         client: selectedClient.label,
+        clientId: clientId, // Guardar el clientId en el documento de ubicación
         id: lowestAvailableId,
         Direccion: description,
         location: {
@@ -100,13 +117,14 @@ const AddLocationModal = ({ onClose }) => {
         state: formData.Tipo0 || 'Construccion', // Estado basado en el tipo
         createdAt: currentDate,
       });
-
+  
       onClose();
     } catch (error) {
       console.error('Error al guardar la ubicación:', error);
       alert('Ocurrió un error al guardar la ubicación. Por favor, inténtalo de nuevo.');
     }
   };
+  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

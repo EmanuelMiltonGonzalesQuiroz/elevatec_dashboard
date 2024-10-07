@@ -47,7 +47,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
 
   const userRole = getUserRole();
 
-  return (
+  return ( 
     <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-full ${isMinimized ? 'w-16 items-center justify-center' : 'max-w-[15%] min-w-[15%]'}`}>
       <div className="p-4 flex justify-between items-center">
         {!isMinimized && <span className="text-lg font-bold">{homeText.company}</span>}

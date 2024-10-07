@@ -28,6 +28,19 @@ const SaveClientData = ({ formData, additionalData }) => {
     const saveData = async () => {
       try {
         const clientName = formData['02_CLIENTE'] || "unknown_client";
+        const clientsCollection = collection(db, 'clients');
+        const clientsSnapshot = await getDocs(clientsCollection);
+    
+        // Encontrar el documento del cliente que coincide con el nombre seleccionado
+        const clientDoc = clientsSnapshot.docs.find(
+          (doc) => doc.data().name === formData['02_CLIENTE']
+        );
+    
+        if (!clientDoc) {
+          alert('No se pudo encontrar el ID del cliente.');
+          return;
+        }
+        const clientId = clientDoc.id; 
 
         // Obtener la hora local sin milisegundos
         const date = new Date();
@@ -76,7 +89,8 @@ const SaveClientData = ({ formData, additionalData }) => {
         const dataToSave = {
           timestamp: timestamp,
           quotationDetails: cleanedFormData, // Guardar formData sin valores undefined o null
-          calculatedValues: cleanedAdditionalData // Guardar additionalData sin valores undefined o null
+          calculatedValues: cleanedAdditionalData,
+          clientId: clientId, // Guardar additionalData sin valores undefined o null
         };
 
         // Guardar la cotización en la colección 'list of quotations'
@@ -117,7 +131,8 @@ const locationData = {
   createdAt: timestamp, // Marca de tiempo generada por Firestore
   id: lowestAvailableId, // ID más bajo disponible
   location: cleanedFormData['Ubicacion'],
-  state: "Construccion" // Estado específico
+  state: "Cotizacion_A",
+  clientId:clientId // Estado específico
 };
         await setDoc(doc(locationsCol, docId), locationData);
 

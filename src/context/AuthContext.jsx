@@ -13,13 +13,13 @@ export function AuthProvider({ children }) {
   });
 
   const login = (userData) => {
-    setCurrentUser(userData);
+    setCurrentUser(userData); 
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem('user'); // Asegúrate de que siempre se borre el usuario del localStorage
   };
 
   const updateUser = (updatedData) => {
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
     currentUser,
     login,
     logout,
-    updateUser, // Añadir la función updateUser
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

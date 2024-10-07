@@ -137,7 +137,11 @@ const EditStatesModal = ({ onClose }) => {
                   <td className="border px-4 py-2">
                     <input
                       type="text"
-                      value={state.id}
+                      value={state.id === 'Cotizacion_A' 
+                        ? 'Cotización Ascensor' 
+                        : state.id === 'Cotizacion_M' 
+                        ? 'Cotización Mantenimiento' 
+                        : state.id}
                       disabled
                       className="p-2 border rounded w-full"
                     />

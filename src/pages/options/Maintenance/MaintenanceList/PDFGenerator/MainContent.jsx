@@ -161,7 +161,7 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     [" ", "•", "No permitir el acceso de personas ajenas a la sala de máquinas y demás instalaciones del ascensor."],
     [" ", "•", "No permitir el cambio de piezas o revisión por personal ajeno al PROVEEDOR. La contravención implica la anulación del contrato, ya que se trata de equipos electrónicos regulados por personal especializado."],
     [" ", "•", "Tener el Ascensor sin códigos de acceso en el control electrónico para un buen desempeño del trabajo."],
-    [" ", "•", "Visar el Registro de Control de Mantenimiento Preventivo de Ascensores en cada una de las revisiones de mantenimiento realizadas por el PROVEEDOR."],
+    [" ", "•", { content:"Visar el Registro de Control de Mantenimiento Preventivo de Ascensores en cada una de las revisiones de mantenimiento realizadas por el PROVEEDOR.", styles: { halign: 'left'} }],
     [" ", "•", "Autorizar a los técnicos para la sustitución de piezas previa demostración del defecto de las mismas, siendo el costo del cambio con cargo al CLIENTE."],
     
     [{ content: "SEXTA: (TÉRMINO Y RENOVACIÓN DE CONTRATO).-", styles: { fontStyle: 'bold' }, colSpan: 3 }],

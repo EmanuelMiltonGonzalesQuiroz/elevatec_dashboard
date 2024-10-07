@@ -13,7 +13,7 @@ export async function validateUserCredentials(email, password) {
         } else {
             let userDoc;
             let userId;
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((doc) => { 
                 userDoc = doc.data();
                 userId = doc.id; // Obtener el UID del documento
                 console.log("Datos obtenidos de Firestore:", userDoc);

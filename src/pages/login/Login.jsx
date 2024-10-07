@@ -90,7 +90,7 @@ const LoginFields = ({
   let passwordInputRef = null; // Referencia para el campo de contraseña
 
   return (
-    <>
+    <> 
       <div className="mb-4 relative">
         <label htmlFor="email" className="block text-gray-700 text-sm font-semibold mb-2">
           {loginText.emailPlaceholder}

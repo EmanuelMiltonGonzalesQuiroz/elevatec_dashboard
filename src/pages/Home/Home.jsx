@@ -10,38 +10,46 @@ import Settings from '../options/Settings/Settings';
 import Location from '../options/Location/Locations';
 import Maintenance from '../options/Maintenance/Maintenance';
 import MaintenanceSettings from '../options/MaintenanceSettings/MaintenanceSettings';
-import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore'; // Import the function
+import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
 
 const Home = () => {
-  const { currentUser } = useAuth();
-  const [activeContent, setActiveContent] = useState('');
+  const { currentUser, logout } = useAuth();
+  const [activeContent, setActiveContent] = useState('Perfil');
 
   useEffect(() => {
     const loadData = async () => {
-        await loadJsonFilesToFirestore(); // Load data only once
+      await loadJsonFilesToFirestore();
     };
 
-    loadData(); // Call loadData when component mounts
-  }, []); // Empty dependency array to ensure this runs only once
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    // Si el usuario está logeado, configurar un temporizador para desloguear después de 10 segundos
+    if (currentUser) {
+      const timer = setTimeout(() => {
+        logout(); // Cerrar la sesión automáticamente después de una hora
+        window.location.href = '/login'; // Redirigir al login
+      }, 3600000); // 3600000 milisegundos = 1 hora
+    
+      return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
+    }
+    
+  }, [currentUser, logout]);
 
   if (!currentUser) {
     window.location.href = '/login';
     return null;
   }
 
-  // Get the user's role from currentUser or localStorage
   const userRole = currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
 
-  // Logic for which components to show based on roles
   return (
     <div className="flex flex-col h-screen">
-      {/* Header with a height of 10% of the screen */}
       <Header className="h-[10%] flex-shrink-0" />
-      <div className="flex flex-grow">
-        {/* Sidebar with fixed width of 15% */}
+      <div className="flex flex-grow"> 
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
-          {/* Content with size constraints and scrolls if needed */}
           <div className="w-full">
             {activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
@@ -49,7 +57,7 @@ const Home = () => {
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
-            {['Administrador', 'Gerencia', 'Usuario',"Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
+            {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
           </div>
         </main>

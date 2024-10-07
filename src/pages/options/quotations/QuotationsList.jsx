@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { homeText } from '../../../components/common/Text/texts';
 import { getFirestore, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../../connection/firebase';
 import PDFContent from './PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from './Calculation/Modal';
@@ -63,7 +64,7 @@ const QuotationList = ({ showDeleted }) => {
           }
 
           const total = data.calculatedValues?.VAR7
-            ? data.calculatedValues.VAR7.toFixed(2)
+            ? data.calculatedValues.VAR7.toFixed(2) 
             : 'N/A';
 
           const date = formatDateFromDocId(doc.id);
@@ -79,6 +80,7 @@ const QuotationList = ({ showDeleted }) => {
             quotedBy: data.quotationDetails["Solicitante"],
             total: total,
             date: date,
+            clientId: data.clientId,
           };
         })
       );
@@ -144,6 +146,28 @@ const QuotationList = ({ showDeleted }) => {
     const monthNames = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"];
     return `${day}/${monthNames[month]}/${year}`;
   };
+  const [clientNames, setClientNames] = useState({});
+
+  useEffect(() => {
+    // Función para cargar los nombres de los clientes basados en el clientId
+    const fetchClientNames = async () => {
+      const clientsCollection = collection(db, 'clients');
+      const clientsSnapshot = await getDocs(clientsCollection);
+      
+      const clientsData = {};
+      clientsSnapshot.docs.forEach((doc) => {
+        clientsData[doc.id] = doc.data().name; // Crear un mapeo de clientId a nombre del cliente
+      });
+      
+      setClientNames(clientsData);
+    };
+
+    fetchClientNames();
+  }, []);
+  const getClientName = (location) => {
+    // Buscar el nombre del cliente basado en clientId primero, luego usar location.client si no se encuentra
+    return clientNames[location.clientId] || location.client;
+  };
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg max-h-[75vh] text-black">
@@ -189,7 +213,7 @@ const QuotationList = ({ showDeleted }) => {
             .map((quotation, index) => (
               <tr key={quotation.id} className="bg-gray-100">
                 <td className="py-2 px-4 text-black">{index + 1}</td>
-                <td className="py-2 px-4 text-black">{quotation.clientName}</td>
+                <td className="py-3 px-6 text-left">{getClientName(quotation) || quotation.clientName}</td>
                 <td className="py-2 px-4 text-black">{quotation.clientPhone}</td>
                 <td className="py-2 px-4 text-black">{quotation.city}</td>
                 <td className="py-2 px-4 text-black">{quotation.address}</td>

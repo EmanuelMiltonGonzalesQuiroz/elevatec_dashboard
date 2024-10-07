@@ -35,6 +35,17 @@ const saveToFirestore = async ({
       where('date', '>=', `${currentYear}-01-01`),
       where('date', '<', `${currentYear + 1}-01-01`)
     );
+    const clientsCollection = collection(db, 'clients');
+    const clientsSnapshot = await getDocs(clientsCollection);
+    const clientDoc = clientsSnapshot.docs.find(
+      (doc) => doc.data().name === client.label
+    );
+
+    if (!clientDoc) {
+      throw new Error('No se pudo encontrar el ID del cliente.');
+    }
+
+    const clientId = clientDoc.id;
 
     const querySnapshot = await getDocs(yearQuery);
     const documentCountForYear = querySnapshot.size + 1; // Increment by 1 for the new document
@@ -72,14 +83,15 @@ const saveToFirestore = async ({
       const formattedDate2 = currentDate1.toISOString().replace(/[:.]/g, '_');
 
     const locationId = `${client.label}_${formattedDate2}`;
-    
+     
     await setDoc(doc(db, 'locations', locationId), {
       client: client.label,
+      clientId: clientId,
       id: documentCountForYear,
       Direccion: buildingName,
       location: location,
       Tipo: ["Mantenimiento", "", ""],
-      state: 'Mantenimiento', // Use 'Tipo0' to set the state
+      state: 'Cotizacion_M', // Use 'Tipo0' to set the state
       createdAt: currentDate1,
     });
 

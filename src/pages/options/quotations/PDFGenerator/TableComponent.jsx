@@ -186,7 +186,7 @@ currentYPosition = doc.lastAutoTable.finalY + 10;
       { content: "La oferta tiene una validez de siete (7) días a partir de la fecha, concluido este periodo, se tendrá que realizar una actualización de la presente cotización.", styles: {  fontSize: 12 } }
     ],
     // Espacio para la firma
-    [{ content: " ", styles: { minCellHeight: 40 } }],
+    [{ content: " ", styles: { minCellHeight: 25 } }],
     // Firma
     [{ content: "Ing. Frank Jaldin Navia", styles: { halign: 'center', fontStyle: 'bold', fontSize: 12 } }],
     [{ content: "GERENTE REGIONAL", styles: { halign: 'center', fontSize: 12 } }]
