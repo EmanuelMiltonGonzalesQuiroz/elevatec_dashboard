@@ -52,7 +52,7 @@ const RouteForm = () => {
       if (lastBuildingIndex >= 0) {
         updatedData[lastBuildingIndex] = {
           ...updatedData[lastBuildingIndex],
-          vendor: value,
+          cliente: value,
         };
       }
       return updatedData;

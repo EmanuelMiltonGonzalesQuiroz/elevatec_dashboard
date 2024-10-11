@@ -11,6 +11,8 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
     const capacidad = parseInt(routeData[0]?.Pasajeros);
     const ancho = parseFloat(routeData[0]?.["Ancho de puertas"]);
     const detencionPuertas = routeData[0]?.["Detencion Puertas"];
+    const vendor = routeData[0]?.cliente;
+    const clientPhone = routeData[0]?.clientPhone;
 
     // Verificar que los campos importantes tengan valores aceptables
     const additionalMissingFields = [];
@@ -22,6 +24,12 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
     }
     if (!detencionPuertas || (detencionPuertas !== 'Abre de un lado' && detencionPuertas !== 'Abre del centro')) {
       additionalMissingFields.push('Detención Puertas (debe seleccionar una opción válida)');
+    }
+    if (!vendor || vendor.trim() === '') {
+      additionalMissingFields.push('Nombre del Cliente (debe estar completo)');
+    }
+    if (!clientPhone || clientPhone.trim() === '') {
+      additionalMissingFields.push('Número de Teléfono (debe estar completo)');
     }
 
     const allMissingFields = [...missingFields, ...additionalMissingFields];
@@ -148,7 +156,7 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 mb-4"
         onClick={handleCalculateClick}
       >
-        Hacer Cálculo
+        Cálcular
       </button>
       <h2 className="text-xl font-bold mb-4">Resultados</h2>
   

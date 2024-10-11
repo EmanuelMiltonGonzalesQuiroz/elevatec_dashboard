@@ -12,13 +12,13 @@ const Route = () => {
           className={`p-2 ${activeTab === 'form' ? 'text-black font-bold' : 'text-blue-600'}`}
           onClick={() => setActiveTab('form')}
         >
-          Formulario de Ruta
+          Recorrido
         </button>
         <button
           className={`p-2 ${activeTab === 'list' ? 'text-black font-bold' : 'text-blue-600'}`}
           onClick={() => setActiveTab('list')}
         >
-          Lista de Rutas
+          Lista de Recorridos
         </button>
       </div>
       <div className="flex-grow mt-4">

@@ -60,7 +60,7 @@ const Home = () => {
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
-            {activeContent === 'Route' && <Route />}
+            {!['Trabajador'].includes(userRole) && activeContent === 'Route' && <Route />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Calculos Elevador' && <RouteSettings />}
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
             {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}

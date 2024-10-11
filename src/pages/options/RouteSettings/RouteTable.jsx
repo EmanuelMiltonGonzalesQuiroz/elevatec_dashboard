@@ -28,8 +28,16 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
     return [];
   };
 
+  const formatIntervaloEspera = (value) => {
+    // Verificamos si el valor es un array y lo convertimos a una cadena con un guion como separador
+    if (Array.isArray(value)) {
+      return value.join(' - ');
+    }
+    return value; // Si no es un array, devolvemos el valor tal cual
+  };
+
   return (
-    <div className="overflow-auto max-h-full max-w-[155vh]">
+    <div className="overflow-auto max-h-[130vh] max-w-[155vh]">
       <h2 className="text-2xl font-bold mb-6">
         Ajustes de Recorrido - {collectionNameMapping[activeCollection]}
       </h2>
@@ -37,7 +45,6 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
       <table className="min-w-full bg-white border">
         <thead>
           <tr className="text-black font-bold">
-            {/* Usar 'Pisos' como encabezado si la colección activa es 'configuraciones_de_pisos' */}
             <th className="border px-4 py-2">
               {activeCollection === 'configuraciones_de_pisos' ? 'Pisos' : '#'}
             </th>
@@ -53,12 +60,13 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
           {data.map((dataItem, index) =>
             dataItem.data.map((item, subIndex) => (
               <tr key={`${index}-${subIndex}`} className="text-black">
-                {/* Mostrar el valor de 'pisos' en lugar del subíndice si la colección es 'configuraciones_de_pisos' */}
                 <td className="border px-4 py-2">
                   {activeCollection === 'configuraciones_de_pisos' ? item.pisos : subIndex + 1}
                 </td>
                 {extractHeaders(dataItem.data, activeCollection).map((header) => (
-                  <td key={header} className="border px-4 py-2">{item[header]}</td>
+                  <td key={header} className="border px-4 py-2">
+                    {header === 'intervalo de espera seg.' ? formatIntervaloEspera(item[header]) : item[header]}
+                  </td>
                 ))}
                 <td className="border px-4 py-2">
                   <button
