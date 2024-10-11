@@ -1,8 +1,10 @@
+// Sidebar.jsx
+
 import React, { useState, useEffect } from 'react';
 import { homeText } from '../../components/common/Text/texts';
 import {
   FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers,
-  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools, FaSignOutAlt
+  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools, FaSignOutAlt, FaCalculator, FaRoute
 } from 'react-icons/fa';
 import { CgProfile } from "react-icons/cg";
 import { useAuth } from '../../context/AuthContext';
@@ -16,7 +18,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
       setIsMinimized(window.innerWidth < 1160);
     };
     window.addEventListener('resize', handleResize);
-    handleResize(); // Immediately call to adjust to initial size
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -33,17 +35,15 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
     return currentUser?.role || JSON.parse(localStorage.getItem('user'))?.role || 'Usuario';
   };
 
-  const renderItem = (text, icon, contentKey) => {
-    return (
-      <li
-        className={`p-4 cursor-pointer flex items-center ${activeContent === contentKey ? 'bg-orange-500' : ''}`}
-        onClick={() => setActiveContent(contentKey)}
-      >
-        {icon}
-        {!isMinimized && <span className="ml-4">{text}</span>}
-      </li>
-    );
-  };
+  const renderItem = (text, icon, contentKey) => (
+    <li
+      className={`p-4 cursor-pointer flex items-center ${activeContent === contentKey ? 'bg-orange-500' : ''}`}
+      onClick={() => setActiveContent(contentKey)}
+    >
+      {icon}
+      {!isMinimized && <span className="ml-4">{text}</span>}
+    </li>
+  );
 
   const userRole = getUserRole();
 
@@ -57,15 +57,17 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
       </div>
       <nav className="flex-grow overflow-y-auto">
         <ul>
-          {/* Common options for all users */}
           {renderItem(homeText.location, <FaLocationArrow />, 'Ubicación')}
           {userRole !== 'Trabajador' && renderItem(homeText.quotations, <FaFileInvoiceDollar />, 'Cotizaciones')}
-          {userRole === 'Administrador' || userRole === 'Gerencia' ? renderItem(homeText.settings, <FaCog />, 'Ajustes') : null}
-          {userRole !== 'Trabajador' && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
+          {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.settings, <FaCog />, 'Ajustes')}
+          {activeContent === 'Mantenimiento' && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.maintenanceSettings, <FaTools />, 'Ajustes M.')}
+          {renderItem(homeText.elevatorCalculations, <FaRoute />, 'Route')}
+          {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.elevatorCalculationsSettings, <FaCalculator />, 'Calculos Elevador')}
           {userRole === 'Administrador' && renderItem(homeText.users, <FaUser />, 'Usuarios')}
           {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
+          {/* Agregamos la nueva opción para 'Route' */}
         </ul>
       </nav>
       <div className="p-4">

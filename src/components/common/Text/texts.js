@@ -37,7 +37,9 @@ export const homeText = {
   maintenance: "Mantenimiento",
   maintenanceSettings: "Ajustes de Mantenimiento",
   location:"Ubicación",
-  company:"ELEVATEC"
+  company:"ELEVATEC",
+  elevatorCalculations: "Recorrido",
+  elevatorCalculationsSettings: "Ajustes Recorrido"
 
 };
 export const clientColumnText = {

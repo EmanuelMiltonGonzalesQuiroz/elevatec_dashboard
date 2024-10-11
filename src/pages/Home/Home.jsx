@@ -1,3 +1,5 @@
+// Home.jsx
+
 import React, { useState, useEffect } from 'react';
 import Quotations from './../options/quotations/Quotations';
 import Users from '../options/Users/Users';
@@ -11,6 +13,9 @@ import Location from '../options/Location/Locations';
 import Maintenance from '../options/Maintenance/Maintenance';
 import MaintenanceSettings from '../options/MaintenanceSettings/MaintenanceSettings';
 import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
+import loadJsonFilesToFirestore2 from '../../connection/loadJsonsToFirestore2';
+import Route from '../options/Route/Route';
+import RouteSettings from '../options/RouteSettings/RouteSettings';
 
 const Home = () => {
   const { currentUser, logout } = useAuth();
@@ -19,22 +24,21 @@ const Home = () => {
   useEffect(() => {
     const loadData = async () => {
       await loadJsonFilesToFirestore();
+      await loadJsonFilesToFirestore2();
     };
 
     loadData();
   }, []);
 
   useEffect(() => {
-    // Si el usuario está logeado, configurar un temporizador para desloguear después de 10 segundos
     if (currentUser) {
       const timer = setTimeout(() => {
-        logout(); // Cerrar la sesión automáticamente después de una hora
-        window.location.href = '/login'; // Redirigir al login
-      }, 3600000); // 3600000 milisegundos = 1 hora
+        logout();
+        window.location.href = '/login';
+      }, 3600000);
     
-      return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
+      return () => clearTimeout(timer);
     }
-    
   }, [currentUser, logout]);
 
   if (!currentUser) {
@@ -56,9 +60,12 @@ const Home = () => {
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {activeContent === 'Mantenimiento' && <Maintenance />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes M.' && <MaintenanceSettings />}
+            {activeContent === 'Route' && <Route />}
+            {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Calculos Elevador' && <RouteSettings />}
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
             {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
+            
           </div>
         </main>
       </div>

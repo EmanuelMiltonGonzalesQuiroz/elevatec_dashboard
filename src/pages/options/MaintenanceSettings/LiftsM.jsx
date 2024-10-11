@@ -71,7 +71,7 @@ const LiftsM = () => {
     } catch (error) {
       console.error('Error updating document: ', error);
     }
-  };
+  }; 
 
   return (
     <div className="p-4 bg-gray-100 text-black max-h-[80vh]">
