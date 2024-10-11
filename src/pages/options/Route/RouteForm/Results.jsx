@@ -2,26 +2,44 @@ import React from 'react';
 import SaveButton from './SaveButton';
 
 const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }) => {
+
   const handleCalculateClick = () => {
-    const lastBuilding = routeData[routeData.length - 1] || {};
+    const lastBuilding = routeData[0] || {};
     const requiredFields = lastBuilding.requiredFields || [];
-    const missingFields = requiredFields.filter(field => !lastBuilding.TipoDeEdificio?.[field]);
+
+    // Aseguramos que los campos requeridos se busquen tanto en el nivel superior como en TipoDeEdificio
+    const missingFields = requiredFields.filter((field) => {
+      const fieldValue = lastBuilding[field] || lastBuilding.TipoDeEdificio?.[field];
+      return !fieldValue || fieldValue.trim() === ''; // Verificamos que no esté vacío o no definido
+    });
 
     // Validaciones adicionales para campos específicos
-    const capacidad = parseInt(routeData[0]?.Pasajeros);
-    const ancho = parseFloat(routeData[0]?.["Ancho de puertas"]);
-    const detencionPuertas = routeData[0]?.["Detencion Puertas"];
-    const vendor = routeData[0]?.cliente;
-    const clientPhone = routeData[0]?.clientPhone;
+    const hospital = routeData[0].TipoDeEdificio.Nombre.includes("Hospital")
+    const capacidad = parseInt(lastBuilding.Pasajeros);
+    const detencionPuertas = lastBuilding["Detencion Puertas"];
+    const vendor = lastBuilding.cliente;
+    const clientPhone = lastBuilding.clientPhone;
 
     // Verificar que los campos importantes tengan valores aceptables
     const additionalMissingFields = [];
-    if (!capacidad || capacidad <= 0) {
-      additionalMissingFields.push('Pasajeros (debe ser un entero positivo)');
+    // Obtener el rango mínimo y máximo de pasajeros permitido según si es un hospital o no
+    let minPasajeros = 0;
+    let maxPasajeros = 0;
+    if (hospital) {
+      const dataAscensor = allData.configuraciones_de_ascensor?.[0]?.data || [];
+      minPasajeros = Math.min(...dataAscensor.map(info => info.Pasajeros));
+      maxPasajeros = Math.max(...dataAscensor.map(info => info.Pasajeros));
+    } else {
+      const dataPuertas = allData.puertas_info?.[0]?.data || [];
+      minPasajeros = Math.min(...dataPuertas.map(info => info.Pasajeros));
+      maxPasajeros = Math.max(...dataPuertas.map(info => info.Pasajeros));
     }
-    if (!ancho || ancho < 0.8 || ancho > 1.5) {
-      additionalMissingFields.push('Ancho de puertas (debe estar entre 0.8 y 1.5)');
+
+    // Validar que la capacidad esté dentro del rango mínimo y máximo permitido
+    if (!capacidad || capacidad < minPasajeros || capacidad > maxPasajeros) {
+      additionalMissingFields.push(`Pasajeros (debe ser un entero positivo entre ${minPasajeros} y ${maxPasajeros})`);
     }
+
     if (!detencionPuertas || (detencionPuertas !== 'Abre de un lado' && detencionPuertas !== 'Abre del centro')) {
       additionalMissingFields.push('Detención Puertas (debe seleccionar una opción válida)');
     }
@@ -43,21 +61,36 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
   };
 
   const saveCalculatedResults = () => {
-    const lastBuilding = routeData[routeData.length - 1] || {};
+    const hospital = routeData[0].TipoDeEdificio.Nombre.includes("Hospital")
+    const lastBuilding = routeData[0] || {};
     const fieldValues = ['PISOS', 'AREAS', 'OFICINAS', 'DEPARTAMENTOS', 'HABITACIONES', 'CAMAS', 'AUTOMOVILES'].reduce((acc, field) => {
-      acc[field] = parseFloat(lastBuilding.TipoDeEdificio?.[field]) || 1;
+      acc[field] = parseFloat(lastBuilding[field] || lastBuilding.TipoDeEdificio?.[field]) || 1;
       return acc;
     }, {});
 
-    const capacidad = parseInt(routeData[0].Pasajeros) || 0;
-    const ancho = parseFloat(routeData[0]["Ancho de puertas"]) || 0.8;
+    const capacidad = parseInt(lastBuilding.Pasajeros) || 0;
+    let puertasInfoData
+    if(hospital){
+      puertasInfoData = allData.configuraciones_de_ascensor?.[0]?.data || [];
+    }else{
+      puertasInfoData = allData.puertas_info?.[0]?.data || [];
+    }
+    const ancho = puertasInfoData.find((info) => info.Pasajeros === capacidad)?.Ancho || 0.8;
     const detencionPuertasTexto = routeData[0]["Detencion Puertas"] || "N/A";
     const demoraRecomendable = parseFloat(lastBuilding.TipoDeEdificio?.['Demora recomendable']) || 1;
     const personaValue = parseFloat(lastBuilding.TipoDeEdificio?.['Persona']) || 1;
     const totalPoblacion = Object.values(fieldValues).reduce((product, value) => product * value, 1) * personaValue;
     const poblacionServida = Math.ceil(totalPoblacion * (demoraRecomendable / 100));
-    const pisosServicios = parseInt(routeData[0].TipoDeEdificio.PISOS) - 1 || 0;
-    const detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][capacidad] || 0;
+    const pisosServicios = parseInt(routeData[0].PISOS) - 1 || 0;
+
+    let detencionesParciales = 0
+
+    if((pisosServicios - 2)>22){
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[22][capacidad] || 0;
+    }else{
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][capacidad] || 0;
+    }
+
     const saltoPromedio = (pisosServicios * 4) / detencionesParciales || 0;
     let velocidadDesarrollada = 0;
 
@@ -71,9 +104,15 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
     let tiempoSumados = 0;
     if (allData.velocidades_tiempos && Array.isArray(allData.velocidades_tiempos[0]?.data)) {
       const tiempoDataList = allData.velocidades_tiempos[0].data;
-      const tiempoData = tiempoDataList.find(item => parseFloat(item['VELOCIDADES (m/s)']) >= velocidadDesarrollada);
-      tiempoSumados = tiempoData ? tiempoData['TIEMPOS SUMADOS DE ACELERACIÓN Y DESACELERACIÓN (m/s)'] : tiempoDataList[tiempoDataList.length - 1]['TIEMPOS SUMADOS DE ACELERACIÓN Y DESACELERACIÓN (m/s)'];
+      // Filtrar todos los elementos que son menores o iguales a 'velocidadDesarrollada'
+      const tiempoDataInferior = tiempoDataList.filter(item => parseFloat(item['VELOCIDADES (m/s)']) <= velocidadDesarrollada);
+    
+      // Seleccionar el valor más cercano al inmediato inferior
+      const closestInferior = tiempoDataInferior.length > 0 ? tiempoDataInferior[tiempoDataInferior.length - 1] : null;
+    
+      tiempoSumados = closestInferior ? closestInferior['TIEMPOS SUMADOS DE ACELERACIÓN Y DESACELERACIÓN (m/s)'] : tiempoDataList[0]['TIEMPOS SUMADOS DE ACELERACIÓN Y DESACELERACIÓN (m/s)'];
     }
+    
 
     const tiempo1 = (pisosServicios * 4) / velocidadDesarrollada || 0;
     let tiempoAberturaPuerta = null;
@@ -109,11 +148,28 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
     const tiempoEntradaSalidaPasajeros = capacidad * tiempototal;
     const tiempoRecuperacion = detencionesParciales * 0.2;
     const tiempoTotal = tiempo1 + tiempoAceleracion + detencionPuerta + tiempoEntradaSalidaPasajeros + tiempoRecuperacion || 0;
-    const ajustesFinales = Math.ceil((5 * 60 * capacidad) / tiempoTotal);
-    const numeroCabinasNecesarias = Math.ceil(poblacionServida / ajustesFinales);
-    const intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+    const ajustesFinales = (5 * 60 * capacidad) / tiempoTotal;
+    let numeroCabinasNecesarias = Math.ceil(poblacionServida / ajustesFinales);
+    let intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+
+    // Obtener el rango de intervalo de espera desde los datos de TipoDeEdificio
+    const intervaloEsperaMin = routeData[0].TipoDeEdificio["intervalo de espera seg."][0];
+    const intervaloEsperaMax = routeData[0].TipoDeEdificio["intervalo de espera seg."][1];
+
+    // Ajustar el número de cabinas necesarias si el intervalo de espera no está dentro del rango permitido
+    while (intervaloEspera < intervaloEsperaMin && numeroCabinasNecesarias > 1) {
+      numeroCabinasNecesarias -= 1;
+      intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+    }
+
+    while (intervaloEspera > intervaloEsperaMax) {
+      numeroCabinasNecesarias += 1;
+      intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+    }
+
 
     const calculations = {
+      Ancho:ancho,
       'Total Poblacion': totalPoblacion,
       'Poblacion servida': poblacionServida,
       'Pisos servicios': pisosServicios,
@@ -137,17 +193,14 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
 
     setRouteData((prev) => {
       const updatedData = [...prev];
-      const lastIndex = updatedData.length - 1;
-      if (updatedData[lastIndex]?.result) {
-        updatedData[lastIndex].result = [calculations]; // Reemplazar el resultado existente
-      } else {
-        updatedData[lastIndex] = {
-          ...updatedData[lastIndex],
-          result: [calculations], // Guardar un nuevo resultado si no existe
-        };
-      }
+      updatedData[0].result = [calculations]; // Reemplazar el resultado existente
       return updatedData;
     });
+    console.log(routeData);
+  };
+
+  const formatValue = (value) => {
+    return value !== undefined && value !== null ? value.toFixed(2) : 'No disponible';
   };
 
   return (
@@ -159,24 +212,36 @@ const Results = ({ resultFields, onCalculate, routeData, setRouteData, allData }
         Cálcular
       </button>
       <h2 className="text-xl font-bold mb-4">Resultados</h2>
-  
-      {routeData[routeData.length - 1]?.result && (
+
+      {routeData[0]?.result && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold mt-4">Pasajeros:</h3>
+          <p className="text-red-700 text-2xl font-bold">
+            {routeData[0].result[0]['Pasajeros'] || 'No disponible'}
+          </p>
+          <h3 className="text-lg font-semibold mt-4">Poblacion servida:</h3>
+          <p className="text-red-700 text-2xl font-bold">
+            {routeData[0].result[0]['Poblacion servida'] || 'No disponible'}
+          </p>
           <h3 className="text-lg font-semibold">Velocidad desarrollada:</h3>
           <p className="text-blue-700 text-2xl font-bold">
-            {routeData[routeData.length - 1].result[0]['Velocidad desarrollada'].toFixed(2)}
+            {formatValue(routeData[0].result[0]['Velocidad desarrollada'])}
+          </p>
+          <h3 className="text-lg font-semibold mt-4">Número de cabinas necesarias:</h3>
+          <p className="text-green-700 text-2xl font-bold">
+            {formatValue(routeData[0].result[0]['Número de cabinas necesarias'])}
           </p>
           <h3 className="text-lg font-semibold mt-4">Intervalo de espera:</h3>
           <p className="text-green-700 text-2xl font-bold">
-            {routeData[routeData.length - 1].result[0]['Intervalo de espera'].toFixed(2)}
+            {formatValue(routeData[0].result[0]['Intervalo de espera'])}
           </p>
-          <h3 className="text-lg font-semibold mt-4">Pasajeros:</h3>
-          <p className="text-red-700 text-2xl font-bold">
-            {routeData[routeData.length - 1].result[0]['Pasajeros']}
+          <h3 className="text-lg font-semibold">Cantidad de Personas Transportadas cada 5 min:</h3>
+          <p className="text-blue-700 text-2xl font-bold">
+            {routeData[0].result[0]['Ajustes finales'] || 'No disponible'}
           </p>
         </div>
       )}
-  
+
       <SaveButton routeData={routeData} />
     </div>
   );

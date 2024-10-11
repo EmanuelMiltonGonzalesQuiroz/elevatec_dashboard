@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import SearchBar from './RouteList/SearchBar';
-import EditRouteModal from './RouteList/EditRouteModal';
+import InfoModal from './RouteList/InfoModal';
 import DeleteRouteButton from './RouteList/DeleteRouteButton';
 
 const RouteList = () => {
@@ -26,34 +26,33 @@ const RouteList = () => {
   const handleSearch = ({ name, date }) => {
     const lowerSearchTerm = name ? name.toLowerCase() : '';
     const adjustedDate = date ? new Date(date) : null;
-  
-    // Sumar un día a la fecha ajustada
+
     if (adjustedDate) {
       adjustedDate.setDate(adjustedDate.getDate() + 1);
     }
-  
+
     const formattedAdjustedDate = adjustedDate ? adjustedDate.toISOString().split('T')[0] : '';
-  
+
     setFilteredRoutes(
       routes.filter((route) => {
-        const routeDate = route.fecha ? new Date(route.fecha).toISOString().split('T')[0] : ''; // Formatear la fecha a 'YYYY-MM-DD'
+        let routeDate = '';
+        if (route.fecha) {
+          const date = new Date(route.fecha);
+          date.setDate(date.getDate() + 1); // Aumentar un día
+          routeDate = date.toISOString().split('T')[0];
+        }
+        
         const matchesName = lowerSearchTerm ? route.routeData[0]?.cliente.toLowerCase().includes(lowerSearchTerm) : true;
-        const matchesDate = formattedAdjustedDate ? routeDate === formattedAdjustedDate : true; // Comparar con la fecha ajustada
-        return matchesName && matchesDate; // Ambos filtros deben coincidir si están definidos
+        const matchesDate = formattedAdjustedDate ? routeDate === formattedAdjustedDate : true;
+        return matchesName && matchesDate;
       })
     );
+    
   };
-  
-  
 
-  const handleEdit = (route) => {
+  const handleInfo = (route) => {
     setCurrentRoute(route);
     setIsModalOpen(true);
-  };
-
-  const handleUpdate = (updatedRoute) => {
-    setRoutes(routes.map((route) => (route.id === updatedRoute.id ? updatedRoute : route)));
-    setFilteredRoutes(routes.map((route) => (route.id === updatedRoute.id ? updatedRoute : route)));
   };
 
   const handleDelete = (routeId) => {
@@ -86,10 +85,10 @@ const RouteList = () => {
               <td className="border px-4 py-2">{new Date(route.fecha).toLocaleDateString()}</td>
               <td className="border px-4 py-2">
                 <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 mr-2"
-                  onClick={() => handleEdit(route)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                  onClick={() => handleInfo(route)}
                 >
-                  Editar
+                  Info
                 </button>
                 <DeleteRouteButton routeId={route.id} onDelete={handleDelete} />
               </td>
@@ -99,11 +98,10 @@ const RouteList = () => {
       </table>
 
       {isModalOpen && (
-        <EditRouteModal
+        <InfoModal
           isOpen={isModalOpen}
           routeData={currentRoute}
           onClose={() => setIsModalOpen(false)}
-          onSave={handleUpdate}
         />
       )}
     </div>

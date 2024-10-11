@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatTitle } from '../../../../utils/formatTitle'; // Ajusta la ruta según donde esté la función
 
 const ClientInfo = ({
   buildingNames,
@@ -9,12 +10,19 @@ const ClientInfo = ({
   clientPhone,
   setClientPhone,
   handleBuildingSelect,
+  setFormFields, // Añadir esto si lo necesitas para resetear otros campos específicos del edificio
 }) => {
 
   const handleBuildingChange = (e) => {
     const buildingName = e.target.value;
+
+    // Restablecer todos los valores al cambiar el tipo de edificio
     setSelectedBuilding(buildingName);
-    handleBuildingSelect(e);
+    setVendor(''); // Resetea el nombre del cliente
+    setClientPhone(''); // Resetea el número de teléfono
+    setFormFields && setFormFields({}); // Resetea otros campos específicos del edificio si es necesario
+
+    handleBuildingSelect(e); // Mantén esta llamada para realizar las operaciones específicas del edificio
   };
 
   const handleVendorChange = (e) => {
@@ -38,7 +46,7 @@ const ClientInfo = ({
       >
         <option value="">-- Seleccionar --</option>
         {buildingNames.map((name, index) => (
-          <option key={index} value={name}>{name}</option>
+          <option key={index} value={name}>{formatTitle(name)}</option>
         ))}
       </select>
       <label className="block mb-2 font-bold">Nombre del Cliente:</label>

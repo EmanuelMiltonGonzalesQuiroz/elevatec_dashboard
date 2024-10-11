@@ -23,7 +23,6 @@ const RouteForm = () => {
   const [formFields, setFormFields] = useState({});
   const [additionalFields, setAdditionalFields] = useState({
     Pasajeros: '',
-    'Ancho de puertas': 0, // Valor inicial para Ancho de puertas
     'Detencion Puertas': '',
   });
   const [vendor, setVendor] = useState('');
@@ -46,32 +45,12 @@ const RouteForm = () => {
 
   const handleVendorChange = (value) => {
     setVendor(value);
-    setRouteData((prev) => {
-      const updatedData = Array.isArray(prev) ? [...prev] : [];
-      const lastBuildingIndex = updatedData.length - 1;
-      if (lastBuildingIndex >= 0) {
-        updatedData[lastBuildingIndex] = {
-          ...updatedData[lastBuildingIndex],
-          cliente: value,
-        };
-      }
-      return updatedData;
-    });
+    updateRouteData('cliente', value);
   };
 
   const handleClientPhoneChange = (value) => {
     setClientPhone(value);
-    setRouteData((prev) => {
-      const updatedData = Array.isArray(prev) ? [...prev] : [];
-      const lastBuildingIndex = updatedData.length - 1;
-      if (lastBuildingIndex >= 0) {
-        updatedData[lastBuildingIndex] = {
-          ...updatedData[lastBuildingIndex],
-          clientPhone: value,
-        };
-      }
-      return updatedData;
-    });
+    updateRouteData('clientPhone', value);
   };
 
   const handleBuildingSelect = (e) => {
@@ -88,23 +67,32 @@ const RouteForm = () => {
         (building) => building.TipoDeEdificio?.selectedBuilding === buildingName
       );
 
+      const updatedBuildingData = {
+        TipoDeEdificio: { selectedBuilding: buildingName, ...selectedBuildingInfo },
+      };
+
       if (existingBuildingIndex !== -1) {
-        // Si el edificio ya existe en routeData, actualiza su información
-        updatedData[existingBuildingIndex] = {
-          ...updatedData[existingBuildingIndex],
-          TipoDeEdificio: { selectedBuilding: buildingName, ...selectedBuildingInfo },
-        };
+        updatedData[existingBuildingIndex] = { ...updatedData[existingBuildingIndex], ...updatedBuildingData };
       } else {
-        // Si el edificio no existe, agrégalo a routeData
-        updatedData.push({
-          TipoDeEdificio: { selectedBuilding: buildingName, ...selectedBuildingInfo },
-        });
+        updatedData[0] = updatedBuildingData; // Reemplazar siempre el primer elemento
       }
 
       return updatedData;
     });
 
     generateFields(buildingName);
+  };
+
+  const updateRouteData = (key, value) => {
+    setRouteData((prev) => {
+      const updatedData = Array.isArray(prev) ? [...prev] : [];
+      if (updatedData.length > 0) {
+        updatedData[0] = { ...updatedData[0], [key]: value }; // Reemplazar el valor en el primer elemento
+      } else {
+        updatedData[0] = { [key]: value }; // Crear la entrada si no existe
+      }
+      return updatedData;
+    });
   };
 
   const generateFields = (buildingName) => {
@@ -137,13 +125,12 @@ const RouteForm = () => {
     setFormFields(fields);
     setRouteData((prev) => {
       const updatedData = Array.isArray(prev) ? [...prev] : [];
-      const lastBuildingIndex = updatedData.length - 1;
-      if (lastBuildingIndex >= 0) {
-        updatedData[lastBuildingIndex].TipoDeEdificio = {
-          ...updatedData[lastBuildingIndex].TipoDeEdificio,
+      if (updatedData.length > 0) {
+        updatedData[0].TipoDeEdificio = {
+          ...updatedData[0].TipoDeEdificio,
           ...fields,
         };
-        updatedData[lastBuildingIndex].requiredFields = requiredFields;
+        updatedData[0].requiredFields = requiredFields;
       }
       return updatedData;
     });
@@ -151,36 +138,17 @@ const RouteForm = () => {
 
   const handleFieldChange = (name, value) => {
     setFormFields((prev) => ({ ...prev, [name]: value }));
-    setRouteData((prev) => {
-      const updatedData = Array.isArray(prev) ? [...prev] : [];
-      const lastBuildingIndex = updatedData.length - 1;
-      if (lastBuildingIndex >= 0) {
-        updatedData[lastBuildingIndex].TipoDeEdificio = {
-          ...updatedData[lastBuildingIndex].TipoDeEdificio,
-          [name]: value,
-        };
-      }
-      return updatedData;
-    });
+    updateRouteData(name, value);
   };
 
   const handleAdditionalFieldChange = (name, value) => {
     setAdditionalFields((prev) => ({ ...prev, [name]: value }));
-    setRouteData((prev) => {
-      const updatedData = Array.isArray(prev) ? [...prev] : [];
-      const lastBuildingIndex = updatedData.length - 1;
-      if (lastBuildingIndex >= 0) {
-        updatedData[lastBuildingIndex] = {
-          ...updatedData[lastBuildingIndex],
-          [name]: value,
-        };
-      }
-      return updatedData;
-    });
+    updateRouteData(name, value);
   };
 
   const handleCalculate = () => {
-    console.log('Datos calculados:', routeData);
+    console.log(routeData)
+    // Implementar la lógica de cálculo aquí
   };
 
   return (
