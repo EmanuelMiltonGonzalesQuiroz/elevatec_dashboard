@@ -29,6 +29,16 @@ const RouteForm = () => {
   const [clientPhone, setClientPhone] = useState('');
   const [routeData, setRouteData] = useState([]);
 
+  // Estado inicial base para el reseteo
+  const initialState = {
+    selectedBuilding: '',
+    vendor: '',
+    clientPhone: '',
+    formFields: {},
+    additionalFields: { Pasajeros: '', 'Detencion Puertas': '' },
+    routeData: []
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,6 +63,7 @@ const RouteForm = () => {
     updateRouteData('clientPhone', value);
   };
 
+  // Función para manejar la selección de edificio
   const handleBuildingSelect = (e) => {
     const buildingName = e.target.value;
     setSelectedBuilding(buildingName);
@@ -81,6 +92,16 @@ const RouteForm = () => {
     });
 
     generateFields(buildingName);
+  };
+
+  // Función para resetear todos los valores al estado inicial
+  const resetFields = () => {
+    setSelectedBuilding(initialState.selectedBuilding);
+    setVendor(initialState.vendor);
+    setClientPhone(initialState.clientPhone);
+    setFormFields(initialState.formFields);
+    setAdditionalFields(initialState.additionalFields);
+    setRouteData(initialState.routeData);
   };
 
   const updateRouteData = (key, value) => {
@@ -146,10 +167,6 @@ const RouteForm = () => {
     updateRouteData(name, value);
   };
 
-  const handleCalculate = () => {
-    console.log(routeData)
-    // Implementar la lógica de cálculo aquí
-  };
 
   return (
     <div className="flex flex-col p-6 rounded-lg shadow-lg w-full">
@@ -164,6 +181,7 @@ const RouteForm = () => {
             clientPhone={clientPhone}
             setClientPhone={handleClientPhoneChange}
             handleBuildingSelect={handleBuildingSelect}
+            setFormFields={setFormFields} // Pasar la función para poder resetear campos
           />
         </div>
         <div className="md:w-1/3 w-full p-2">
@@ -179,10 +197,10 @@ const RouteForm = () => {
 
       <div className="w-full p-4">
         <Results
-          onCalculate={handleCalculate}
           routeData={routeData}
           setRouteData={setRouteData}
           allData={allData}
+          resetFields={resetFields}
         />
       </div>
     </div>

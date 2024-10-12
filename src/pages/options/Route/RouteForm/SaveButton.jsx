@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../../../connection/firebase';
 import { useAuth } from '../../../../context/AuthContext';
 
-const SaveButton = ({ routeData }) => {
+const SaveButton = ({ routeData, resetFields }) => {
   const { currentUser } = useAuth();
 
   const handleSave = async () => {
@@ -16,6 +16,9 @@ const SaveButton = ({ routeData }) => {
 
       await addDoc(collection(db, 'list_of_routes'), dataToSave);
       console.log('Datos guardados correctamente en la colección list_of_routes.');
+
+      // Resetea los campos después de guardar
+      resetFields();
     } catch (error) {
       console.error('Error al guardar los datos:', error);
     }

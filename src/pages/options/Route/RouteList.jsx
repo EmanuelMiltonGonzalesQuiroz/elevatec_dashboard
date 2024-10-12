@@ -9,6 +9,7 @@ const RouteList = () => {
   const [filteredRoutes, setFilteredRoutes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentRoute, setCurrentRoute] = useState(null);
+  const [buildingNames, setBuildingNames] = useState([]); // Para los tipos de edificios
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -16,14 +17,22 @@ const RouteList = () => {
       const routesCol = collection(db, 'list_of_routes');
       const routesSnapshot = await getDocs(routesCol);
       const routesData = routesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setRoutes(routesData);
-      setFilteredRoutes(routesData);
+
+      // Ordenar las rutas del más nuevo al más viejo por fecha
+      const sortedRoutes = routesData.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+      setRoutes(sortedRoutes);
+      setFilteredRoutes(sortedRoutes);
+
+      // Extraer los tipos de edificios únicos para el filtro
+      const buildingTypes = [...new Set(sortedRoutes.map(route => route.routeData[0]?.TipoDeEdificio?.Nombre))].filter(Boolean);
+      setBuildingNames(buildingTypes);
     };
 
     fetchRoutes();
   }, []);
 
-  const handleSearch = ({ name, date }) => {
+  const handleSearch = ({ name, date, buildingType }) => {
     const lowerSearchTerm = name ? name.toLowerCase() : '';
     const adjustedDate = date ? new Date(date) : null;
 
@@ -41,13 +50,14 @@ const RouteList = () => {
           date.setDate(date.getDate() + 1); // Aumentar un día
           routeDate = date.toISOString().split('T')[0];
         }
-        
+
         const matchesName = lowerSearchTerm ? route.routeData[0]?.cliente.toLowerCase().includes(lowerSearchTerm) : true;
         const matchesDate = formattedAdjustedDate ? routeDate === formattedAdjustedDate : true;
-        return matchesName && matchesDate;
+        const matchesBuildingType = buildingType ? route.routeData[0]?.TipoDeEdificio?.Nombre === buildingType : true;
+
+        return matchesName && matchesDate && matchesBuildingType;
       })
     );
-    
   };
 
   const handleInfo = (route) => {
@@ -63,7 +73,7 @@ const RouteList = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg w-full min-h-[70vh]">
       <h2 className="text-2xl font-bold mb-4">Lista de Rutas</h2>
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} buildingNames={buildingNames} />
       <table className="min-w-full bg-white border">
         <thead>
           <tr className="text-black font-bold">
@@ -72,6 +82,7 @@ const RouteList = () => {
             <th className="border px-4 py-2">Nombre del Cliente</th>
             <th className="border px-4 py-2">Número de Celular</th>
             <th className="border px-4 py-2">Fecha</th>
+            <th className="border px-4 py-2">Username</th>
             <th className="border px-4 py-2">Acciones</th>
           </tr>
         </thead>
@@ -83,6 +94,7 @@ const RouteList = () => {
               <td className="border px-4 py-2">{route.routeData[0]?.cliente || 'N/A'}</td>
               <td className="border px-4 py-2">{route.routeData[0]?.clientPhone || 'N/A'}</td>
               <td className="border px-4 py-2">{new Date(route.fecha).toLocaleDateString()}</td>
+              <td className="border px-4 py-2">{route.user.username || 'N/A'}</td> {/* Mostrar username */}
               <td className="border px-4 py-2">
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
