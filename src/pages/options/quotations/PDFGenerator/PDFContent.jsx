@@ -8,6 +8,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../../connection/firebase.js';
 import extraPDFJalmeco from '../../../../assets/images/extraPdfJalmeco.pdf'; 
 
+// Función para detectar si es un dispositivo móvil
+const isMobileDevice = () => {
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+};
+
 // Función para obtener la abreviatura de la ciudad
 const getCityAbbreviation = (cityName) => {
   const cityMap = {
@@ -194,6 +199,11 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         const pdfUrl = await generateAndMergePDF();
         setMergedPdfUrl(pdfUrl);
         setIsGenerating(false);
+        
+        // Detectar si es móvil y abrir automáticamente el PDF
+        if (isMobileDevice() && pdfUrl) {
+          window.open(pdfUrl, '_blank');
+        }
       }
     };
 
@@ -216,7 +226,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
           cursor: 'pointer'
         }}>
         Guardar
-      </button>
+      </button> 
 
       {isGenerating || isFetchingQuotations ? (
         <div>Abriendo PDF, por favor espera...</div> 

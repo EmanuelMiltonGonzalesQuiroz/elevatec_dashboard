@@ -127,15 +127,15 @@ const AddLocationModal = ({ onClose }) => {
   
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[60%] h-[90%] text-black overflow-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-top sm:items-center sm:justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[45vh] sm:max-w-[80vh] md:w-[90vh] h-[90vh] text-black overflow-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Agregar Ubicación</h2>
+          <h2 className="text-lg md:text-xl font-bold">Agregar Ubicación</h2>
           <button className="text-red-500" onClick={onClose}>
             <FaTimes />
           </button>
         </div>
-
+  
         <div>
           <label>Seleccionar Cliente</label>
           <CustomSelect
@@ -144,7 +144,7 @@ const AddLocationModal = ({ onClose }) => {
             selectedValue={selectedClient}
           />
         </div>
-
+  
         <div className="flex flex-col mb-4">
           <label className="mb-2 font-semibold text-black">Dirección</label>
           <input
@@ -153,50 +153,49 @@ const AddLocationModal = ({ onClose }) => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
+  
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="mb-4">
-          <label className="block text-black">Tipo</label>
-          <select
-            name="Tipo0"
-            value={formData.Tipo0}
-            onChange={handleChange}
-            className="p-2 border rounded w-full"
-          >
-            <option value="" disabled>
-              Selecciona un tipo
-            </option>
-            {Object.keys(typeOptions).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {formData.Tipo0 && (
           <div className="mb-4">
-            <label className="block text-black">Descripción</label>
+            <label className="block text-black">Tipo</label>
             <select
-              name="Tipo2"
-              value={formData.Tipo2}
+              name="Tipo0"
+              value={formData.Tipo0}
               onChange={handleChange}
               className="p-2 border rounded w-full"
             >
               <option value="" disabled>
-                Selecciona una descripción
+                Selecciona un tipo
               </option>
-              {typeOptions[formData.Tipo0]?.map((option) => (
-                <option key={option.id} value={option.label}>
-                  {option.label}
+              {Object.keys(typeOptions).map((type) => (
+                <option key={type} value={type}>
+                  {type}
                 </option>
               ))}
             </select>
           </div>
-        )}
+  
+          {formData.Tipo0 && (
+            <div className="mb-4">
+              <label className="block text-black">Descripción</label>
+              <select
+                name="Tipo2"
+                value={formData.Tipo2}
+                onChange={handleChange}
+                className="p-2 border rounded w-full"
+              >
+                <option value="" disabled>
+                  Selecciona una descripción
+                </option>
+                {typeOptions[formData.Tipo0]?.map((option) => (
+                  <option key={option.id} value={option.label}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
-
-        
-
+  
         <div className="bg-white p-6 rounded-lg shadow-lg h-[45%] text-black">
           <MapComponent
             mapCenter={markerPosition}
@@ -205,11 +204,11 @@ const AddLocationModal = ({ onClose }) => {
             setButtonDisabled={setIsButtonDisabled}
           />
         </div>
-
+  
         {distanceWarning && <p className="text-red-500">{distanceWarning}</p>}
-
+  
         <button
-          className="bg-blue-500 text-white px-4 py-2 mt-4"
+          className="bg-blue-500 text-white px-4 py-2 mt-4 w-full sm:w-auto"
           disabled={isButtonDisabled}
           onClick={handleSaveLocation}
         >
@@ -218,6 +217,7 @@ const AddLocationModal = ({ onClose }) => {
       </div>
     </div>
   );
+  
 };
 
 export default React.memo(AddLocationModal);

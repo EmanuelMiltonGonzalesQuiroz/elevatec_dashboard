@@ -15,7 +15,7 @@ const ActionModal = ({ show, onClose, onConfirm, onViewProcedure, onViewPDFNoHea
             onClick={onViewPDFNoHeader}  // PDF sin membrete
           >
             Ver PDF 
-          </button>
+          </button> 
 
           <button
               className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"

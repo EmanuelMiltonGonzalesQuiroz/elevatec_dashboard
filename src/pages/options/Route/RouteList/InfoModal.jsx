@@ -57,8 +57,8 @@ const InfoModal = ({ isOpen, routeData, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-60 flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-3/5 max-h-[90vh]">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-60 flex justify-end sm:justify-center sm:items-center">
+      <div className="bg-white p-8 rounded-lg shadow-2xl w-[45vh] sm:w-3/5 max-h-[90vh]">
       <div className="flex justify-between items-center mb-6 border-b pb-2">
         <h2 className="text-3xl font-bold text-blue-700">Información Detallada de la Ruta</h2>
         <button

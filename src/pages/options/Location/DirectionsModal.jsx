@@ -46,8 +46,8 @@ const DirectionsModal = ({ location, onClose }) => {
   }, [currentLocation, location]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%] text-black relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end sm:items-center sm:justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[45vh] sm:w-[90%] h-[90%] text-black relative">
         <button className="absolute top-4 right-4 text-red-500" onClick={onClose}>
           <FaTimes />
         </button>

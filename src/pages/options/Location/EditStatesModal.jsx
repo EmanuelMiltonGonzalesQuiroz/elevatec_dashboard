@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
 import { collection, getDocs, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { FaTimes } from 'react-icons/fa';
 
 const colorOptions = [
   { name: 'red', color: '#FF0000', label: 'Rojo' },       // Eliminar (Red)
@@ -116,9 +117,14 @@ const EditStatesModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg w-[60%] space-y-6 overflow-auto">
-        <h2 className="text-2xl font-bold mb-4">Editar Estados</h2>
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex sm:items-center sm:justify-center">
+      <div className="bg-white p-6 rounded shadow-lg max-w-[45vh] sm:max-w-[80vh] space-y-6 overflow-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold mb-4">Editar Estados</h2>
+          <button className="text-red-500" onClick={onClose}>
+            <FaTimes />
+          </button>
+        </div>
 
         {/* State Edit Table */}
         <div className="max-h-[50vh] overflow-auto">

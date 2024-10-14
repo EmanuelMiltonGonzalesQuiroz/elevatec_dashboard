@@ -82,8 +82,6 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     let poblacionServida = 0
     poblacionServida = Math.ceil(totalPoblacion * (demoraRecomendable / 100));
     const pisosServicios = parseInt(routeData[0].PISOS) - 1 || 0;
-    console.log(allData.configuraciones_de_pisos[0])
-
     let detencionesParciales = 0;
 
     // Para pisos mayores de 22
@@ -258,7 +256,6 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       updatedData[0].result = [calculations]; // Reemplazar el resultado existente
       return updatedData;
     });
-    console.log(routeData)
   };
 
   const formatValue = (value) => {
@@ -276,7 +273,7 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       <h2 className="text-xl font-bold mb-4">Resultados</h2>
   
       {routeData[0]?.result && (
-        <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-white rounded-lg shadow-md">
+        <div className="grid grid-col sm:grid-cols-2 gap-4 mb-4 p-4 bg-white rounded-lg shadow-md">
           <div>
             <h3 className="text-lg font-semibold">Pasajeros:</h3>
             <p className="text-blue-900 text-2xl font-bold">

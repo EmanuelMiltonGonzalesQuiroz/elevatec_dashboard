@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { updateDoc, collection, getDocs, query, where, doc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
+import { FaTimes } from 'react-icons/fa';
 
 const typeOptions = {
   CONSTRUCCION: [
@@ -116,9 +117,15 @@ const EditLocationModal = ({ location, onClose }) => {
   };
  
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[60%] max-h-[90vh] text-black overflow-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end sm:items-center sm:justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[45vh] sm:w-[60%] max-h-[90vh] text-black overflow-auto">
+        <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold mb-4">Editar Ubicación</h2>
+
+          <button className="text-red-500" onClick={onClose}>
+            <FaTimes />
+          </button>
+        </div>
 
         {loading ? (
           <p>Cargando datos...</p>
