@@ -79,7 +79,8 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     const demoraRecomendable = parseFloat(lastBuilding.TipoDeEdificio?.['Demora recomendable']) || 1;
     const personaValue = parseFloat(lastBuilding.TipoDeEdificio?.['Persona']) || 1;
     const totalPoblacion = Object.values(fieldValues).reduce((product, value) => product * value, 1) * personaValue;
-    const poblacionServida = Math.ceil(totalPoblacion * (demoraRecomendable / 100));
+    let poblacionServida = 0
+    poblacionServida = Math.ceil(totalPoblacion * (demoraRecomendable / 100));
     const pisosServicios = parseInt(routeData[0].PISOS) - 1 || 0;
     console.log(allData.configuraciones_de_pisos[0])
 

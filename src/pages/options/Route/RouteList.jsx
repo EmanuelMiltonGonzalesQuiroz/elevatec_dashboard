@@ -82,7 +82,7 @@ const RouteList = () => {
             <th className="border px-4 py-2">Nombre del Cliente</th>
             <th className="border px-4 py-2">Número de Celular</th>
             <th className="border px-4 py-2">Fecha</th>
-            <th className="border px-4 py-2">Quien lo Creó</th>
+            <th className="border px-4 py-2">Creado</th>
             <th className="border px-4 py-2">Acciones</th>
           </tr>
         </thead>
