@@ -81,15 +81,44 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     const totalPoblacion = Object.values(fieldValues).reduce((product, value) => product * value, 1) * personaValue;
     const poblacionServida = Math.ceil(totalPoblacion * (demoraRecomendable / 100));
     const pisosServicios = parseInt(routeData[0].PISOS) - 1 || 0;
+    console.log(allData.configuraciones_de_pisos[0])
 
     let detencionesParciales = 0;
+
+    // Para pisos mayores de 22
     if ((pisosServicios - 2) > 22) {
-      detencionesParciales = allData.configuraciones_de_pisos[0].data[22][capacidad] || 0;
+      let currentCapacidad = capacidad;
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[22][currentCapacidad] || 0;
+
+      // Si no hay valor válido, busca el inmediato inferior
+      while ((!detencionesParciales || detencionesParciales === 0) && currentCapacidad > 0) {
+        currentCapacidad -= 1;
+        detencionesParciales = allData.configuraciones_de_pisos[0].data[22][currentCapacidad] || 0;
+      }
+
+    // Para pisos menores de 2
     } else if ((pisosServicios - 2) < 2) {
-      detencionesParciales = allData.configuraciones_de_pisos[0].data[0][capacidad] || 0;
+      let currentCapacidad = capacidad;
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[0][currentCapacidad] || 0;
+
+      // Si no hay valor válido, busca el inmediato inferior
+      while ((!detencionesParciales || detencionesParciales === 0) && currentCapacidad > 0) {
+        currentCapacidad -= 1;
+        detencionesParciales = allData.configuraciones_de_pisos[0].data[0][currentCapacidad] || 0;
+      }
+
+    // Para los demás casos
     } else {
-      detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][capacidad] || 0;
+      let currentCapacidad = capacidad;
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][currentCapacidad] || 0;
+
+      // Si no hay valor válido, busca el inmediato inferior
+      while ((!detencionesParciales || detencionesParciales === 0) && currentCapacidad > 0) {
+        currentCapacidad -= 1;
+        detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][currentCapacidad] || 0;
+      }
     }
+
 
 
     const saltoPromedio = (pisosServicios * 4) / detencionesParciales || 0;
@@ -115,28 +144,34 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
 
     if (allData.puertas_datos && Array.isArray(allData.puertas_datos[0]?.data)) {
       const puertasDatos = allData.puertas_datos[0].data;
-    
+
+      // Convertimos los rangos de ancho de puerta a números
       const parsedPuertasDatos = puertasDatos.map((puerta) => {
         const [minAncho, maxAncho] = puerta['ANCHO DE PUERTA (m)'].split(' - ').map(Number);
         return { minAncho, maxAncho, ...puerta };
       });
-    
+
+      // Buscar el rango exacto o, si no existe, el inmediato inferior
       let puertaSeleccionada = parsedPuertasDatos.find((puerta) => ancho >= puerta.minAncho && ancho <= puerta.maxAncho);
-    
+      
+      // Si no se encuentra, buscamos el inmediato inferior
       if (!puertaSeleccionada) {
-        puertaSeleccionada = parsedPuertasDatos.find((puerta) => puerta.minAncho > ancho);
-    
+        puertaSeleccionada = parsedPuertasDatos.slice().reverse().find((puerta) => puerta.minAncho <= ancho);
+        
+        // Si no existe uno inferior, tomamos el más pequeño disponible
         if (!puertaSeleccionada) {
-          puertaSeleccionada = parsedPuertasDatos[parsedPuertasDatos.length - 1];
+          puertaSeleccionada = parsedPuertasDatos[0];
         }
       }
-    
+
+      // Determinamos el tiempo de apertura basado en el valor seleccionado
       if (puertaSeleccionada) {
         tiempoAberturaPuerta = detencionPuertasTexto === 'Abre de un lado'
           ? puertaSeleccionada['PUERTA ABRE A UN LADO (seg.)']
           : puertaSeleccionada['PUERTA ABRE DEL CENTRO (seg.)'];
       }
     }
+
     
     
 
@@ -146,26 +181,32 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
 
     if (allData.puertas_tiempo_total && Array.isArray(allData.puertas_tiempo_total[0]?.data)) {
       const puertasDatosTotal = allData.puertas_tiempo_total[0].data;
-    
+
+      // Convertimos los rangos de ancho de puerta a números
       const parsedPuertasDatosTotal = puertasDatosTotal.map((puerta) => {
         const [minAncho, maxAncho] = puerta['ANCHO DE PUERTA (m)'].split(' - ').map(Number);
         return { minAncho, maxAncho, ...puerta };
       });
-    
+
+      // Buscar el rango exacto o, si no existe, el inmediato inferior
       let puertaSeleccionada = parsedPuertasDatosTotal.find((puerta) => ancho >= puerta.minAncho && ancho <= puerta.maxAncho);
-    
+      
+      // Si no se encuentra, buscamos el inmediato inferior
       if (!puertaSeleccionada) {
-        puertaSeleccionada = parsedPuertasDatosTotal.find((puerta) => puerta.minAncho > ancho);
-    
+        puertaSeleccionada = parsedPuertasDatosTotal.slice().reverse().find((puerta) => puerta.minAncho <= ancho);
+        
+        // Si no existe uno inferior, tomamos el más pequeño disponible
         if (!puertaSeleccionada) {
-          puertaSeleccionada = parsedPuertasDatosTotal[parsedPuertasDatosTotal.length - 1];
+          puertaSeleccionada = parsedPuertasDatosTotal[0];
         }
       }
-    
+
+      // Asignamos el tiempo total basado en el valor seleccionado
       if (puertaSeleccionada) {
         tiempototal = puertaSeleccionada['TIEMPO TOTAL (seg.)'] || 0;
       }
     }
+
     
 
     const tiempoEntradaSalidaPasajeros = capacidad * tiempototal;
@@ -205,7 +246,7 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       'Tiempo de entrada y salida de pasajeros': tiempoEntradaSalidaPasajeros,
       'Tiempo de recuperación': tiempoRecuperacion,
       'Tiempo total': tiempoTotal,
-      'Ajustes finales': Math.floor(ajustesFinales),
+      'Ajustes finales': Math.ceil(ajustesFinales),
       'Número de cabinas necesarias': numeroCabinasNecesarias,
       'Intervalo de espera': intervaloEspera,
       'Pasajeros': capacidad,
@@ -216,6 +257,7 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       updatedData[0].result = [calculations]; // Reemplazar el resultado existente
       return updatedData;
     });
+    console.log(routeData)
   };
 
   const formatValue = (value) => {
@@ -272,7 +314,7 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
           <div>
             <h3 className="text-lg font-semibold">Cantidad de Personas Transportadas cada 5 min:</h3>
             <p className="text-blue-900 text-2xl font-bold">
-              {Math.floor(routeData[0].result[0]['Ajustes finales']) || 'No disponible'}
+              {Math.ceil(routeData[0].result[0]['Ajustes finales']) || 'No disponible'}
             </p>
           </div>
         </div>

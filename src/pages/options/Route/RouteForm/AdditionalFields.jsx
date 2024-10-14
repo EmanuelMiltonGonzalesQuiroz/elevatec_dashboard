@@ -19,15 +19,22 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
         <label className="block font-semibold mb-2 text-gray-700">Pasajeros</label>
         <input
           type="number"
-          step="1"
-          min="4"
+          step="1" // Garantiza que se salte en enteros
+          min="4" // El mínimo es 4
           name="Pasajeros"
           value={additionalFields['Pasajeros'] || ''}
           placeholder="0"
-          onChange={handleChange}
+          onChange={(e) => {
+            const value = e.target.value;
+            // Permitir solo valores enteros positivos
+            if (/^\d*$/.test(value)) {
+              handleChange(e);
+            }
+          }}
           className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
 
       <div className="mb-4">
         <label className="block font-semibold mb-2 text-gray-700">Detención Puertas</label>

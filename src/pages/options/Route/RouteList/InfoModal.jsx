@@ -68,7 +68,7 @@ const InfoModal = ({ isOpen, routeData, onClose }) => {
           X
         </button>
       </div>
-        <div className="max-h-[70vh] overflow-auto">
+        <div className="max-h-[60vh] overflow-auto">
           <div className="mb-6 border-b pb-4 ">
             <h3 className="font-bold text-xl text-blue-600 mb-2">Información General</h3>
             <p><strong>Cliente:</strong> {additionalData.cliente || 'N/A'}</p>
