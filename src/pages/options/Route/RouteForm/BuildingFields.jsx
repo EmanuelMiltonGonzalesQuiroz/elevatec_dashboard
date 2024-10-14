@@ -16,7 +16,7 @@ const BuildingFields = ({ formFields, handleFieldChange }) => {
           <label className="block font-semibold mb-2 text-gray-700">{field}</label>
           <input
             type="number"
-            min="0"
+            min={field === 'PISOS' ? 2 : 0} 
             name={field}
             value={formFields[field]}
             onChange={handleChange}

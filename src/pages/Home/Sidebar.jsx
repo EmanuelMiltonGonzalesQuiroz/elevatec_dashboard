@@ -60,7 +60,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {renderItem(homeText.location, <FaLocationArrow />, 'Ubicación')}
           {userRole !== 'Trabajador' && renderItem(homeText.quotations, <FaFileInvoiceDollar />, 'Cotizaciones')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.settings, <FaCog />, 'Ajustes')}
-          {activeContent === 'Mantenimiento' && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
+          {renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.maintenanceSettings, <FaTools />, 'Ajustes M.')}
           {!['Trabajador'].includes(userRole) &&renderItem(homeText.elevatorCalculations, <FaRoute />, 'Route')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.elevatorCalculationsSettings, <FaCalculator />, 'Calculos Elevador')}

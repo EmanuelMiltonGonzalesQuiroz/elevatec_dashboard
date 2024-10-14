@@ -85,9 +85,12 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     let detencionesParciales = 0;
     if ((pisosServicios - 2) > 22) {
       detencionesParciales = allData.configuraciones_de_pisos[0].data[22][capacidad] || 0;
+    } else if ((pisosServicios - 2) < 2) {
+      detencionesParciales = allData.configuraciones_de_pisos[0].data[0][capacidad] || 0;
     } else {
       detencionesParciales = allData.configuraciones_de_pisos[0].data[pisosServicios - 2][capacidad] || 0;
     }
+
 
     const saltoPromedio = (pisosServicios * 4) / detencionesParciales || 0;
     let velocidadDesarrollada = 0;
@@ -170,19 +173,19 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     const tiempoTotal = tiempo1 + tiempoAceleracion + detencionPuerta + tiempoEntradaSalidaPasajeros + tiempoRecuperacion || 0;
     const ajustesFinales = (5 * 60 * capacidad) / tiempoTotal;
     let numeroCabinasNecesarias = Math.ceil(poblacionServida / ajustesFinales);
-    let intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+    let intervaloEspera = Math.ceil(tiempoTotal / numeroCabinasNecesarias);
 
     const intervaloEsperaMin = routeData[0].TipoDeEdificio["intervalo de espera seg."][0];
     const intervaloEsperaMax = routeData[0].TipoDeEdificio["intervalo de espera seg."][1];
 
     while (intervaloEspera < intervaloEsperaMin && numeroCabinasNecesarias > 1) {
       numeroCabinasNecesarias -= 1;
-      intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+      intervaloEspera = Math.ceil(tiempoTotal / numeroCabinasNecesarias);
     }
 
     while (intervaloEspera > intervaloEsperaMax) {
       numeroCabinasNecesarias += 1;
-      intervaloEspera = tiempoTotal / numeroCabinasNecesarias;
+      intervaloEspera = Math.ceil(tiempoTotal / numeroCabinasNecesarias);
     }
 
     const calculations = {
