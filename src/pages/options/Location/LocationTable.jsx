@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
+import RestoreStateModal from './RestoreStateModal';  // Importamos el nuevo modal
 
-const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, onShowDirections }) => {
+const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, onShowDirections, onStateRestore }) => {
   const [clientNames, setClientNames] = useState({});
+  const [selectedLocation, setSelectedLocation] = useState(null);  // Estado para abrir el modal
 
   useEffect(() => {
     // Función para cargar los nombres de los clientes basados en el clientId
@@ -20,11 +22,15 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
     };
 
     fetchClientNames();
-  }, []);
+  }, []); 
 
   const getClientName = (location) => {
     // Buscar el nombre del cliente basado en clientId primero, luego usar location.client si no se encuentra
     return clientNames[location.clientId] || location.client || 'Cliente desconocido';
+  };
+
+  const handleRestoreClick = (location) => {
+    setSelectedLocation(location);  // Guardamos la ubicación seleccionada para restaurar
   };
 
   return (
@@ -42,10 +48,15 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
         </thead>
         <tbody className="text-gray-600 text-sm font-light"> 
           {locations
-            .filter((location) => location.state !== 'Eliminar') // Filtrar los eliminados
+            .sort((a, b) => {
+              // Ordenar para que los estados "Eliminar" y "default" aparezcan al final
+              if (a.state === 'Eliminar' || a.state === 'default') return 1;
+              if (b.state === 'Eliminar' || b.state === 'default') return -1;
+              return 0;
+            })
             .map((location) => (
               <tr
-                key={location.id} 
+                key={location.id}
                 className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                 onClick={() => onRowClick(location)} // Al hacer clic en la fila, centrar el mapa
               >
@@ -72,25 +83,45 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                   </span>
                 </td>
                 <td className="py-3 px-6 text-left">
-                  {(userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
+                  {((location.state === 'Eliminar' || location.state === 'default') && (
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-4" // Espacio entre botones
-                      onClick={() => onEdit(location)} // Abre el modal completo para editar la ubicación
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                      onClick={() => handleRestoreClick(location)} // Abre el modal de restaurar estado
                     >
-                      Editar
+                      Restaurar
                     </button>
-                  )}
-                  <button
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition" // "Cómo Llegar" sin margen adicional
-                    onClick={() => onShowDirections(location)} // Abre el modal "Cómo llegar"
-                  >
-                    Cómo Llegar
-                  </button>
+                  )) || 
+                  ((userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
+                    <div>
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-4"
+                        onClick={() => onEdit(location)} // Abre el modal completo para editar la ubicación
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                        onClick={() => onShowDirections(location)} // Abre el modal "Cómo llegar"
+                      >
+                        Cómo Llegar
+                      </button>
+                    </div>
+                    
+                  ))}
+                  
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
+
+      {selectedLocation && (
+        <RestoreStateModal
+          location={selectedLocation}
+          onClose={() => setSelectedLocation(null)}  // Cerrar el modal
+          onStateRestore={onStateRestore}  // Asegura que se actualicen los datos después de restaurar
+        />
+      )}
     </div>
   );
 };

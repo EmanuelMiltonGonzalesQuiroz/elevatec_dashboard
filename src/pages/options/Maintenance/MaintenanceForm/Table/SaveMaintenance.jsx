@@ -1,9 +1,8 @@
 import { db } from '../../../../../connection/firebase';
-import { collection, addDoc, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 
 // Function to clean the object and remove properties with undefined or null values
 const cleanData = (data) => {
-  
   if (Array.isArray(data)) {
     return data.map(cleanData);
   } else if (typeof data === 'object' && data !== null) {
@@ -15,8 +14,29 @@ const cleanData = (data) => {
       }
     });
     return cleanedData;
-  } 
+  }
   return data;
+};
+
+// Function to get the highest current 'id' in the 'locations' collection
+const getNextLocationId = async () => {
+  try {
+    const locationsCollection = collection(db, 'locations');
+    const snapshot = await getDocs(locationsCollection);
+
+    let maxId = 0;
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.id && typeof data.id === 'number') {
+        maxId = Math.max(maxId, data.id);
+      }
+    });
+
+    return maxId + 1; // Next ID will be the highest ID + 1
+  } catch (error) {
+    console.error('Error al obtener el ID más alto:', error);
+    throw new Error('No se pudo obtener el próximo ID de ubicación.');
+  }
 };
 
 const saveToFirestore = async ({
@@ -28,7 +48,10 @@ const saveToFirestore = async ({
   const formattedDate = currentDate.toISOString();
 
   try {
-    // Save to 'list of maintenance' collection
+    // Obtener el ID más alto en la colección 'locations' y sumar 1
+    const nextLocationId = await getNextLocationId();
+
+    // Query for 'list of maintenance' documents within the current year
     const maintenanceCollection = collection(db, 'list of maintenance');
     const yearQuery = query(
       maintenanceCollection,
@@ -47,14 +70,12 @@ const saveToFirestore = async ({
 
     const clientId = clientDoc.id;
 
-    const querySnapshot = await getDocs(yearQuery);
-    const documentCountForYear = querySnapshot.size + 1; // Increment by 1 for the new document
-    const documentId = `${String(documentCountForYear).padStart(2, '0')}/${currentYear}`;
+    const documentId = `${client.label}, ${currentDate}`; // El ID será el mismo para ambas colecciones, pero usando '_' en lugar de '/'
 
-    const sanitizedItems = cleanData(filteredItems.filter(item => 
-      item.type?.type !== 'Plan' && 
-      item.type?.type !== 'Client' && 
-      typeof item.type !== 'function' && 
+    const sanitizedItems = cleanData(filteredItems.filter(item =>
+      item.type?.type !== 'Plan' &&
+      item.type?.type !== 'Client' &&
+      typeof item.type !== 'function' &&
       !(item.type?.name && item.type?.position)
     ));
 
@@ -73,26 +94,23 @@ const saveToFirestore = async ({
       createdBy: currentUser.username
     });
 
-    await addDoc(maintenanceCollection, cleanedData);
+    // Usar setDoc para la colección 'list of maintenance' con el mismo documentId
+    await setDoc(doc(db, 'list of maintenance', documentId), cleanedData);
 
     // Save to 'locations' collection
-    if (!client ) {
+    if (!client) {
       throw new Error('Missing required fields for location.');
     }
-    const currentDate1 = new Date();
-      const formattedDate2 = currentDate1.toISOString().replace(/[:.]/g, '_');
 
-    const locationId = `${client.label}_${formattedDate2}`;
-     
-    await setDoc(doc(db, 'locations', locationId), {
+    await setDoc(doc(db, 'locations', documentId), { // Usar el mismo documentId
       client: client.label,
       clientId: clientId,
-      id: documentCountForYear,
+      id: nextLocationId,  // Usamos el próximo ID generado
       Direccion: buildingName,
       location: location,
       Tipo: ["Mantenimiento", "", ""],
       state: 'Cotizacion_M', // Use 'Tipo0' to set the state
-      createdAt: currentDate1,
+      createdAt: currentDate,
     });
 
     return `Guardado`;

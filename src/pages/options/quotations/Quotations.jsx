@@ -34,8 +34,8 @@ const Quotations = () => {
       </div>
       <div className="flex-grow mt-4">
         {activeTab === 'form' && <QuotationForm />}
-        {activeTab === 'list' && <QuotationList showDeleted={false} />} {/* Solo activos */}
-        {activeTab === 'listE' && <QuotationList showDeleted={true} />} {/* Solo eliminados */}
+        {activeTab === 'list' && <QuotationList showDeleted={false} />} 
+        {activeTab === 'listE' && <QuotationList showDeleted={true} />}
       </div>
     </div>
   );

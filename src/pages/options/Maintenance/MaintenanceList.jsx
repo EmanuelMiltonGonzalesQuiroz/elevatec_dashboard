@@ -6,6 +6,7 @@ import CustomModal from '../../../components/UI/CustomModal';
 import Modal from '../quotations/Calculation/Modal';
 import { useAuth } from '../../../context/AuthContext';
 import { db } from '../../../connection/firebase';
+import deleteMaintenance from './MaintenanceList/deleteMaintenance';
 // Función para formatear la fecha
 const formatDate = (dateString) => {
   const dateObj = new Date(dateString);
@@ -199,6 +200,7 @@ const MaintenanceList = ({ showDeleted }) => {
                 <td className="py-3 px-6 text-left">
                   {getClientName(maintenance.client.value, maintenance.client?.name)}
                 </td>
+                <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
                 <td className="py-2 px-4 text-black">{maintenance.createdBy}</td>
                 <td className="py-2 px-4 text-black">{maintenance.client?.phone}</td>
                 <td className="py-2 px-4 text-black">{maintenance.plan}</td>
@@ -213,12 +215,20 @@ const MaintenanceList = ({ showDeleted }) => {
                   </button>
                   {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario'|| currentUser.role === 'Usuario') && (
                     showDeleted ? (
-                      <button
-                        className="bg-green-500 text-white p-2 rounded"
-                        onClick={() => updateMaintenanceStatus(maintenance.id, 'active')}
-                      >
-                        Restaurar
-                      </button>
+                      <>
+                        <button
+                          className="bg-green-500 text-white p-2 rounded"
+                          onClick={() => updateMaintenanceStatus(maintenance.id, 'active')}
+                        >
+                          Restaurar
+                        </button>
+                        <button
+                          className="bg-red-700 text-white p-2 rounded"
+                          onClick={() => deleteMaintenance(maintenance.id, setMaintenanceList)}  // Aquí pasamos setMaintenanceList
+                        >
+                          Eliminar Definitivamente
+                        </button>
+                      </>
                     ) : (
                       <button
                         className="bg-red-500 text-white p-2 rounded"

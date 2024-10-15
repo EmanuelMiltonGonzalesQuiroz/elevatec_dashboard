@@ -7,6 +7,7 @@ import PDFContent from './PDFGenerator/PDFContent';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from './Calculation/Modal';
 import { useAuth } from '../../../context/AuthContext';
+import deleteQuotation from './deleteQuotation'; 
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -218,32 +219,46 @@ const QuotationList = ({ showDeleted }) => {
                 <td className="py-2 px-4 text-black">{quotation.city}</td>
                 <td className="py-2 px-4 text-black">{quotation.address}</td>
                 <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
-                <td className="py-2 px-4 text-black">{quotation.total}</td>
+                <td className="py-2 px-4 text-black">{quotation.total}</td> 
                 <td className="py-2 px-4 text-black">{quotation.date}</td>
-                <td className="py-2 px-4 flex space-x-2">
-                  <button
-                    className="bg-blue-500 text-white p-2 rounded"
-                    onClick={() => handleViewPDF(quotation)}
-                  >
-                    Ver PDF
-                  </button>
-                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario' || currentUser.role === 'Usuario') && (
-                    showDeleted ? (
+                <td className="py-2 px-4">
+                  <div className="flex gap-2"> {/* Flex sin flex-wrap para que se mantengan en una fila */}
+                    <button
+                      className="bg-blue-500 text-white p-2 rounded"
+                      onClick={() => handleViewPDF(quotation)}
+                    >
+                      Ver PDF
+                    </button>
+
+                    {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario' || currentUser.role === 'Usuario') && (
+                      showDeleted ? (
+                        <button
+                          className="bg-green-500 text-white p-2 rounded"
+                          onClick={() => updateQuotationStatus(quotation.id, 'active')}
+                        >
+                          Restaurar
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-red-500 text-white p-2 rounded"
+                          onClick={() => updateQuotationStatus(quotation.id, 'deleted')}
+                        >
+                          Eliminar
+                        </button>
+                      )
+                    )}
+
+                    {showDeleted && currentUser.role === 'Administrador' && (
                       <button
-                        className="bg-green-500 text-white p-2 rounded"
-                        onClick={() => updateQuotationStatus(quotation.id, 'active')}
+                        className="bg-red-700 text-white p-2 rounded"
+                        onClick={() => deleteQuotation(quotation.id, setQuotations)}
                       >
-                        Restaurar
+                        Eliminar Definitivamente
                       </button>
-                    ) : (
-                      <button
-                        className="bg-red-500 text-white p-2 rounded"
-                        onClick={() => updateQuotationStatus(quotation.id, 'deleted')}
-                      >
-                        Eliminar
-                      </button>
-                    )
-                  )}
+                    )}
+                  </div>
+
+
                 </td>
               </tr>
             ))}

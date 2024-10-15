@@ -82,7 +82,8 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
       >
         {/* Renderizar los marcadores con los colores basados en el estado */}
         {Array.isArray(locations) &&
-          locations.map((location) => (
+          locations.filter((location) => location.state !== 'Eliminar' && location.state !== 'default' && location.state !== '') // Filtra ubicaciones con estados indeseados
+          .map((location) => (
             location.location && location.location.lat && location.location.lng ? (
               <MarkerF
                 key={location.id}

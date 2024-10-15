@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
-import { collection, onSnapshot, getDocs,setDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, getDocs, setDoc, updateDoc, doc } from 'firebase/firestore';
 import LocationHeader from './LocationHeader';
 import LocationTable from './LocationTable';
 import LocationMap from './LocationMap';
@@ -97,6 +97,16 @@ const Location = () => {
     }
   };
 
+  const handleStateRestore = () => {
+    const unsubscribe = onSnapshot(collection(db, 'locations'), (snapshot) => {
+      const locationList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setLocations(locationList);
+      setMapLocations(locationList);
+    });
+
+    return () => unsubscribe();
+  };
+
   const handleEditLocation = (location) => {
     setEditingLocation(location);
   };
@@ -122,7 +132,8 @@ const Location = () => {
           onRowClick={handleRowClick}
           onChangeState={handleChangeState}
           onEdit={handleEditLocation}
-          onShowDirections={handleShowDirections} // Pasamos la función para abrir el modal de direcciones
+          onShowDirections={handleShowDirections}
+          onStateRestore={handleStateRestore}  // Agregamos la función para refrescar después de restaurar
         />
       </div>
       {showAddModal && <AddLocationModal onClose={() => setShowAddModal(false)} />}

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { db } from '../../../../connection/firebase.js';
-import { doc, setDoc, collection, getDocs,  query, orderBy } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const sanitizeDocId = (id) => {
   return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
@@ -99,41 +99,45 @@ const SaveClientData = ({ formData, additionalData }) => {
         // Guardar la ubicación en la colección 'locations'
         const locationsCol = collection(db, 'locations');
 
-// Función para obtener el ID disponible más bajo
-const getLowestAvailableId = async () => {
-  const q = query(locationsCol, orderBy("id")); // Ordenar por ID
-  const querySnapshot = await getDocs(q);
-  let lowestAvailableId = 1; // Empezamos desde el ID 1
-  const ids = querySnapshot.docs.map(doc => parseInt(doc.data().id, 10)).filter(id => !isNaN(id)); // Convertir los IDs a números
-  
-  // Buscar el ID más bajo disponible
-  for (let i = 1; i <= ids.length + 1; i++) {
-    if (!ids.includes(i)) {
-      lowestAvailableId = i;
-      break;
-    }
-  }
+        // Función para obtener el ID disponible más bajo
+        const getLowestAvailableId = async () => {
+          try {
+            const locationsCollection = collection(db, 'locations');
+            const snapshot = await getDocs(locationsCollection);
+        
+            let maxId = 0;
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              if (data.id && typeof data.id === 'number') {
+                maxId = Math.max(maxId, data.id);
+              }
+            });
+        
+            return maxId + 1; // Next ID will be the highest ID + 1
+          } catch (error) {
+            console.error('Error al obtener el ID más alto:', error);
+            throw new Error('No se pudo obtener el próximo ID de ubicación.');
+          } // Devolver el ID como cadena
+        };
 
-  return lowestAvailableId.toString(); // Devolver el ID como cadena
-};
+        // Obtener el ID disponible más bajo y luego guardar el documento
+        const lowestAvailableId = await getLowestAvailableId();
 
-// Obtener el ID disponible más bajo y luego guardar el documento
-const lowestAvailableId = await getLowestAvailableId();
+        const locationData = {
+          Direccion: cleanedFormData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
+          Tipo: [
+            cleanedFormData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
+            cleanedFormData['Tipo_1'] || "CA", // Segundo valor en el array
+            cleanedFormData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
+          ],
+          client: clientName || "Cliente desconocido", // Nombre del cliente o valor por defecto
+          createdAt: timestamp, // Marca de tiempo generada por Firestore
+          id: lowestAvailableId, // ID más bajo disponible
+          location: cleanedFormData['Ubicacion'],
+          state: "Cotizacion_A",
+          clientId: clientId // Estado específico
+        };
 
-const locationData = {
-  Direccion: cleanedFormData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
-  Tipo: [
-    cleanedFormData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
-    cleanedFormData['Tipo_1'] || "CA", // Segundo valor en el array
-    cleanedFormData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
-  ],
-  client: clientName || "Cliente desconocido", // Nombre del cliente o valor por defecto
-  createdAt: timestamp, // Marca de tiempo generada por Firestore
-  id: lowestAvailableId, // ID más bajo disponible
-  location: cleanedFormData['Ubicacion'],
-  state: "Cotizacion_A",
-  clientId:clientId // Estado específico
-};
         await setDoc(doc(locationsCol, docId), locationData);
 
       } catch (err) {

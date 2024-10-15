@@ -62,18 +62,18 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
       >
         {/* Renderizar los marcadores con los colores basados en el estado */}
         {Array.isArray(mapLocations) &&
-          mapLocations.map((location) => (
-            location.location && location.location.lat && location.location.lng ? (
-              <MarkerF
-                key={location.id}
-                position={{ lat: location.location.lat, lng: location.location.lng }}
-                icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
-              />
-            ) : null
-          ))
+          mapLocations
+            .filter((location) => location.state !== 'Eliminar' && location.state !== 'default' && location.state !== '') // Filtra ubicaciones con estados indeseados
+            .map((location) =>
+              location.location && location.location.lat && location.location.lng ? (
+                <MarkerF
+                  key={location.id}
+                  position={{ lat: location.location.lat, lng: location.location.lng }}
+                  icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
+                />
+              ) : null
+            ) 
         }
-
-        {/* Marcador para la nueva ubicación */}
         {markerPosition && markerPosition.lat && markerPosition.lng && (
           <MarkerF position={markerPosition} />
         )}

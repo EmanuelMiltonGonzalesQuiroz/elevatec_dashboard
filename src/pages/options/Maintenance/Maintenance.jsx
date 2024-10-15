@@ -41,6 +41,6 @@ const Maintenance = () => {
       </div>
     </div>
   );
-};
+}; 
 
 export default Maintenance;
