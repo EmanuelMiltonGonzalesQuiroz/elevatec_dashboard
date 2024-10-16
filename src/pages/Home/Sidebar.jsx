@@ -68,7 +68,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
           {/* Agregamos la nueva opción para 'Route' */}
-        </ul>
+        </ul> 
       </nav>
       <div className="p-4">
         <button
