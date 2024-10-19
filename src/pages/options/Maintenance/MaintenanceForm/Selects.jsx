@@ -15,18 +15,31 @@ const Selects = ({ handleAddItem }) => {
   const [selectedPlan, setSelectedPlan] = useState(null); // Solo puede haber un plan seleccionado
   const [selectedCarLift, setSelectedCarLift] = useState(null);
   const [selectedForklift, setSelectedForklift] = useState(null);
+  const [planesOptions, setPlanesOptions] = useState([]); // Para almacenar las opciones de planes
   const [selectedEscalator, setSelectedEscalator] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [otros, setOtros] = useState([]); // Initialize the state correctly
-// Para almacenar los elementos sin basePrice
+  const [otros, setOtros] = useState([]); // Para almacenar los elementos sin basePrice
 
-  const planesOptions = [
-    { name: 'Trimensual', note: 'Alta demanda de uso: Hosp.Publicos, Edif. Judiciales, Hoteles de Alta Rent.' },
-    { name: 'Bimensual', note: 'Edif. Alto flujo, Bancos, Comerciales de Alta Rent, Edif. Gubernamentales, Univ.' },
-    { name: 'Mensual', note: 'Todos los Edificios que superen el 61% de uso del Edif.' },
-    { name: 'Bimestral', note: 'Edif. Que NO superen el 60% de uso del Edif.' },
-    { name: 'Trimestral', note: 'Edif. Que NO supere el 30% de uso del edificio O no viva nadie en el.' },
-  ];
+  const fetchPlanesOptions = async () => {
+    try {
+      const planesCollection = collection(db, 'planes');
+      const planesSnapshot = await getDocs(planesCollection);
+
+      const fetchedPlanesOptions = planesSnapshot.docs.flatMap(doc => {
+        const docData = doc.data();
+        if (docData.data && Array.isArray(docData.data)) {
+          return docData.data.map(plan => ({
+            name: plan.name,
+            note: plan.note,
+          }));
+        }
+        return [];
+      });
+
+      setPlanesOptions(fetchedPlanesOptions); // Actualiza el estado con los planes
+    } catch (error) {
+      console.error('Error fetching planes: ', error);
+    }
+  };
 
   const fetchLiftsData = async () => {
     const liftsCollection = collection(db, 'lifts_m');
@@ -74,7 +87,7 @@ const Selects = ({ handleAddItem }) => {
 
   const addItemToTable = (type, floor, price, liftClass = null) => {
     if (!price || price === 0) {
-      // If there is no basePrice, add it to the "otros" state
+      // Si no hay precio base, añadir a "otros"
       setOtros((prevOtros) => [...prevOtros, { type, floor, class: liftClass }]);
     } else {
       handleAddItem({ type, floor, basePrice: price, finalPrice: price, class: liftClass });
@@ -90,7 +103,7 @@ const Selects = ({ handleAddItem }) => {
     setSelectedPlan(planName);
   };
 
-  // Definir renderSelectField para evitar el error de "no-undef"
+  // Renderización de select con manejo de estado
   const renderSelectField = (label, options, value, setValue, handleAdd, isAddButton = true, isDisabled = false) => (
     <div className="mb-4">
       <label className="block mb-2 text-gray-700">{label}</label>
@@ -120,12 +133,14 @@ const Selects = ({ handleAddItem }) => {
       </div>
     </div>
   );
+
   const handleClientChange = (selectedClient) => {
     setSelectedClient(selectedClient); // Actualizar el estado del cliente seleccionado
     handleAddItem({ type: 'Client', client: selectedClient }); // Añadir a la tabla el cliente seleccionado
   };
 
   useEffect(() => {
+    fetchPlanesOptions(); // Cargar planes cuando el componente se monte
     fetchLiftsData();
     fetchCollectionData('car_lifts_m', setCarLiftsData, 'pisos', 'precios');
     fetchCollectionData('forklifts_m', setForkliftsData, 'pisos', 'precios');
@@ -135,13 +150,14 @@ const Selects = ({ handleAddItem }) => {
   return (
     <div className="min-h-[85vh] max-h-[112vh] md:w-1/4 min-w-60 bg-white p-4 rounded-lg shadow-lg overflow-y-auto">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Seleccionar Datos</h2>
-
+ 
       <CustomSelect
         collectionName="clients"
         placeholder="Buscar Cliente"
         onChange={(option) => handleClientChange(option)}
         selectedValue={selectedClient}
       />
+
       <div className="mb-4">
         <label className="block mb-2 text-gray-700">Ascensor Clase</label>
         <select
@@ -149,7 +165,7 @@ const Selects = ({ handleAddItem }) => {
           onChange={(e) => {
             const selectedClass = e.target.value;
             setSelectedLiftClass(selectedClass);
-            addItemToTable('Ascensor Clase', null, 0, selectedClass); // Add to table with class name
+            addItemToTable('Ascensor Clase', null, 0, selectedClass); // Añadir a la tabla con el nombre de clase
           }}
           value={selectedLiftClass}
         >
@@ -161,7 +177,6 @@ const Selects = ({ handleAddItem }) => {
           ))}
         </select>
       </div>
-
 
       {/* Select para Ascensor Pisos */}
       {renderSelectField(
@@ -185,10 +200,9 @@ const Selects = ({ handleAddItem }) => {
         selectedCarLift,
         setSelectedCarLift,
         () => {
-            const selectedItem = carLiftsData.find((item) => item.item === parseInt(selectedCarLift)); // Busca en "item" y convierte a entero
-            const price = selectedItem?.price || 0; // Valor predeterminado si no encuentra el precio
-
-            addItemToTable('MCS', selectedCarLift, price);
+          const selectedItem = carLiftsData.find((item) => item.item === parseInt(selectedCarLift));
+          const price = selectedItem?.price || 0;
+          addItemToTable('MCS', selectedCarLift, price);
         }
       )}
 

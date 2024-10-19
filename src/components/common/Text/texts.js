@@ -189,7 +189,7 @@ export const mainFormColumn1Text = {
   stopsConcept: "",
   recorrido: <>{redAsterisk} Recorrido (m)</>,
   recorridoConcept: "",
-  numberDoors: <>{redAsterisk} Número de puertas</>,
+  numberDoors: <>{redAsterisk} Tipos de puertas</>,
   numberDoorsConcept: "",
   inoxDoors: <>{redAsterisk} Inox</>,
   inoxDoorsConcept: "",
@@ -239,11 +239,12 @@ export const mainFormColumn2Text = {
   speedConcept: "",
   note: <>{redAsterisk} Nota:</>,
   noteDetails: [
-    "* Edificios < a 8 pisos velocidad 1m/s",
+    "* Edificios <menor que> 8 pisos velocidad 1m/s",
     "* Edificios entre 7 y 15 pisos velocidad 1.5m/s",
-    "* Edificios > 15 pisos velocidad 1.75m/s",
-    "* Edificios > 25 pisos velocidad 2m/s",
-  ],
+    "* Edificios <mayor que> 15 pisos velocidad 1.75m/s",
+    "* Edificios <mayor que> 25 pisos velocidad 2m/s",
+]
+
 };
 
 export const advancedOptionsText = {

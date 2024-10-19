@@ -32,6 +32,7 @@ const Location = () => {
   const [editingLocation, setEditingLocation] = useState(null);
   const [selectedLocationForDirections, setSelectedLocationForDirections] = useState(null); // Estado para la ubicación seleccionada
   const { currentUser } = useAuth();
+  const [copySuccess, setCopySuccess] = useState(false);
   const userRole = currentUser?.role || 'Usuario';
 
   useEffect(() => {
@@ -84,9 +85,20 @@ const Location = () => {
 
   const handleRowClick = (location) => {
     if (location.location && location.location.lat && location.location.lng) {
+      // Mover el mapa
       setMapCenter({ lat: location.location.lat, lng: location.location.lng });
+      
+      // Copiar latitud y longitud al portapapeles
+      const latLng = `${location.location.lat}, ${location.location.lng}`;
+      navigator.clipboard.writeText(latLng)
+        .then(() => {
+          setCopySuccess(true); // Mostrar mensaje de éxito
+          setTimeout(() => setCopySuccess(false), 2000); // Ocultar el mensaje después de 2 segundos
+        })
+        .catch(err => console.error('Error al copiar al portapapeles: ', err));
     }
   };
+
 
   const handleChangeState = async (locationId, newState) => {
     try {
@@ -150,6 +162,12 @@ const Location = () => {
           onClose={() => setShowDirectionsModal(false)}
         />
       )}
+      {copySuccess && (
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4 p-2 bg-blue-700 text-white rounded shadow-lg">
+          Coordenadas copiadas correctamente
+        </div>
+      )}
+
     </div>
   );
 };

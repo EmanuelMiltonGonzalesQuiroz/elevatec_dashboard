@@ -152,6 +152,13 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
                 />
                 Depósito
               </label>
+            </div>
+          </div>
+          <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
+            Tipo de Cambio
+          </label>
+          <div className="flex flex-col">
+            <div className="flex flex-col space-y-2">
 
               <label className="flex items-center">
                 <input
@@ -182,7 +189,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               onChange={handleStateCheckboxChange}
               className="mr-2"
             />
-            Para el Estado
+            Etiquetar únicamente si la cotización es para una identidad estatal
           </label>
 
           {isStateChecked && (
@@ -203,7 +210,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               onChange={handleInterpisosCheckboxChange}
               className="mr-2"
             />
-            Interpisos
+            Controlador de pisos
           </label>
         </div>
 

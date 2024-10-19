@@ -70,17 +70,24 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                 <td className="py-3 px-6 text-left">{getClientName(location)}</td>
                 <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
                 <td className="py-3 px-6 text-left">  
-                  <span
-                    className="inline-block w-4 h-4 rounded-full mr-2"
-                    style={{ backgroundColor: stateColors[location.state] || 'black' }}
-                  ></span>
-                  <span>
-                    {location.state === 'Cotizacion_A' 
-                      ? 'Cotización Ascensor' 
-                      : location.state === 'Cotizacion_M' 
-                      ? 'Cotización Mantenimiento' 
-                      : location.state}
-                  </span>
+                  <div className="flex items-center">
+                    <span
+                      className="inline-block w-4 h-4 rounded-full mr-2"
+                      style={{ backgroundColor: stateColors[location.state] || 'black' }}
+                    ></span>
+                    <span>
+                      {location.state === 'Cotizacion_A' 
+                        ? 'Cotización Ascensor' 
+                        : location.state === 'Cotizacion_M' 
+                        ? 'Cotización Mantenimiento' 
+                        : location.state}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-600 mt-1">
+                    <span>Latitud: {location.location.lat || 'n/a'}</span>
+                    <br />
+                    <span>Longitud: {location.location.lng || 'n/a'}</span>
+                  </div>
                 </td>
                 <td className="py-3 px-6 text-left">
                   {((location.state === 'Eliminar' || location.state === 'default') && (

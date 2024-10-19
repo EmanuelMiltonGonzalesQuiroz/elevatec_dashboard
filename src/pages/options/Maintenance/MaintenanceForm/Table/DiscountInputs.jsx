@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
-const DiscountInputs = ({ totalFinalPrice, plan, userRole, setDirectPercentage, setApprovalPercentage, setTotalPriceByPlan, setFinalTotal, totalPriceByPlan, finalTotal }) => {
+const DiscountInputs = ({
+  totalFinalPrice,
+  plan,
+  userRole,
+  setDirectPercentage,
+  setApprovalPercentage,
+  setTotalPriceByPlan,
+  setFinalTotal,
+  totalPriceByPlan,
+  finalTotal
+}) => {
   const [localDirectPercentage, setLocalDirectPercentage] = useState(0);
   const [localApprovalPercentage, setLocalApprovalPercentage] = useState(0);
 
   useEffect(() => {
-  
     const calculateTotalM = () => {
       let multiplier = 1; // Por defecto, mensual
       switch (plan) {
@@ -29,34 +38,37 @@ const DiscountInputs = ({ totalFinalPrice, plan, userRole, setDirectPercentage, 
           break;
       }
       const totalByPlan = totalFinalPrice * multiplier;
-      setTotalPriceByPlan(totalByPlan.toFixed(2));  // Llama a la función de 'Table' para actualizar el valor
+      setTotalPriceByPlan(totalByPlan.toFixed(2));  // Actualiza el valor en el componente padre
       return totalByPlan;
     };
-  
+
     const calculateFinalTotal = () => {
       const totalDiscount = localDirectPercentage + localApprovalPercentage;
       const discountFactor = totalDiscount / 100;
       const totalWithPlan = calculateTotalM();
       const finalTotalValue = totalWithPlan - totalWithPlan * discountFactor;
-      setFinalTotal(finalTotalValue.toFixed(2)); // Llama a la función de 'Table' para actualizar el valor
+      setFinalTotal(finalTotalValue.toFixed(2)); // Actualiza el valor en el componente padre
     };
-  
+
     calculateFinalTotal();
   }, [localDirectPercentage, localApprovalPercentage, plan, totalFinalPrice, setTotalPriceByPlan, setFinalTotal]);
 
   return (
     <div className="w-full grid grid-cols-4 gap-4">
+      {/* Precio Total según Plan */}
       <div className="text-center bg-green-500 text-white p-2 rounded-lg">
         <p>Precio Total según plan</p>
         <p>{totalPriceByPlan}</p> {/* Muestra el precio calculado según el plan */}
       </div>
+
+      {/* Descuento Directo */}
       <div className="text-center bg-yellow-500 text-black p-2 rounded-lg w-full">
         <p>% Directo</p>
         <input
           type="number"
           value={localDirectPercentage}
           onChange={(e) => {
-            const value = Math.max(0, Math.min(10, parseInt(e.target.value, 10)));
+            const value = Math.max(0, Math.min(10, Number(e.target.value)));
             setLocalDirectPercentage(value);
             setDirectPercentage(value);
           }}
@@ -65,6 +77,8 @@ const DiscountInputs = ({ totalFinalPrice, plan, userRole, setDirectPercentage, 
           max="10"
         />
       </div>
+
+      {/* Descuento Aprobación Gerencia, solo visible para ciertos roles */}
       {(userRole === 'Administrador' || userRole === 'Gerencia') && (
         <div className="text-center bg-red-500 text-white p-2 rounded-lg w-full">
           <p>% Aprob. Gerencia</p>
@@ -72,7 +86,7 @@ const DiscountInputs = ({ totalFinalPrice, plan, userRole, setDirectPercentage, 
             type="number"
             value={localApprovalPercentage}
             onChange={(e) => {
-              const value = Math.max(0, Math.min(10, parseInt(e.target.value, 10)));
+              const value = Math.max(0, Math.min(10, Number(e.target.value)));
               setLocalApprovalPercentage(value);
               setApprovalPercentage(value);
             }}
@@ -82,6 +96,8 @@ const DiscountInputs = ({ totalFinalPrice, plan, userRole, setDirectPercentage, 
           />
         </div>
       )}
+
+      {/* Total Final */}
       <div className="text-center bg-green-500 text-white p-2 rounded-lg">
         <p>Total</p>
         <p>{finalTotal}</p> {/* Muestra el total final calculado con descuentos */}

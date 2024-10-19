@@ -10,6 +10,7 @@ import valoresDeSalto from './Jsons/valores_de_salto.json';
 import puertasInfo from './Jsons/puertas.json';
 import configuracionesDePisos from './Jsons/configuraciones_completas_de_pisos.json';
 import configuracionesDeEdificios from './Jsons/configuraciones_de_edificios.json';
+import planes from './Jsons/planes.json'; // Carga el archivo planes.json
 
 // Función que verifica si la colección existe y contiene documentos
 const collectionExists = async (collectionName) => {
@@ -27,7 +28,8 @@ const processTask = async () => {
         { data: valoresDeSalto, collectionName: 'valores_de_salto' },
         { data: puertasInfo, collectionName: 'puertas_info' },
         { data: configuracionesDePisos, collectionName: 'configuraciones_de_pisos' },
-        { data: configuracionesDeEdificios, collectionName: 'configuraciones_de_edificios' }
+        { data: configuracionesDeEdificios, collectionName: 'configuraciones_de_edificios' },
+        { data: planes, collectionName: 'planes' } // Agrega el archivo planes.json
     ];
 
     // Itera sobre cada archivo JSON y carga su contenido a Firestore
@@ -36,7 +38,6 @@ const processTask = async () => {
         const exists = await collectionExists(collectionName);
 
         if (exists) {
-            console.log(`La colección "${collectionName}" ya existe.`);
             const querySnapshot = await getDocs(collection(db, collectionName));
             if (!querySnapshot.empty) {
                 continue; // Salta esta colección si ya contiene datos

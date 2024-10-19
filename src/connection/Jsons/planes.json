@@ -1,0 +1,8 @@
+[
+    { "name": "Trimensual", "note": "Alta demanda de uso: Hosp.Publicos, Edif. Judiciales, Hoteles de Alta Rent.", "value": 1.5 },
+    { "name": "Bimensual", "note": "Edif. Alto flujo, Bancos, Comerciales de Alta Rent, Edif. Gubernamentales, Univ.", "value": 1.25 },
+    { "name": "Mensual", "note": "Todos los Edificios que superen el 61% de uso del Edif.", "value": 1 },
+    { "name": "Bimestral", "note": "Edif. Que NO superen el 60% de uso del Edif.", "value": 1.5 },
+    { "name": "Trimestral", "note": "Edif. Que NO supere el 30% de uso del edificio O no viva nadie en el.", "value": 2 }
+  ]
+  

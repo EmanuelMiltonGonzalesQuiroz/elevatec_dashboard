@@ -3,6 +3,7 @@ import LiftsM from './LiftsM';
 import CarLiftsM from './CarLiftsM';
 import ForkliftsM from './ForkliftsM';
 import EscalatorM from './EscalatorM';
+import Planes from './Planes'; // Importa el nuevo componente Planes
 import { maintenanceText } from '../../../components/common/Text/texts';
 
 const MaintenanceSettings = () => {
@@ -35,13 +36,20 @@ const MaintenanceSettings = () => {
         >
           {maintenanceText.escaleraMecanicaM}
         </button>
+        <button
+          className={`mr-4 p-2 ${activeTab === 'Planes' ? 'bg-blue-500 text-white' : 'bg-white text-black'} rounded-lg`}
+          onClick={() => setActiveTab('Planes')}
+        >
+          Planes
+        </button>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: '75vh'}}>
+      <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: '75vh' }}>
         {activeTab === 'LiftsM' && <LiftsM />}
         {activeTab === 'CarLiftsM' && <CarLiftsM />}
         {activeTab === 'ForkliftsM' && <ForkliftsM />}
         {activeTab === 'EscalatorM' && <EscalatorM />}
+        {activeTab === 'Planes' && <Planes />} {/* Agrega el componente Planes aquí */}
       </div>
     </div>
   );
