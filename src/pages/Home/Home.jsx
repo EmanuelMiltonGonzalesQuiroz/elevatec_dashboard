@@ -1,5 +1,3 @@
-// Home.jsx
-
 import React, { useState, useEffect } from 'react';
 import Quotations from './../options/quotations/Quotations';
 import Users from '../options/Users/Users';
@@ -12,10 +10,11 @@ import Settings from '../options/Settings/Settings';
 import Location from '../options/Location/Locations';
 import Maintenance from '../options/Maintenance/Maintenance';
 import MaintenanceSettings from '../options/MaintenanceSettings/MaintenanceSettings';
-import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
-import loadJsonFilesToFirestore2 from '../../connection/loadJsonsToFirestore2';
 import Route from '../options/Route/Route';
 import RouteSettings from '../options/RouteSettings/RouteSettings';
+import Assignment from '../options/Assignment/Assignment';  // Import the new component
+import loadJsonFilesToFirestore from '../../connection/loadJsonsToFirestore';
+import loadJsonFilesToFirestore2 from '../../connection/loadJsonsToFirestore2';
 
 const Home = () => {
   const { currentUser, logout } = useAuth();
@@ -65,7 +64,7 @@ const Home = () => {
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
             {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
-            
+            {activeContent === 'Asignacion' && <Assignment />} {/* Adding the new option for Asignacion */}
           </div>
         </main>
       </div>

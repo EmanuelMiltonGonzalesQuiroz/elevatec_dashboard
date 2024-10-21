@@ -39,7 +39,8 @@ export const homeText = {
   location:"Ubicación",
   company:"ELEVATEC",
   elevatorCalculations: "Recorrido",
-  elevatorCalculationsSettings: "Ajustes Recorrido"
+  elevatorCalculationsSettings: "Ajustes Recorrido",
+  assignment: "Asignación", 
 
 };
 export const clientColumnText = {

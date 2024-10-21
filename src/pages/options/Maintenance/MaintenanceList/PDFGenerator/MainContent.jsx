@@ -98,8 +98,6 @@ const MainContent = ({ doc, config, startY, recipe }) => {
     ["ÍTEM", "EQUIPO"],  // Headers
   ];
 
-  // Dynamically generating rows for each item in filteredItems
-  console.log(recipe)
   recipe.filteredItems.forEach((item) => {
     // Initial structure with the common fields
     let equipoInfo = `Ciudad: ${getBoliviaCityByLocation(recipe.location.lat, recipe.location.lng)}\nMarca: ELEVATEC\nParadas: ${item.type.floor}\nTipo: Eléctrico`;

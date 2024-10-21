@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { homeText } from '../../components/common/Text/texts';
 import {
   FaChevronLeft, FaChevronRight, FaUser, FaCog, FaUsers,
-  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools, FaSignOutAlt, FaCalculator, FaRoute
-} from 'react-icons/fa';
+  FaFileInvoiceDollar, FaLocationArrow, FaWrench, FaTools, FaSignOutAlt, FaCalculator, FaRoute, FaClipboardList
+} from 'react-icons/fa'; // Import FaClipboardList for 'Asignación'
 import { CgProfile } from "react-icons/cg";
 import { useAuth } from '../../context/AuthContext';
 
@@ -67,7 +67,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {userRole === 'Administrador' && renderItem(homeText.users, <FaUser />, 'Usuarios')}
           {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
-          {/* Agregamos la nueva opción para 'Route' */}
+          {renderItem(homeText.assignment, <FaClipboardList />, 'Asignacion')} {/* Agregamos la nueva opción para 'Asignación' */}
         </ul> 
       </nav>
       <div className="p-4">

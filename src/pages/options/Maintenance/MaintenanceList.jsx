@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import CustomSelect from '../../../components/UI/CustomSelect';
-import { getFirestore, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
-import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
+import { getFirestore, collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import CustomModal from '../../../components/UI/CustomModal';
 import Modal from '../quotations/Calculation/Modal';
 import { useAuth } from '../../../context/AuthContext';
-import { db } from '../../../connection/firebase';
-import deleteMaintenance from './MaintenanceList/deleteMaintenance';
+import MaintenanceTable from './MaintenanceList/MaintenanceTable';
+import PDFContent from './MaintenanceList/PDFGenerator/PDFContent';
+import MaintenanceFilters from './MaintenanceList/MaintenanceFilters';
+
 // Función para formatear la fecha
 const formatDate = (dateString) => {
   const dateObj = new Date(dateString);
@@ -18,16 +18,13 @@ const formatDate = (dateString) => {
 };
 
 const MaintenanceList = ({ showDeleted }) => {
-  const { currentUser} = useAuth(); 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const { currentUser } = useAuth(); 
   const [maintenanceList, setMaintenanceList] = useState([]);
   const [filteredMaintenance, setFilteredMaintenance] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedMaintenance, setSelectedMaintenance] = useState(null);
-  const [selectedPDFOption, setSelectedPDFOption] = useState(null);
   const [showPDFModal, setShowPDFModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedMaintenance, setSelectedMaintenance] = useState(null);
+  const [selectedPDFOption, setSelectedPDFOption] = useState(null); // Restaurar este estado
 
   useEffect(() => {
     const fetchMaintenanceList = async () => {
@@ -35,14 +32,11 @@ const MaintenanceList = ({ showDeleted }) => {
       const maintenanceCol = collection(db, 'list of maintenance');
       const maintenanceSnapshot = await getDocs(maintenanceCol);
 
-      const maintenanceData = maintenanceSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          date: formatDate(data.date),
-        };
-      });
+      const maintenanceData = maintenanceSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        date: formatDate(doc.data().date),
+      }));
 
       setMaintenanceList(maintenanceData);
     };
@@ -50,47 +44,12 @@ const MaintenanceList = ({ showDeleted }) => {
     fetchMaintenanceList();
   }, []);
 
-  const planesOptions = [
-    { name: 'Trimensual' },
-    { name: 'Bimensual' },
-    { name: 'Mensual' },
-    { name: 'Bimestral' },
-    { name: 'Trimestral' }
-  ];
-
-  useEffect(() => {
-    const filtered = maintenanceList.filter((maintenance) => {
-      const matchesDeletedState = showDeleted ? maintenance.state === 'deleted' : maintenance.state !== 'deleted';
-      const matchesClient = selectedClient ? maintenance.client.name === selectedClient.label : true;
-      const matchesDate = selectedDate ? maintenance.date === formatDate(selectedDate) : true;
-      const matchesPlan = selectedPlan ? maintenance.plan === selectedPlan : true; // Comparar directamente con el valor
-      return matchesDeletedState && matchesClient && matchesDate && matchesPlan;
-    });
-    setFilteredMaintenance(filtered);
-  }, [selectedDate, selectedClient, selectedPlan, maintenanceList, showDeleted]);
-  
-
-  const handleClientChange = (selectedOption) => {
-    setSelectedClient(selectedOption);
-  };
-
-  const handlePlanChange = (selectedValue) => {
-    setSelectedPlan(selectedValue);
-  };
-  
-
-  const handleDateChange = (event) => {
-    let selectedDate = new Date(event.target.value + "T00:00:00");
-    selectedDate.setDate(selectedDate.getDate() + 1);
-    setSelectedDate(selectedDate.toISOString().split('T')[0]);
-  };
-
   const handleViewPDF = (maintenance) => {
     setSelectedMaintenance(maintenance);
     setShowModal(true);
   };
 
-  const handlePDFOption = (maintenanceData, option) => {
+  const handlePDFOption = (maintenanceData, option) => { // Restaurar esta función
     setSelectedPDFOption({ data: maintenanceData, option });
     setShowPDFModal(true);
   };
@@ -101,8 +60,6 @@ const MaintenanceList = ({ showDeleted }) => {
 
     try {
       await updateDoc(maintenanceRef, { state: status });
-
-      // Actualizar el estado local para reflejar el cambio
       setMaintenanceList((prevList) =>
         prevList.map((maintenance) =>
           maintenance.id === id ? { ...maintenance, state: status } : maintenance
@@ -112,183 +69,96 @@ const MaintenanceList = ({ showDeleted }) => {
       console.error('Error al actualizar el estado:', error);
     }
   };
-  const [clientNames, setClientNames] = useState({});
-
-  useEffect(() => {
-    // Función para cargar los nombres de los clientes basados en el clientId
-    const fetchClientNames = async () => {
-      const clientsCollection = collection(db, 'clients');
-      const clientsSnapshot = await getDocs(clientsCollection);
-      
-      const clientsData = {};
-      clientsSnapshot.docs.forEach((doc) => {
-        clientsData[doc.id] = doc.data().name; // Crear un mapeo de clientId a nombre del cliente
-      });
-      
-      setClientNames(clientsData);
-    };
-
-    fetchClientNames();
-  }, []);
-
-  const getClientName = (clientId, clientName) => {
-    // Buscar el nombre del cliente basado en clientId primero, luego usar client.name si no se encuentra
-    return clientNames[clientId] || clientName || 'Cliente desconocido';
-  };
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg max-h-[75vh] text-black">
       <h1 className="text-xl font-bold mb-4">Lista de Mantenimientos</h1>
-      
-      <div className="mb-4">
-        <label htmlFor="building" className="mr-2 text-black">Seleccionar Cliente</label>
-        <CustomSelect
-          collectionName="clients"
-          placeholder="Buscar Cliente"
-          onChange={handleClientChange}
-          selectedValue={selectedClient}
-        />
-      </div>
-      <div className="mb-4">
-      <label htmlFor="plan" className="mr-2 text-black">Seleccionar Plan</label>
-      <select
-        id="plan"
-        className="p-2 border rounded"
-        value={selectedPlan || ''} // Usar '' si no hay plan seleccionado
-        onChange={(e) => handlePlanChange(e.target.value)}
-      >
-        <option value="">Todos los Planes</option>
-        {planesOptions.map((plan) => (
-          <option key={plan.name} value={plan.name}>
-            {plan.name}
-          </option>
-        ))}
-      </select>
-    </div>
-      
-      <div className="mb-4">
-        <label htmlFor="date" className="mr-2 text-black">Seleccionar Fecha</label>
-        <input
-          type="date"
-          id="date" 
-          className="p-2 border rounded"
-          onChange={handleDateChange}
-        />
-      </div>
 
-      <div className="overflow-auto">
-        <table className="bg-white w-full">
-          <thead>
-            <tr>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">#</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cliente</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Dirección</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Cotizado por</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Teléfono Cliente</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Plan</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Precio Total</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Fecha</th>
-              <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-          {filteredMaintenance
-            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Ordena por fecha, del más nuevo al más viejo
-            .map((maintenance, index) => (
-              <tr key={maintenance.id} className="bg-gray-100">
-                <td className="py-2 px-4 text-black">{index + 1}</td>
-                <td className="py-3 px-6 text-left">
-                  {getClientName(maintenance.client.value, maintenance.client?.name)}
-                </td>
-                <td className="py-2 px-4 text-black">{maintenance.buildingName}</td>
-                <td className="py-2 px-4 text-black">{maintenance.createdBy}</td>
-                <td className="py-2 px-4 text-black">{maintenance.client?.phone}</td>
-                <td className="py-2 px-4 text-black">{maintenance.plan}</td>
-                <td className="py-2 px-4 text-black">{maintenance.finalTotal}</td>
-                <td className="py-2 px-4 text-black">{maintenance.date}</td>
-                <td className="py-2 px-4 flex space-x-2">
-                  <button
-                    className="bg-blue-500 text-white p-2 rounded"
-                    onClick={() => handleViewPDF(maintenance)}
-                  >
-                    Ver PDF
-                  </button>
-                  {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia' || currentUser.role === 'Super Usuario'|| currentUser.role === 'Usuario') && (
-                    showDeleted ? (
-                      <>
-                        <button
-                          className="bg-green-500 text-white p-2 rounded"
-                          onClick={() => updateMaintenanceStatus(maintenance.id, 'active')}
-                        >
-                          Restaurar
-                        </button>
-                        <button
-                          className="bg-red-700 text-white p-2 rounded"
-                          onClick={() => deleteMaintenance(maintenance.id, setMaintenanceList)}  // Aquí pasamos setMaintenanceList
-                        >
-                          Eliminar Definitivamente
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        className="bg-red-500 text-white p-2 rounded"
-                        onClick={() => updateMaintenanceStatus(maintenance.id, 'deleted')}
-                      >
-                        Eliminar
-                      </button>
-                    )
-                  )}
-                </td>
-              </tr>
-          ))}
+      <MaintenanceFilters
+        maintenanceList={maintenanceList}
+        setFilteredMaintenance={setFilteredMaintenance}
+        showDeleted={showDeleted}
+      />
 
-          </tbody>
-        </table>
-      </div>
+      <MaintenanceTable
+        maintenanceList={filteredMaintenance}
+        handleViewPDF={handleViewPDF}
+        updateMaintenanceStatus={updateMaintenanceStatus}
+        currentUser={currentUser}
+        showDeleted={showDeleted}
+      />
 
-      {/* Modal con opciones de PDF */}
       {showModal && (
         <CustomModal show={showModal} onClose={() => setShowModal(false)}>
-          <div className="flex flex-col items-center mx-auto">
-            <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
-
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado')}
-            >
-              Ver PDF
-            </button>
-
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Jalmeco')}
-            >
-              Ver PDF Jalmeco
-            </button>
-
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Tecnolift')}
-            >
-              Ver PDF Tecnolift
-            </button>
-
-            <button
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
-              onClick={() => setShowModal(false)}
-            >
-              Cerrar
-            </button>
+        <div className="flex flex-col items-center mx-auto">
+          <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF o Word</h2>
+      
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* Primera columna */}
+            <div className="flex flex-col items-center">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado')}
+              >
+                Ver PDF
+              </button>
+      
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Jalmeco')}
+              >
+                Ver PDF Jalmeco
+              </button>
+      
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Tecnolift')}
+              >
+                Ver PDF Tecnolift
+              </button>
+            </div>
+      
+            {/* Segunda columna */}
+            <div className="flex flex-col items-center">
+              <button
+                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'word_sin_membretado')}
+              >
+                Descargar Word
+              </button>
+      
+              <button
+                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Jalmeco')}
+              >
+                Ver PDF Jalmeco sin membretado
+              </button>
+      
+              <button
+                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Tecnolift')}
+              >
+                Ver PDF Tecnolift sin membretado
+              </button>
+            </div>
           </div>
-        </CustomModal>
+      
+          <button
+            className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
+            onClick={() => setShowModal(false)}
+          >
+            Cerrar
+          </button>
+        </div>
+      </CustomModal>
+      
       )}
 
-      {/* Modal para mostrar el PDF */}
       {showPDFModal && (
         <Modal show={showPDFModal} onClose={() => setShowPDFModal(false)}>
           <PDFContent
             recipe={selectedMaintenance}
-            type={selectedPDFOption?.option || ''}
+            type={selectedPDFOption?.option || ''} // Usar `selectedPDFOption`
           />
         </Modal>
       )}

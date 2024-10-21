@@ -165,7 +165,7 @@ const Profile = () => {
         </div>
 
         {/* Botón para abrir el modal de cambiar contraseña */}
-        {!isEditing &&(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') &&  (
+        {!isEditing &&  (
           <div className="mt-6 text-center">
             <h3 className="text-xl font-semibold mb-4">Administrar mi contraseña</h3>
             <button
