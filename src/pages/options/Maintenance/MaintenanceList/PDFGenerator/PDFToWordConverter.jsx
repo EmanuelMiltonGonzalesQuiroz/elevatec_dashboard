@@ -131,7 +131,40 @@ const PDFToWordConverter = ({ recipe, fileName, onConvert }) => {
 
               // Equipment Table
               // Tabla de equipos sin el segundo argumento en createTable
-                       
+              createTable(
+                [
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        children: [new Paragraph("ÍTEM")],
+                        width: 3000, // 3 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph("EQUIPO")],
+                        width: 5000, // 5 cm en DXA
+                      }),
+                    ],
+                  }),
+                  ...recipe.filteredItems.map((item) =>
+                    new TableRow({
+                      children: [
+                        new TableCell({
+                          children: [new Paragraph(item.displayType)],
+                          width: 3000, // 3 cm en DXA
+                        }),
+                        new TableCell({
+                          children: [
+                            new Paragraph(
+                              `Ciudad: ${getBoliviaCityByLocation(recipe.location.lat, recipe.location.lng)}\nMarca: ELEVATEC\nParadas: ${item.type.floor}\nTipo: Eléctrico\nCapacidad: ${item.type.class || "4"}`
+                            ),
+                          ],
+                          width: 5000, // 5 cm en DXA
+                        }),
+                      ],
+                    })
+                  ),
+                ]
+              ),                            
               
               createParagraph(` `, true),
 
@@ -195,9 +228,90 @@ const PDFToWordConverter = ({ recipe, fileName, onConvert }) => {
                 createParagraph("• Autorizar a los técnicos para la sustitución de piezas previa demostración del defecto de las mismas, siendo el costo del cambio con cargo al CLIENTE."),
                 createParagraph(" ", true),
 
-                
+                createParagraph("SEXTA: (TÉRMINO Y RENOVACIÓN DE CONTRATO).-", true),
+                createParagraph(`El presente contrato tendrá validez de Dos (2) años calendario, computable a partir del ${formatRecipeDate(recipe.date)} hasta el ${calculateEndDate(recipe.date)}, y será renovable por períodos iguales, mediante comunicación escrita por parte del CLIENTE al PROVEEDOR.`, false, 20, "justify"),
+                createParagraph(" ", true),
 
-                
+                createParagraph("SEPTIMA: (DEL MONTO, MONEDA Y FORMA DE PAGO).-", true),
+                createParagraph(`El importe aceptado por las partes para la prestación del Servicio de Mantenimiento Preventivo y Correctivo de ${generateEquipmentSummary(recipe.filteredItems)} es de Bs. ${recipe.finalTotal} (${convertNumberToWords(entero)} ${decimales}/100 bolivianos), pagaderos de forma mensual y contra entrega de factura oficial correspondiente.`, false, 20, "justify"),
+                createParagraph(" ", true),
+
+                createParagraph("OCTAVA: (CONFIDENCIALIDAD).-", true),
+                createParagraph("El CLIENTE se compromete a no revelar a terceros ninguna información que comprometa o pueda perjudicar los derechos de propiedad intelectual, marcas y patentes del fabricante o del PROVEEDOR.", false, 20, "justify"),
+                createParagraph(" ", true),
+
+                createParagraph("NOVENA: (CLAUSULA ARBITRAL).-", true),
+                createParagraph("Cualquier controversia que surja será resuelta en arbitraje administrado por el Centro de Conciliación y Arbitraje de la Cámara Nacional de Comercio de Bolivia.", false, 20, "justify"),
+                createParagraph(" ", true),
+
+                createParagraph("DÉCIMA: (ACEPTACIÓN).-", true),
+                createParagraph("Las partes abajo firmantes aceptan todas las cláusulas del presente contrato sin vicio alguno del consentimiento.", false, 20, "justify"),
+                createParagraph(" ", true),
+
+                createParagraph(`${getBoliviaCityByLocation(recipe.location.lat, recipe.location.lng)}, ${formatRecipeDate(recipe.date)}`, true, 20, "center"),
+
+                createParagraph(` `, true),
+              // Signatures
+              createTable(
+                [
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        children: [new Paragraph("Sr. Alvaro G. Jaldin Navia")],
+                        width: 3000, // 3 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph(" ")],
+                        width: 2000, // 2 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph(recipe.client.name || "……………………………………………")],
+                        width: 5000, // 5 cm en DXA
+                      }),
+                    ],
+                  }),
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        children: [new Paragraph("C.I. 6550173 Cbba")],
+                        width: 3000, // 3 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph(" ")],
+                        width: 2000, // 2 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph(`C.I ${recipe.client.ciNIT || "………………………………….."}`)],
+                        width: 5000, // 5 cm en DXA
+                      }),
+                    ],
+                  }),
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        children: [new Paragraph("PROVEEDOR")],
+                        width: 3000, // 3 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph(" ")],
+                        width: 2000, // 2 cm en DXA
+                      }),
+                      new TableCell({
+                        children: [new Paragraph("CLIENTE")],
+                        width: 5000, // 5 cm en DXA
+                      }),
+                    ],
+                  }),
+                ],
+                {
+                  borders: {
+                    top: { size: 0, color: "FFFFFF" },  // Sin borde superior
+                    bottom: { size: 0, color: "FFFFFF" }, // Sin borde inferior
+                    left: { size: 0, color: "FFFFFF" },  // Sin borde izquierdo
+                    right: { size: 0, color: "FFFFFF" },  // Sin borde derecho
+                  },
+                }
+              )                                     
               
             ],
           },

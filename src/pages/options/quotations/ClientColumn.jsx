@@ -1,52 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { clientColumnText } from '../../../components/common/Text/texts';
-import { useUpdateFormData } from '../../../hooks/useUpdateFormData';
 import NewClientModal from './NewClientModal';
 import MapComponent from './ClientColumn/MapComponent';
-import { useClientHandlers } from './ClientColumn/useClientHandlers';
 import logo from '../../../assets/images/COTA LOGO/elevatec_logo_sin_fondo.png';
-import { useAuth } from '../../../context/AuthContext';
 
-const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleReset, onReset }) => {
-  const { updateFormData } = useUpdateFormData();
-  const { handleClientChange } = useClientHandlers(formData, setFormData, updateFormData);
-  const { currentUser } = useAuth();
+const ClientColumn = ({
+  formData,
+  setFormData,
+  handleGenerateQuotation,
+  handleReset,
+  handleClientChange,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [selectedSolicitante, setSelectedSolicitante] = useState(null);
-  const [selectedVendedor, setSelectedVendedor] = useState('');
   const [showMessage, setShowMessage] = useState('');
-  const [mapCenter] = useState({ lat: -16.495543, lng: -68.133543 });
-  const [markerPosition, setMarkerPosition] = useState(mapCenter);
-  const [locationName, setLocationName] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [locationError, setLocationError] = useState('');
-  const [isStateChecked, setIsStateChecked] = useState(false);
-  const [isInterpisosChecked, setIsInterpisosChecked] = useState(true);
-  const [stateValue, setStateValue] = useState(0);
-  const [selectedPaymentMethods, setSelectedPaymentMethods] = useState([]);
 
-  useEffect(() => {
-    if (formData['02_CLIENTE'] && formData['02_CLIENTE'] !== (selectedClient && selectedClient.label)) {
-      setSelectedClient({ label: formData['02_CLIENTE'] });
+  // Function to update formData
+  const updateFormData = (field, value) => {
+    setFormData({ [field]: value });
+  };
+
+  // Shared field handlers
+  const handleVendedorChange = (e) => {
+    const vendedor = e.target.value;
+    handleClientChange('Vendedor', vendedor); // Update shared field across all quotations
+  };
+
+  const handleClientSelect = (option) => {
+    handleClientChange('02_CLIENTE', option.label); // Update shared field across all quotations
+  };
+
+  // Independent field handlers
+  const handlePaymentMethodChange = (method) => {
+    let updatedMethods = formData['MetodoDePago'] ? formData['MetodoDePago'].split('_') : [];
+    if (updatedMethods.includes(method)) {
+      updatedMethods = updatedMethods.filter((m) => m !== method);
+    } else {
+      updatedMethods.push(method);
     }
-    if (formData['Solicitante'] && formData['Solicitante'] !== (selectedSolicitante && selectedSolicitante.label)) {
-      setSelectedSolicitante({ label: formData['Solicitante'] });
-    }
-  }, [formData, selectedClient, selectedSolicitante]);
- 
-  const handleResetAll = () => {
-    handleReset();
-    setSelectedClient(null);
-    setSelectedSolicitante(null);
-    setSelectedVendedor('');
-    setStateValue(0);
-    setLocationError('');
-    setSelectedPaymentMethods([]);
-    setIsInterpisosChecked(true);
-    setIsStateChecked(false);
-    if (onReset) onReset();
+    updateFormData('MetodoDePago', updatedMethods.join('_'));
+  };
+
+  const handleStateCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    updateFormData('Para_el_Estado', isChecked ? 'Sí' : 'No');
+  };
+
+  const handleStateValueChange = (e) => {
+    const value = Math.max(0, e.target.value);
+    updateFormData('Estado', value);
+  };
+
+  const handleInterpisosCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    updateFormData('Interpisos', isChecked ? 'Sí' : 'No');
   };
 
   const handleMapClick = (event) => {
@@ -54,80 +63,41 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
-    setMarkerPosition(location);
-    updateFormData({ field: 'Ubicacion', value: location }, formData, setFormData);
+    updateFormData('Ubicacion', location);
     setLocationError('');
   };
 
   const handleLocationNameChange = (e) => {
     const newName = e.target.value;
-    setLocationName(newName);
-    updateFormData({ field: 'Ubicacion_nombre', value: newName }, formData, setFormData);
+    updateFormData('Ubicacion_nombre', newName);
   };
 
-  const handleStateCheckboxChange = (e) => {
-    const isChecked = e.target.checked;
-    setIsStateChecked(isChecked);
-    updateFormData({ field: 'Para_el_Estado', value: isChecked ? 'Sí' : 'No' }, formData, setFormData);
+  const handleResetAll = () => {
+    handleReset();
+    setLocationError('');
+    setIsButtonDisabled(false);
   };
-
-  const handleStateValueChange = (e) => {
-    const value = Math.max(0, e.target.value);
-    setStateValue(value);
-    updateFormData({ field: 'Estado', value }, formData, setFormData);
-  };
-
-  const handleInterpisosCheckboxChange = (e) => {
-    const isChecked = e.target.checked;
-    setIsInterpisosChecked(isChecked);
-    updateFormData({ field: 'Interpisos', value: isChecked === true ? 'Sí' : 'No' }, formData, setFormData);
-  };
-
-  const handleVendedorChange = (e) => {
-    const vendedor = e.target.value;
-    setSelectedVendedor(vendedor);
-    updateFormData({ field: 'Vendedor', value: vendedor }, formData, setFormData);
-    const storedUser = localStorage.getItem('user');
-    const name =  storedUser.username
-    updateFormData({ field: 'Solicitante', value: currentUser.username ||  name}, formData, setFormData);
-  };
-
-  const handlePaymentMethodChange = (method) => {
-    let updatedMethods = [...selectedPaymentMethods];
-    if (updatedMethods.includes(method)) {
-      updatedMethods = updatedMethods.filter((m) => m !== method);
-    } else {
-      updatedMethods.push(method);
-    }
-    setSelectedPaymentMethods(updatedMethods);
-    updateFormData({ field: 'MetodoDePago', value: updatedMethods.join('_') }, formData, setFormData);
-  };
-
-  useEffect(() => {
-    if (isButtonDisabled) {
-      setLocationError('La ubicación seleccionada ya existe, por favor elija otra.');
-    } else {
-      setLocationError('');
-    }
-  }, [isButtonDisabled]);
 
   return (
     <div className="flex flex-col ">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  flex-grow overflow-auto max">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-grow overflow-auto max">
+        {/* Left Column */}
         <div className="flex flex-col">
-          
           <img src={logo} alt="Logo" className="w-full" />
+
+          {/* Vendedor (Seller) - Shared Field */}
           <label htmlFor="vendedorName" className="mb-2 font-semibold text-black mt-4">
             {clientColumnText.seller}
           </label>
           <input
             type="text"
             placeholder={clientColumnText.seller}
-            value={selectedVendedor}
+            value={formData['Vendedor'] || ''}
             onChange={handleVendedorChange}
             className="p-3 border-2 border-gray-300 rounded-lg w-full"
           />
 
+          {/* Payment Method - Independent Field */}
           <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
             Método de Pago
           </label>
@@ -136,7 +106,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedPaymentMethods.includes('Efectivo')}
+                  checked={
+                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Efectivo') : false
+                  }
                   onChange={() => handlePaymentMethodChange('Efectivo')}
                   className="mr-2"
                 />
@@ -146,7 +118,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedPaymentMethods.includes('Deposito')}
+                  checked={
+                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Deposito') : false
+                  }
                   onChange={() => handlePaymentMethodChange('Deposito')}
                   className="mr-2"
                 />
@@ -154,16 +128,19 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               </label>
             </div>
           </div>
+
+          {/* Currency Type - Independent Field */}
           <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
             Tipo de Cambio
           </label>
           <div className="flex flex-col">
             <div className="flex flex-col space-y-2">
-
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedPaymentMethods.includes('Dolar')}
+                  checked={
+                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Dolar') : false
+                  }
                   onChange={() => handlePaymentMethodChange('Dolar')}
                   className="mr-2"
                 />
@@ -173,7 +150,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedPaymentMethods.includes('Bolivianos')}
+                  checked={
+                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Bolivianos') : false
+                  }
                   onChange={() => handlePaymentMethodChange('Bolivianos')}
                   className="mr-2"
                 />
@@ -182,31 +161,33 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </div>
           </div>
 
+          {/* State Checkbox - Independent Field */}
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
-              checked={isStateChecked}
+              checked={formData['Para_el_Estado'] === 'Sí'}
               onChange={handleStateCheckboxChange}
               className="mr-2"
             />
             Etiquetar únicamente si la cotización es para una identidad estatal
           </label>
 
-          {isStateChecked && (
+          {formData['Para_el_Estado'] === 'Sí' && (
             <input
               type="number"
               min="0"
-              value={stateValue}
+              value={formData['Estado'] || ''}
               onChange={handleStateValueChange}
               className="mt-2 p-3 border-2 border-gray-300 rounded-lg w-full"
               placeholder="Ingrese un valor mayor a 0"
             />
           )}
 
+          {/* Interpisos Checkbox - Independent Field */}
           <label className="mt-4 text-black font-semibold">
             <input
               type="checkbox"
-              checked={isInterpisosChecked}
+              checked={formData['Interpisos'] === 'Sí'}
               onChange={handleInterpisosCheckboxChange}
               className="mr-2"
             />
@@ -214,7 +195,9 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           </label>
         </div>
 
+        {/* Middle Column */}
         <div className="flex flex-col">
+          {/* Cliente (Client) - Shared Field */}
           <label htmlFor="clientName" className="mb-2 font-semibold text-black">
             {clientColumnText.searchClient}
           </label>
@@ -222,8 +205,8 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             <CustomSelect
               collectionName="clients"
               placeholder={clientColumnText.searchClient}
-              onChange={(option) => handleClientChange(option, '02_CLIENTE')}
-              selectedValue={selectedClient}
+              onChange={handleClientSelect}
+              selectedValue={{ label: formData['02_CLIENTE'] || '' }}
             />
             <button
               onClick={() => setIsModalOpen(true)}
@@ -234,9 +217,10 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
             </button>
           </div>
 
-          <div className="flex flex-col">
+          {/* Generate Quotation and Reset Buttons */}
+          <div className="flex flex-col mt-4">
             <button
-              onClick={() => handleGenerateQuotation(setShowMessage)}
+              onClick={() => handleGenerateQuotation()}
               className={`py-2 mb-2 w-full rounded transition ${
                 isButtonDisabled ? 'bg-gray-500 opacity-50 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700'
               } text-white`}
@@ -251,11 +235,10 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
               {clientColumnText.resetData}
             </button>
 
-            <div className="flex flex-col">
+            {/* Location Name - Independent Field */}
+            <div className="flex flex-col mt-4">
               {locationError ? (
-                <div className="mt-2 text-red-500 font-semibold">
-                  {locationError}
-                </div>
+                <div className="mt-2 text-red-500 font-semibold">{locationError}</div>
               ) : (
                 <>
                   <label htmlFor="locationName" className="mt-2 font-semibold text-black text-lg">
@@ -264,7 +247,7 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
                   <input
                     type="text"
                     id="locationName"
-                    value={locationName}
+                    value={formData['Ubicacion_nombre'] || ''}
                     onChange={handleLocationNameChange}
                     className="mt-1 p-3 border-2 border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                   />
@@ -274,10 +257,11 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
           </div>
         </div>
 
+        {/* Right Column */}
         <div className="w-full h-[60vh]">
           <MapComponent
-            mapCenter={mapCenter}
-            markerPosition={markerPosition}
+            mapCenter={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
+            markerPosition={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
             handleMapClick={handleMapClick}
             setButtonDisabled={setIsButtonDisabled}
           />
@@ -295,4 +279,4 @@ const ClientColumn = ({ formData, setFormData, handleGenerateQuotation, handleRe
   );
 };
 
-export default ClientColumn;
+export default React.memo(ClientColumn);

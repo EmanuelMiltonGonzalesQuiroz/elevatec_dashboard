@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Calculation from './Calculation';
 
 const Validate = ({ formData, setFormData, allData, onShowMessage, handleCloseModal }) => {
-  
-  
 
   const [isValid, setIsValid] = useState(false);
 

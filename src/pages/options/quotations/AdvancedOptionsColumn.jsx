@@ -9,7 +9,6 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
     ARD: [],
     AcabadoPuertaCabina: [],
     EspejoAdicional: [],
-    Indicador_de_solo_botón: [],
     LectorTarjetas: [],
     PasamanosAdicional: [],
     Piso: [],
@@ -71,15 +70,14 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
       valor: checked ? element.value : 0,
     };
 
-    setFormData(prev => ({
-      ...prev,
-      [element.name.replace(/\s+/g, '_')]: updatedFieldData,
-    }));
+    const fieldName = element.name.replace(/\s+/g, '_');
+
+    setFormData({ [fieldName]: updatedFieldData });
   };
 
-  const handleSelectChange = (fieldName, className, options, e) => {
+  const handleSelectChange = (fieldName, className, optionsArray, e) => {
     const selectedOptionName = e.target.value;
-    const selectedOptionItem = options.find(option => option.nombre === selectedOptionName);
+    const selectedOptionItem = optionsArray.find(option => option.nombre === selectedOptionName);
 
     if (selectedOptionItem) {
       const priceTableItem = allData.price_table["price table"].items.find(
@@ -98,31 +96,26 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
         valor: selectedOptionItem.valor,
       };
 
-      setFormData(prev => ({
-        ...prev,
-        [fieldName]: updatedFieldData,
-      }));
+      setFormData({ [fieldName]: updatedFieldData });
     }
   };
 
   const handleLocksChange = (e) => {
     let selectedValue = parseInt(e.target.value, 10);
-    
-    // Asegurar que el valor ingresado sea un entero positivo o 0
+
     if (isNaN(selectedValue) || selectedValue < 0) {
-      selectedValue = 0; // Si el valor no es válido, lo ponemos en 0
+      selectedValue = 0;
     }
-  
-    setFormData((prev) => ({
-      ...prev,
-      Llavines_con_llave: {
-        ...prev.Llavines_con_llave,
-        UNIDADES: selectedValue,
-      },
-    }));
+
+    const updatedFieldData = {
+      ...formData["Llavines_con_llave"],
+      UNIDADES: selectedValue,
+    };
+
+    setFormData({ "Llavines_con_llave": updatedFieldData });
   };
 
-  const renderSelectForGroup = (fieldName, label, concept, options, className) => (
+  const renderSelectForGroup = (fieldName, label, concept, optionsArray, className) => (
     <div key={fieldName} className="mb-4">
       <label htmlFor={fieldName} className="mb-2 font-semibold text-black">
         <InfoButton title={label} concept={concept} />
@@ -130,13 +123,13 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
       <select
         id={fieldName}
         className={`p-2 border rounded focus:outline-none w-full mb-4 ${
-          !formData[fieldName]?.nombre ? 'bg-red-200' : '' // Se pone rojo si NO hay valor seleccionado
+          !formData[fieldName]?.nombre ? 'bg-red-200' : ''
         }`}
         value={formData[fieldName]?.nombre || ''}
-        onChange={(e) => handleSelectChange(fieldName, className, options, e)}
+        onChange={(e) => handleSelectChange(fieldName, className, optionsArray, e)}
       >
         <option value="">Seleccione una opción</option>
-        {options.map((option, index) => (
+        {optionsArray.map((option, index) => (
           <option key={index} value={option.nombre}>
             {option.nombre}
           </option>
@@ -152,6 +145,7 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
           <input
             type="checkbox"
             id={element.name}
+            checked={formData[element.name.replace(/\s+/g, '_')]?.UNIDADES > 0}
             onChange={(e) => handleElementCheckboxChange(element, e.target.checked)}
           />
           <label htmlFor={element.name} className="ml-2">{element.name}</label>
@@ -189,11 +183,11 @@ const AdvancedOptionsColumn = ({ formData, setFormData, allData }) => {
         <input
           id="locks"
           type="number"
-          min="0" // Asegura que el número sea positivo
-          step="1" // Solo permite enteros
-          className={`p-2 border rounded focus:outline-none w-full mb-4 `}
+          min="0"
+          step="1"
+          className="p-2 border rounded focus:outline-none w-full mb-4"
           onChange={handleLocksChange}
-          value={formData["Llavines_con_llave"]?.UNIDADES || 0} // Muestra el valor actual o 0 si no está definido
+          value={formData["Llavines_con_llave"]?.UNIDADES || 0}
         />
       </div>
     </div>

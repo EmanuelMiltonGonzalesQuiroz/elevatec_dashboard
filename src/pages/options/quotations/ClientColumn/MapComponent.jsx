@@ -6,30 +6,18 @@ import { calculateDistance } from '../../../../components/layout/calculateDistan
 
 const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisabled }) => {
   const [locations, setLocations] = useState([]); // Estado para guardar las ubicaciones existentes
-  const [stateColors, setStateColors] = useState({}); // Estado para los colores de las ubicaciones
 
-  // Función para obtener las ubicaciones y colores de Firestore
+  // Función para obtener las ubicaciones desde Firestore
   useEffect(() => {
     const fetchLocationsAndColors = async () => {
       try {
-        // Obtener las ubicaciones desde la colección 'locations'
         const locationsCol = collection(db, 'locations');
         const locationSnapshot = await getDocs(locationsCol);
         const locationList = locationSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setLocations(locationList); // Guardamos las ubicaciones obtenidas
-
-        // Obtener los colores de estado desde la colección 'locationStates'
-        const statesCol = collection(db, 'locationStates');
-        const statesSnapshot = await getDocs(statesCol);
-        const stateData = {};
-        statesSnapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          stateData[doc.id] = data.color;
-        });
-        setStateColors(stateData); // Guardamos los colores de estado
+        setLocations(locationList);
       } catch (error) {
         console.error('Error obteniendo datos de Firestore:', error);
       }
@@ -38,19 +26,30 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     fetchLocationsAndColors();
   }, []);
 
-  // Función para manejar clics en el mapa
+  // Validar si las coordenadas son válidas
+  const isValidLatLng = (lat, lng) => {
+    return typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
+  };
+
+  // Función para manejar los clics en el mapa
   const handleMapClickWithCheck = (event) => {
     const clickedLocation = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
 
-    let tooClose = false;
-    const threshold = 10; // 10 metros de distancia
+    // Verificar si las coordenadas son válidas
+    if (!isValidLatLng(clickedLocation.lat, clickedLocation.lng)) {
+      console.error('Coordenadas no válidas:', clickedLocation);
+      return;
+    }
 
-    // Verificamos si la ubicación seleccionada está cerca de alguna ubicación existente
+    let tooClose = false;
+    const threshold = 10; // Distancia mínima de 10 metros
+
+    // Verificar si la nueva ubicación está muy cerca de alguna ubicación existente
     locations.forEach((location) => {
-      if (location.location && location.location.lat && location.location.lng) {
+      if (isValidLatLng(location.location?.lat, location.location?.lng)) {
         const distance = calculateDistance(
           location.location.lat,
           location.location.lng,
@@ -63,12 +62,11 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
       }
     });
 
-    // Si la ubicación está demasiado cerca, deshabilitamos el botón
     if (tooClose) {
-      setButtonDisabled(true); // Señal para deshabilitar el botón
+      setButtonDisabled(true);
     } else {
-      setButtonDisabled(false); // Señal para habilitar el botón
-      handleMapClick(event); // Continuar con la lógica del clic en el mapa
+      setButtonDisabled(false);
+      handleMapClick(event); // Procesar la lógica normal del clic
     }
   };
 
@@ -76,27 +74,27 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={mapCenter}
+        center={isValidLatLng(mapCenter.lat, mapCenter.lng) ? mapCenter : { lat: -16.495543, lng: -68.133543 }}
         zoom={10}
-        onClick={handleMapClickWithCheck} // Usamos la nueva función de manejo de clics
+        onClick={handleMapClickWithCheck} // Usamos la función modificada de clic en el mapa
       >
-        {/* Renderizar los marcadores con los colores basados en el estado */}
+        {/* Renderizar los marcadores de las ubicaciones existentes */}
         {Array.isArray(locations) &&
-          locations.filter((location) => location.state !== 'Eliminar' && location.state !== 'default' && location.state !== '') // Filtra ubicaciones con estados indeseados
-          .map((location) => (
-            location.location && location.location.lat && location.location.lng ? (
+          locations
+            .filter((location) => isValidLatLng(location.location?.lat, location.location?.lng) && location.state !== 'Eliminar' && location.state !== 'default')
+            .map((location) => (
               <MarkerF
                 key={location.id}
                 position={{ lat: location.location.lat, lng: location.location.lng }}
-                // Usa el color basado en el estado de la ubicación
-                icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
+                icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
               />
-            ) : null
-          ))
+            ))
         }
 
-        {/* Marcador para la nueva ubicación */}
-        <MarkerF position={markerPosition} />
+        {/* Marcador para la nueva ubicación seleccionada */}
+        {isValidLatLng(markerPosition.lat, markerPosition.lng) && (
+          <MarkerF position={markerPosition} />
+        )}
       </GoogleMap>
     </LoadScriptNext>
   );

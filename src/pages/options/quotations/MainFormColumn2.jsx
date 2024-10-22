@@ -58,16 +58,13 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
         valor: selectedOptionItem.valor,
       };
 
-      // Actualizar el formData
-      setFormData(prev => ({
-        ...prev,
-        [fieldName]: updatedFieldData,
-      }));
+      // Actualizar el formData sin sobrescribir otros campos
+      setFormData({ [fieldName]: updatedFieldData });
     }
   };
 
   // Función para renderizar un select para cualquier grupo
-  const renderSelectForGroup = (fieldName, label, options, className, concept) => (
+  const renderSelectForGroup = (fieldName, label, optionsArray, className, concept) => (
     <div key={fieldName}>
       <label htmlFor={fieldName} className="mb-2 font-semibold text-black">
         <InfoButton title={label} concept={concept} />
@@ -77,12 +74,11 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
         className={`p-2 border rounded focus:outline-none w-full mb-4 ${
           !formData[fieldName]?.nombre ? 'bg-red-200' : '' // Se pone rojo si NO hay valor seleccionado
         }`}
-        
         value={formData[fieldName]?.nombre || ''}
-        onChange={(e) => handleSelectChange(fieldName, className, options, e)}
+        onChange={(e) => handleSelectChange(fieldName, className, optionsArray, e)}
       >
         <option value="">Seleccione una opción</option>
-        {options.map((option, index) => (
+        {optionsArray.map((option, index) => (
           <option key={index} value={option.nombre}>
             {option.nombre}
           </option>
@@ -90,7 +86,6 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       </select>
     </div>
   );
-  
 
   return (
     <div className="col-span-1 gap-4 overflow-auto ">
@@ -100,8 +95,8 @@ const MainFormColumn2 = ({ formData, setFormData, allData }) => {
       {renderSelectForGroup('EnergiaElectrica', mainFormColumn2Text.electricity, options.EnergiaElectrica, 'Energia Electrica', mainFormColumn2Text.electricityConcept)}
       {renderSelectForGroup('Indicador_de_Cabina', mainFormColumn2Text.cabinIndicator, options.IndicadorCabina, 'Indicador de Cabina', mainFormColumn2Text.cabinIndicatorConcept)}
       {renderSelectForGroup('Indicador_de_piso', mainFormColumn2Text.floorIndicator, options.IndicadorPiso, 'Indicador de Piso', mainFormColumn2Text.floorIndicatorConcept)}
-      {renderSelectForGroup('Paquetes', mainFormColumn2Text.Paquetes, options.Paquetes, 'Paquetes', mainFormColumn2Text.PaquetesConcept)}
-      {renderSelectForGroup('MaquinaTraccion', mainFormColumn2Text.tractionMachine, options.MaquinaTraccion, 'Maquina de tracción', mainFormColumn2Text.tractionMachineConcept)}
+      {renderSelectForGroup('Paquetes', mainFormColumn2Text.packages, options.Paquetes, 'Paquetes', mainFormColumn2Text.packagesConcept)}
+      {renderSelectForGroup('MaquinaTraccion', mainFormColumn2Text.tractionMachine, options.MaquinaTraccion, 'Maquina de Tracción', mainFormColumn2Text.tractionMachineConcept)}
       {renderSelectForGroup('Traccion', mainFormColumn2Text.traction, options.Traccion, 'Traccion', mainFormColumn2Text.tractionConcept)}
       {renderSelectForGroup('Velocidad', mainFormColumn2Text.speed, options.Velocidad.map(speed => ({ nombre: speed })), 'Velocidad', mainFormColumn2Text.speedConcept)}
 

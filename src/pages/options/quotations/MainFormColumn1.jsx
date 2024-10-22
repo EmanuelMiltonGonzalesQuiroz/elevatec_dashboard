@@ -1,102 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { mainFormColumn1Text } from '../../../components/common/Text/texts';
-import InfoButton from '../../../components/common/InfoButton'; 
+import InfoButton from '../../../components/common/InfoButton';
 
 const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
-  const initialFieldState = (field, defaultValue = 0) => formData?.[field] || defaultValue;
-
-  const [localFields, setLocalFields] = useState({
-    persons: initialFieldState('03_PERSONAS'),
-    stops: initialFieldState('01_PARADAS'),
-    recorrido: initialFieldState('03_RECORRIDO'),
-    inoxDoors: initialFieldState('Puertas_en_inoxidable', {}).UNIDADES || 0,
-    epoxiDoors: initialFieldState('Puertas_En_Epoxi', {}).UNIDADES || 0,
-    vidrioDoors: initialFieldState('Puertas_En_Vidrio', {}).UNIDADES || 0,
-    front: initialFieldState('04_Frente'),
-    depth: initialFieldState('05_ProfundidadR'),
-    pit: initialFieldState('06_Foso'),
-    height: initialFieldState('07_Huida'),
-    numElevators: initialFieldState('08_Número de ascensores'),
-    supportChains: initialFieldState(1), // Inicializa a 1 si no hay cadenas adicionales
-    addSupportChains: 'no', // Por defecto es 'no'
-  });
+  const initialStops = formData?.['01_PARADAS'] || 0;
 
   const initializeFloorAssignments = (stops) => {
-    return Array.from({ length: stops }, (_, i) => {
-      return i < stops ? `Piso ${i + 1}` : 'Seleccionar opción';
-    });
+    return Array.from({ length: stops }, (_, i) => `Piso ${i + 1}`);
   };
 
-  const [floorAssignments, setFloorAssignments] = useState(initializeFloorAssignments(localFields.stops));
-  const [doorError] = useState('');
+  const [floorAssignments, setFloorAssignments] = useState(
+    formData['09_PISOS A ANTENDER']
+      ? formData['09_PISOS A ANTENDER'].split('-')
+      : initializeFloorAssignments(initialStops)
+  );
   const [floorAssignmentError, setFloorAssignmentError] = useState('');
 
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      '03_PERSONAS': localFields.persons,
-      '01_PARADAS': localFields.stops,
-      '03_RECORRIDO': localFields.recorrido,
-      Puertas_en_inoxidable: { ...prev.Puertas_en_inoxidable, UNIDADES: localFields.inoxDoors },
-      Puertas_En_Epoxi: { ...prev.Puertas_En_Epoxi, UNIDADES: localFields.epoxiDoors },
-      Puertas_En_Vidrio: { ...prev.Puertas_En_Vidrio, UNIDADES: localFields.vidrioDoors },
-      '09_PISOS A ANTENDER': floorAssignments.join('-'),
-      '04_Frente': localFields.front,
-      '05_ProfundidadR': localFields.depth,
-      '06_Foso': localFields.pit,
-      '07_Huida': localFields.height,
-      '08_Número de ascensores': localFields.numElevators,
-    }));
-  }, [localFields, floorAssignments, setFormData]);
-
-  useEffect(() => {
-    const uniqueAssignments = new Set(floorAssignments.filter(assignment => assignment !== 'Seleccionar opción'));
-    if (uniqueAssignments.size !== floorAssignments.length) {
-      setFloorAssignmentError('No puede haber asignaciones duplicadas a la misma parada');
-    } else {
-      setFloorAssignmentError('');
-    }
-  }, [floorAssignments]);
-  useEffect(() => {
-    // Actualizar el número de cadenas de compensación basado en si es "si" o "no" y el número de apoyo adicional.
-    const totalChains = localFields.addSupportChains === 'si' ? localFields.supportChains + 2 : 2;
-  
-    setFormData(prev => ({
-      ...prev,
-      Cadena_de_compensacion: { ...prev.Cadena_de_compensacion, UNIDADES: totalChains }
-    }));
-  }, [localFields.supportChains, localFields.addSupportChains, setFormData]);
-  
-
-  useEffect(() => {
-    if (onReset) {
-      setLocalFields({
-        persons: 0,
-        stops: 0,
-        recorrido: 0,
-        inoxDoors: 0,
-        epoxiDoors: 0,
-        vidrioDoors: 0,
-        front: 0,
-        depth: 0,
-        pit: 0,
-        height: 0,
-        numElevators: 0,
-      });
-      setFloorAssignments(initializeFloorAssignments(0));
-    }
-  }, [onReset]);
-
   const handleChange = (field, value) => {
-    setLocalFields(prev => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData({ [field]: value });
   };
 
   const handleStopsChange = (value) => {
-    handleChange('stops', value);
-    handleChange('recorrido', value * 3.6);
+    handleChange('01_PARADAS', value);
+    handleChange('03_RECORRIDO', value * 3.6);
     setFloorAssignments(initializeFloorAssignments(value));
   };
 
@@ -104,6 +30,48 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     const updatedAssignments = [...floorAssignments];
     updatedAssignments[index] = newValue;
     setFloorAssignments(updatedAssignments);
+  };
+
+  useEffect(() => {
+    const uniqueAssignments = new Set(
+      floorAssignments.filter((assignment) => assignment !== 'Seleccionar opción')
+    );
+    if (uniqueAssignments.size !== floorAssignments.length) {
+      setFloorAssignmentError('No puede haber asignaciones duplicadas a la misma parada');
+    } else {
+      setFloorAssignmentError('');
+    }
+    // Actualizar '09_PISOS A ANTENDER' en formData
+    handleChange('09_PISOS A ANTENDER', floorAssignments.join('-'));
+  }, [floorAssignments]);
+
+  useEffect(() => {
+    if (onReset) {
+      // Reiniciar campos en formData
+      setFormData({
+        '03_PERSONAS': 0,
+        '01_PARADAS': 0,
+        '03_RECORRIDO': 0,
+        Puertas_en_inoxidable: { UNIDADES: 0 },
+        Puertas_En_Epoxi: { UNIDADES: 0 },
+        Puertas_En_Vidrio: { UNIDADES: 0 },
+        '04_Frente': 0,
+        '05_ProfundidadR': 0,
+        '06_Foso': 0,
+        '07_Huida': 0,
+        '08_Número de ascensores': 0,
+      });
+      setFloorAssignments(initializeFloorAssignments(0));
+    }
+  }, [onReset]);
+
+  const handleDoorChange = (doorType, units) => {
+    setFormData({
+      [doorType]: {
+        ...formData[doorType],
+        UNIDADES: units,
+      },
+    });
   };
 
   const renderInputField = (id, label, value, onChangeHandler, placeholder = '0') => (
@@ -118,7 +86,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
         onChange={onChangeHandler}
         className="p-2 border rounded focus:outline-none w-full"
         placeholder={placeholder}
-        onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
+        onWheel={(e) => e.target.blur()} // Previene el cambio de valor con el scroll del mouse
       />
     </div>
   );
@@ -127,16 +95,16 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
     <div className="gap-1 text-black overflow-y-auto p-4">
       <div className="mb-4">
         <label htmlFor="persons" className="mb-2 font-semibold text-black">
-          <InfoButton title={mainFormColumn1Text.persons} concept={mainFormColumn1Text.personsConcept}/>
+          <InfoButton title={mainFormColumn1Text.persons} concept={mainFormColumn1Text.personsConcept} />
         </label>
         <select
           id="persons"
-          value={localFields.persons}
-          onChange={(e) => handleChange('persons', parseInt(e.target.value, 10) || 0)}
+          value={formData['03_PERSONAS'] || ''}
+          onChange={(e) => handleChange('03_PERSONAS', parseInt(e.target.value, 10) || 0)}
           className="p-2 border rounded focus:outline-none w-full"
         >
           <option value="">{mainFormColumn1Text.selectOption}</option>
-          {Array.from({ length: 20 }, (_, i) => i + 1).map(num => (
+          {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
             <option key={num} value={num}>
               {num}
             </option>
@@ -146,53 +114,83 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
 
       <div className="mb-4">
         <label htmlFor="stops" className="mb-2 font-semibold text-black">
-          <InfoButton title={mainFormColumn1Text.stops} concept={mainFormColumn1Text.stopsConcept}/>
+          <InfoButton title={mainFormColumn1Text.stops} concept={mainFormColumn1Text.stopsConcept} />
         </label>
         <input
           type="number"
           id="stops"
           min="0"
           max="99"
-          value={localFields.stops}
+          value={formData['01_PARADAS'] || ''}
           onChange={(e) => handleStopsChange(parseInt(e.target.value, 10) || 0)}
           className="p-2 border rounded focus:outline-none w-full"
-          onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
+          onWheel={(e) => e.target.blur()} // Previene el cambio de valor con el scroll del mouse
         />
       </div>
 
-      {localFields.stops > 0 && (
+      {formData['01_PARADAS'] > 0 && (
         <>
           <div className="border p-4 rounded bg-gray-100 mb-4">
             <div className="mb-4">
               <label htmlFor="recorrido" className="mb-2 font-semibold text-black">
-                <InfoButton title={mainFormColumn1Text.recorrido} concept={mainFormColumn1Text.recorridoConcept}/>
+                <InfoButton
+                  title={mainFormColumn1Text.recorrido}
+                  concept={mainFormColumn1Text.recorridoConcept}
+                />
               </label>
               <input
                 type="number"
                 id="recorrido"
-                value={localFields.recorrido}
-                onChange={(e) => handleChange('recorrido', parseFloat(e.target.value) || 0)}
-                className="p-2 border rounded focus:outline-none w/full"
-                onWheel={(e) => e.target.blur()}  // Previene el cambio de valor con el scroll del mouse
+                value={formData['03_RECORRIDO'] || ''}
+                onChange={(e) => handleChange('03_RECORRIDO', parseFloat(e.target.value) || 0)}
+                className="p-2 border rounded focus:outline-none w-full"
+                onWheel={(e) => e.target.blur()} // Previene el cambio de valor con el scroll del mouse
               />
             </div>
 
             <div className="mb-4">
               <label className="mb-2 font-semibold text-black">
-                <InfoButton title={mainFormColumn1Text.numberDoors} concept={mainFormColumn1Text.numberDoorsConcept}/>
+                <InfoButton
+                  title={mainFormColumn1Text.numberDoors}
+                  concept={mainFormColumn1Text.numberDoorsConcept}
+                />
               </label>
               <div className="grid grid-cols-3 gap-4">
-                {renderInputField('inox', <InfoButton title={mainFormColumn1Text.inoxDoors} concept={mainFormColumn1Text.inoxDoorsConcept}/>, localFields.inoxDoors, (e) => handleChange('inoxDoors', parseInt(e.target.value, 10) || 0))}
-                {renderInputField('epoxi', <InfoButton title={mainFormColumn1Text.epoxiDoors} concept={mainFormColumn1Text.epoxiDoorsConcept}/>, localFields.epoxiDoors, (e) => handleChange('epoxiDoors', parseInt(e.target.value, 10) || 0))}
-                {renderInputField('vidrio', <InfoButton title={mainFormColumn1Text.vidrioDoors} concept={mainFormColumn1Text.vidrioDoorsConcept}/>, localFields.vidrioDoors, (e) => handleChange('vidrioDoors', parseInt(e.target.value, 10) || 0))}
+                {renderInputField(
+                  'inox',
+                  <InfoButton
+                    title={mainFormColumn1Text.inoxDoors}
+                    concept={mainFormColumn1Text.inoxDoorsConcept}
+                  />,
+                  formData.Puertas_en_inoxidable?.UNIDADES || 0,
+                  (e) =>
+                    handleDoorChange(
+                      'Puertas_en_inoxidable',
+                      parseInt(e.target.value, 10) || 0
+                    )
+                )}
+                {renderInputField(
+                  'epoxi',
+                  <InfoButton
+                    title={mainFormColumn1Text.epoxiDoors}
+                    concept={mainFormColumn1Text.epoxiDoorsConcept}
+                  />,
+                  formData.Puertas_En_Epoxi?.UNIDADES || 0,
+                  (e) =>
+                    handleDoorChange('Puertas_En_Epoxi', parseInt(e.target.value, 10) || 0)
+                )}
+                {renderInputField(
+                  'vidrio',
+                  <InfoButton
+                    title={mainFormColumn1Text.vidrioDoors}
+                    concept={mainFormColumn1Text.vidrioDoorsConcept}
+                  />,
+                  formData.Puertas_En_Vidrio?.UNIDADES || 0,
+                  (e) =>
+                    handleDoorChange('Puertas_En_Vidrio', parseInt(e.target.value, 10) || 0)
+                )}
               </div>
             </div>
-
-            {doorError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 p-2 rounded">
-                {doorError}
-              </div>
-            )}
           </div>
 
           <div className="mb-4">
@@ -220,30 +218,54 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
       )}
 
       <div className="mb-4">
-      <label 
-        htmlFor="persons" 
-        className="mb-2 font-semibold text-black"
-        style={{ fontSize: '1.2rem', margin: '40px 0' }}  // Aumenta el tamaño y agrega margen
-      >
-        <InfoButton 
-          title={mainFormColumn1Text.pozo} 
-          concept={mainFormColumn1Text.pozoConcept} 
-        />
-      </label>
+        <label
+          htmlFor="persons"
+          className="mb-2 font-semibold text-black"
+          style={{ fontSize: '1.2rem', margin: '40px 0' }} // Aumenta el tamaño y agrega margen
+        >
+          <InfoButton title={mainFormColumn1Text.pozo} concept={mainFormColumn1Text.pozoConcept} />
+        </label>
 
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {renderInputField('front', <InfoButton title={mainFormColumn1Text.front} concept={mainFormColumn1Text.frontConcept}/>, localFields.front, (e) => handleChange('front', parseFloat(e.target.value) || 0))}
-          {renderInputField('depth', <InfoButton title={mainFormColumn1Text.depth} concept={mainFormColumn1Text.depthConcept}/>, localFields.depth, (e) => handleChange('depth', parseFloat(e.target.value) || 0))}
+          {renderInputField(
+            'front',
+            <InfoButton title={mainFormColumn1Text.front} concept={mainFormColumn1Text.frontConcept} />,
+            formData['04_Frente'] || 0,
+            (e) => handleChange('04_Frente', parseFloat(e.target.value) || 0)
+          )}
+          {renderInputField(
+            'depth',
+            <InfoButton title={mainFormColumn1Text.depth} concept={mainFormColumn1Text.depthConcept} />,
+            formData['05_ProfundidadR'] || 0,
+            (e) => handleChange('05_ProfundidadR', parseFloat(e.target.value) || 0)
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-          {renderInputField('pit', <InfoButton title={mainFormColumn1Text.pit} concept={mainFormColumn1Text.pitConcept}/>, localFields.pit, (e) => handleChange('pit', parseFloat(e.target.value) || 0))}
-          {renderInputField('height', <InfoButton title={mainFormColumn1Text.height} concept={mainFormColumn1Text.heightConcept}/>, localFields.height, (e) => handleChange('height', parseFloat(e.target.value) || 0))}
+          {renderInputField(
+            'pit',
+            <InfoButton title={mainFormColumn1Text.pit} concept={mainFormColumn1Text.pitConcept} />,
+            formData['06_Foso'] || 0,
+            (e) => handleChange('06_Foso', parseFloat(e.target.value) || 0)
+          )}
+          {renderInputField(
+            'height',
+            <InfoButton title={mainFormColumn1Text.height} concept={mainFormColumn1Text.heightConcept} />,
+            formData['07_Huida'] || 0,
+            (e) => handleChange('07_Huida', parseFloat(e.target.value) || 0)
+          )}
         </div>
 
         <div className="mt-4">
-          {renderInputField('numElevators', <InfoButton title={mainFormColumn1Text.numElevators} concept={mainFormColumn1Text.numElevatorsConcept}/>, localFields.numElevators, (e) => handleChange('numElevators', parseInt(e.target.value, 10) || 0))}
+          {renderInputField(
+            'numElevators',
+            <InfoButton
+              title={mainFormColumn1Text.numElevators}
+              concept={mainFormColumn1Text.numElevatorsConcept}
+            />,
+            formData['08_Número de ascensores'] || 0,
+            (e) => handleChange('08_Número de ascensores', parseInt(e.target.value, 10) || 0)
+          )}
         </div>
       </div>
     </div>
