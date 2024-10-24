@@ -13,9 +13,11 @@ const ClientColumn = ({
   handleClientChange,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showMessage, setShowMessage] = useState('');
+  const [showMessage] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [numCuotas, setNumCuotas] = useState(1); // Default is 1 cuota
+  const [cuotas, setCuotas] = useState([{ nombre: '', porcentaje: 100 }]); 
 
   // Function to update formData
   const updateFormData = (field, value) => {
@@ -32,44 +34,35 @@ const ClientColumn = ({
     handleClientChange('02_CLIENTE', option.label); // Update shared field across all quotations
   };
 
-  // Independent field handlers
-  const handlePaymentMethodChange = (method) => {
-    let updatedMethods = formData['MetodoDePago'] ? formData['MetodoDePago'].split('_') : [];
-    if (updatedMethods.includes(method)) {
-      updatedMethods = updatedMethods.filter((m) => m !== method);
-    } else {
-      updatedMethods.push(method);
-    }
-    updateFormData('MetodoDePago', updatedMethods.join('_'));
-  };
-
   const handleStateCheckboxChange = (e) => {
     const isChecked = e.target.checked;
-    updateFormData('Para_el_Estado', isChecked ? 'Sí' : 'No');
+    handleClientChange('Para_el_Estado', isChecked ? 'Sí' : 'No');
   };
 
   const handleStateValueChange = (e) => {
     const value = Math.max(0, e.target.value);
-    updateFormData('Estado', value);
+    handleClientChange('Estado', value);
   };
 
   const handleInterpisosCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     updateFormData('Interpisos', isChecked ? 'Sí' : 'No');
   };
+  
 
   const handleMapClick = (event) => {
     const location = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
-    updateFormData('Ubicacion', location);
+    handleClientChange('Ubicacion', location);
     setLocationError('');
   };
+  
 
   const handleLocationNameChange = (e) => {
     const newName = e.target.value;
-    updateFormData('Ubicacion_nombre', newName);
+    handleClientChange('Ubicacion_nombre', newName);
   };
 
   const handleResetAll = () => {
@@ -77,6 +70,54 @@ const ClientColumn = ({
     setLocationError('');
     setIsButtonDisabled(false);
   };
+// Manejar el cambio de número de cuotas
+const handleNumCuotasChange = (e) => {
+  const value = parseInt(e.target.value, 10);
+
+  // Limitar el valor de cuotas entre 1 y 30
+  const cuotasNum = Math.max(1, Math.min(30, value));
+  setNumCuotas(cuotasNum);
+
+  // Actualizar cuotas según el número seleccionado
+  if (cuotasNum === 1) {
+    setCuotas([{ nombre: 'Descuento', porcentaje: 0 }]);
+  } else {
+    const cuotasArray = Array.from({ length: cuotasNum }, (_, i) => ({
+      nombre: `Cuota ${i + 1}`,
+      porcentaje: parseFloat((100 / cuotasNum).toFixed(2)),  // Inicializa los porcentajes con 2 decimales
+    }));
+    setCuotas(cuotasArray);
+  }
+
+  // Guardar el número de cuotas y las cuotas en formData
+  handleClientChange('MetodoDePago', cuotas);
+};
+
+// Manejar el cambio de las cuotas
+// Manejar el cambio de las cuotas
+const handleCuotaChange = (index, field, value) => {
+  const updatedCuotas = [...cuotas];
+  updatedCuotas[index][field] =
+    field === 'porcentaje'
+      ? parseFloat(Math.max(0, Math.min(100, parseFloat(value) || 0)).toFixed(2))  // Asegura solo 2 decimales
+      : value;
+
+  setCuotas(updatedCuotas);
+
+  // Guardar automáticamente los cambios en formData
+  handleClientChange('MetodoDePago', updatedCuotas);
+};
+
+
+// Validar que la suma de porcentajes sea 100
+const validateCuotas = () => {
+  const totalPercentage = cuotas.reduce(
+    (sum, cuota) => sum + parseFloat(cuota.porcentaje.toFixed(2)),
+    0
+  );
+  return Math.abs(100 - totalPercentage) <= 0.02;
+};
+
 
   return (
     <div className="flex flex-col ">
@@ -99,67 +140,74 @@ const ClientColumn = ({
 
           {/* Payment Method - Independent Field */}
           <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
-            Método de Pago
+            Forma de Pago
           </label>
-          <div className="flex flex-col">
-            <div className="flex flex-col space-y-2">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={
-                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Efectivo') : false
-                  }
-                  onChange={() => handlePaymentMethodChange('Efectivo')}
-                  className="mr-2"
-                />
-                Efectivo
-              </label>
+          <div className="flex flex-col space-y-2">
+          <label htmlFor="numCuotas" className="font-semibold text-black">
+  Número de cuotas:
+</label>
+<input
+  type="number"
+  id="numCuotas"
+  placeholder={0}
+  value={numCuotas}
+  onChange={handleNumCuotasChange}
+  className="p-2 border-2 border-gray-300 rounded-lg"
+  min="1"
+  max="30"
+/>
 
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={
-                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Deposito') : false
-                  }
-                  onChange={() => handlePaymentMethodChange('Deposito')}
-                  className="mr-2"
-                />
-                Depósito
-              </label>
-            </div>
+{cuotas.map((cuota, index) => (
+  <div key={index} className="flex items-center mt-2">
+    {/* Número de cuota */}
+    <span className="mr-2">{index + 1}.</span>
+
+    {/* Nombre de la cuota */}
+    <input
+      type="text"
+      placeholder={`Nombre de la cuota ${index + 1}`}
+      value={cuota.nombre}
+      onChange={(e) => handleCuotaChange(index, 'nombre', e.target.value)}
+      className="p-2 border-2 border-gray-300 rounded-lg w-full mr-2"
+    />
+
+    {/* Porcentaje */}
+    <input
+      type="number"
+      step="0.01"  // Permitir decimales
+      placeholder="Porcentaje"
+      value={cuota.porcentaje}  // No redondear aquí
+      onChange={(e) => handleCuotaChange(
+        index,
+        'porcentaje',
+        cuota.nombre.toLowerCase() === 'descuento' ? e.target.value : Math.max(0, Math.min(100, e.target.value))
+      )}
+      className="p-2 border-2 border-gray-300 rounded-lg w-20"
+      min={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "0"}
+      max={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "100"}
+    />
+    <span className="ml-1">%</span>
+  </div>
+))}
+
+{/* Calculadora para validar la suma de los porcentajes */}
+{cuotas.some(cuota => cuota.nombre.toLowerCase() !== 'descuento') && (
+  <div className={`mt-4 font-bold ${validateCuotas() ? 'text-green-600' : 'text-red-600'}`}>
+    Suma total de porcentajes:
+    {(() => {
+      const totalPercentage = cuotas.reduce(
+        (sum, cuota) => sum + (cuota.nombre.toLowerCase() === 'descuento' ? 0 : parseFloat(cuota.porcentaje)),
+        0
+      );
+      return Math.abs(100 - totalPercentage) <= 0.01 ? '100.00' : totalPercentage.toFixed(2);
+    })()}%
+  </div>
+)}
+
+
           </div>
 
-          {/* Currency Type - Independent Field */}
-          <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
-            Tipo de Cambio
-          </label>
-          <div className="flex flex-col">
-            <div className="flex flex-col space-y-2">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={
-                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Dolar') : false
-                  }
-                  onChange={() => handlePaymentMethodChange('Dolar')}
-                  className="mr-2"
-                />
-                Dólar
-              </label>
 
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={
-                    formData['MetodoDePago'] ? formData['MetodoDePago'].includes('Bolivianos') : false
-                  }
-                  onChange={() => handlePaymentMethodChange('Bolivianos')}
-                  className="mr-2"
-                />
-                Bolivianos
-              </label>
-            </div>
-          </div>
 
           {/* State Checkbox - Independent Field */}
           <label className="mt-4 text-black font-semibold">

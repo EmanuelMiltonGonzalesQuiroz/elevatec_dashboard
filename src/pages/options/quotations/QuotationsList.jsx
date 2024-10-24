@@ -46,7 +46,8 @@ const QuotationList = ({ showDeleted }) => {
       const quotationList = await Promise.all(
         quotationSnapshot.docs.map(async (doc) => {
           const data = doc.data();
-          const quotationDetails = data.quotationDetails || {};
+          const quotationDetails = data.quotationDetails[0] || {};
+          console.log(quotationDetails)
           const clientName = quotationDetails['02_CLIENTE'];
 
           if (!clientName) {
@@ -64,9 +65,28 @@ const QuotationList = ({ showDeleted }) => {
             clientData = clientDoc.data();
           }
 
-          const total = data.calculatedValues?.VAR7
-            ? data.calculatedValues.VAR7.toFixed(2) 
+          const total = data.calculatedValues
+            ? (() => {
+                // Sumar todos los valores de VAR7 en el array calculatedValues
+                const totalSum = data.calculatedValues.reduce((acc, currentValue) => {
+                  return acc + (currentValue.VAR7 || 0);
+                }, 0);
+
+                // Verificar si existe un descuento en MetodoDePago dentro de quotationDetails
+                const discountMethod = data.quotationDetails[0].MetodoDePago?.find(
+                  (method) => method.nombre === "Descuento"
+                );
+
+                if (discountMethod && discountMethod.porcentaje) {
+                  const discountPercentage = discountMethod.porcentaje;
+                  const discountedTotal = totalSum - totalSum * (discountPercentage / 100);
+                  return discountedTotal.toFixed(2); // Retorna el total con el descuento aplicado
+                }
+
+                return totalSum.toFixed(2); // Retorna el total sin descuento
+              })()
             : 'N/A';
+
 
           const date = formatDateFromDocId(doc.id);
 
@@ -76,9 +96,9 @@ const QuotationList = ({ showDeleted }) => {
             ...data,
             clientName: clientName,
             clientPhone: clientData.phone || 'N/A',
-            city: data.quotationDetails["Ciudad"].nombre || 'N/A',
-            address: data.quotationDetails["Ubicacion_nombre"] || 'N/A',
-            quotedBy: data.quotationDetails["Solicitante"],
+            city: data.quotationDetails[0]["Ciudad"].nombre || 'N/A',
+            address: data.quotationDetails[0]["Ubicacion_nombre"] || 'N/A',
+            quotedBy: data.solicitante.username,
             total: total,
             date: date,
             clientId: data.clientId,
@@ -270,38 +290,66 @@ const QuotationList = ({ showDeleted }) => {
       {/* Modal con opciones de PDF */}
       {showModal && (
         <CustomModal show={showModal} >
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Botones azules (a la izquierda) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
+                >
+                  Ver PDF
+                </button>
 
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
-            >
-              Ver PDF
-            </button>
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco
+                </button>
 
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
-            >
-              Ver PDF Jalmeco
-            </button>
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift
+                </button>
+              </div>
 
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-              onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
-            >
-              Ver PDF Tecnolift
-            </button>
+              {/* Nuevos botones verdes (a la derecha) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'word')}
+                >
+                  Ver Word
+                </button>
 
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco Sin Membretado
+                </button>
+
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift Sin Membretado
+                </button>
+              </div>
+            </div>
+
+            {/* Botón para cerrar */}
             <button
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
+              className="bg-gray-500 text-white py-2 px-4 mt-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
               onClick={() => setShowModal(false)}
             >
               Cerrar
             </button>
           </div>
-
         </CustomModal>
       )}
 

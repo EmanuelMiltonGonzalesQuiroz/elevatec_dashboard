@@ -150,10 +150,11 @@ const QuotationForm = () => {
                 allData={allData}
               />
             </div>
+            {/* Pass the entire formDataArray to Validate */}
             {formDataArray[activeTab] && formDataArray[activeTab].isGenerated && (
               <Validate
-                formData={formDataArray[activeTab]} // Pass the current formData
-                setFormData={(newData) => handleFormDataChange(activeTab, newData)}
+                formData={formDataArray} // Pass the entire formDataArray
+                setFormData={(index, newData) => handleFormDataChange(index, newData)} // Allow updating specific formData
                 onShowMessage={handleShowMessage}
                 allData={allData}
                 handleCloseModal={() => handleCloseModal(activeTab)}

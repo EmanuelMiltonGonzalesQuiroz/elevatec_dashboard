@@ -38,10 +38,9 @@ export const homeText = {
   maintenanceSettings: "Ajustes de Mantenimiento",
   location:"Ubicación",
   company:"ELEVATEC",
-  elevatorCalculations: "Recorrido",
-  elevatorCalculationsSettings: "Ajustes Recorrido",
+  elevatorCalculations: "Calculo de Trafico ",
+  elevatorCalculationsSettings: "Ajustes de Calculo de Trafico ",
   assignment: "Asignación", 
-
 };
 export const clientColumnText = {
   searchClient: "Buscar cliente",
@@ -198,7 +197,7 @@ export const mainFormColumn1Text = {
   epoxiDoorsConcept: "",
   vidrioDoors: <>{redAsterisk} Vidrio</>,
   vidrioDoorsConcept: "",
-  assignStop: <>{redAsterisk} Asignar Parada</>,
+  assignStop: <>{redAsterisk} Denominación de Parada</>,
   assignStopConcept: "",
   floorsToAttend: <>{redAsterisk} Pisos a atender</>,
   floorsToAttendConcept: "",
@@ -230,8 +229,8 @@ export const mainFormColumn2Text = {
   cabinIndicatorConcept: "",
   floorIndicator: <>{redAsterisk} Indicador de Piso</>,
   floorIndicatorConcept: "",
-  Paquetes: <>{redAsterisk} Paquetes</>,
-  PaquetesConcept: "",
+  packages: <>{redAsterisk} Paquetes</>,
+  packagesConcept: "",
   tractionMachine: <>{redAsterisk} Máquina de tracción</>,
   tractionMachineConcept: "",
   traction: <>{redAsterisk} Tracción</>,

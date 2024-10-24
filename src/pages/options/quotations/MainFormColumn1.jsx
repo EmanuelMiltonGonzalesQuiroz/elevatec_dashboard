@@ -6,7 +6,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
   const initialStops = formData?.['01_PARADAS'] || 0;
 
   const initializeFloorAssignments = (stops) => {
-    return Array.from({ length: stops }, (_, i) => `Piso ${i + 1}`);
+    return Array.from({ length: stops }, (_, i) => `Denominar Parada ${i + 1}`);
   };
 
   const [floorAssignments, setFloorAssignments] = useState(
@@ -192,7 +192,7 @@ const MainFormColumn1 = ({ formData, setFormData, onReset }) => {
               </div>
             </div>
           </div>
-
+ 
           <div className="mb-4">
             {floorAssignments.map((assignment, index) => (
               <div key={index} className="mb-2">

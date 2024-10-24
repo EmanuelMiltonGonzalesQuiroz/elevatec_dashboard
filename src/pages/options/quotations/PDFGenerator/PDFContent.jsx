@@ -59,7 +59,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     
       quotations.forEach((quotation, index) => {
         const year = quotation.data.timestamp.split('T')[0].split('_')[0];
-        const city = formData['Ciudad']?.nombre || 'Desconocido';
+        const city = formData[0]['Ciudad']?.nombre || 'Desconocido';
         const cityAbbreviation = getCityAbbreviation(city);
         quotation.code = `COT-${index + 101}/${year}/${cityAbbreviation}`;
     
@@ -72,7 +72,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     };
     
     fetchQuotations();
-  }, [timestamp, formData]);
+  }, [timestamp, formData[0]]);
 
   const generatePDF = () => {
     const doc = new jsPDF({
@@ -93,12 +93,12 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       formattedDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    const numAscensoresRaw = formData['08_Número de ascensores'];
+    const numAscensoresRaw = formData[0]['08_Número de ascensores'];
     const numAscensores = parseInt(numAscensoresRaw, 10);
     const cantidadAscensores = isNaN(numAscensores) || numAscensores < 1 ? 1 : numAscensores;
     const proposalTitle = `Presentación Propuesta Provisión e Instalación de ${cantidadAscensores} Ascensor${cantidadAscensores === 1 ? '' : 'es'}`;
-    const city = formData['Ciudad']?.nombre || "Ciudad Desconocida";
-    const recipient = formData['02_CLIENTE'] || "Cliente Desconocido";
+    const city = formData[0]['Ciudad']?.nombre || "Ciudad Desconocida";
+    const recipient = formData[0]['02_CLIENTE'] || "Cliente Desconocido";
 
     let config;
     if (type.toLowerCase().includes('jalmeco')) {
@@ -143,11 +143,11 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     }
 
     if (type.toLowerCase().includes('jalmeco')) {
-      generateJalmecoPDF(doc, formData, values, config);
+      generateJalmecoPDF(doc, formData[0], values, config);
     } else if (type.toLowerCase().includes('tekno') || type.toLowerCase().includes('tecno')) {
-      generateTeknoPDF(doc, formData, values, config);
+      generateTeknoPDF(doc, formData[0], values, config);
     } else {
-      generateBasePDF(doc, formData, values, config);
+      generateBasePDF(doc, formData[0], values, config);
     }
 
     return doc;
@@ -174,9 +174,9 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
 
   const handleSave = () => {
     const numCotizaciones = quotationCode.split('-')[1]; // Extract the number from the quotation code
-    const nombreCliente = formData['02_CLIENTE'] || "ClienteDesconocido";
-    const cantidadPersonas = formData['03_PERSONAS'] || "CantidadDesconocida";
-    const cantidadParadas = formData['01_PARADAS'] || "ParadasDesconocidas";
+    const nombreCliente = formData[0]['02_CLIENTE'] || "ClienteDesconocido";
+    const cantidadPersonas = formData[0]['03_PERSONAS'] || "CantidadDesconocida";
+    const cantidadParadas = formData[0]['01_PARADAS'] || "ParadasDesconocidas";
 
     const fileName = `Cotización ${numCotizaciones} Cliente ${nombreCliente} Personas ${cantidadPersonas} Paradas ${cantidadParadas}.pdf`;
 
@@ -209,7 +209,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
 
     generateMergedPDF();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timestamp, formData, isFetchingQuotations]);
+  }, [timestamp, formData[0], isFetchingQuotations]);
 
   return (
     <>

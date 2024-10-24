@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { db } from '../../../../connection/firebase.js';
 import { doc, setDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { useAuth } from '../../../../context/AuthContext';
 
 const sanitizeDocId = (id) => {
   return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
@@ -24,23 +25,25 @@ const cleanData = (data) => {
 };
 
 const SaveClientData = ({ formData, additionalData }) => {
+  const { currentUser} = useAuth();
   useEffect(() => {
     const saveData = async () => {
       try {
-        const clientName = formData['02_CLIENTE'] || "unknown_client";
+        // Usamos la primera cotización para obtener el nombre del cliente
+        const clientName = formData[0]['02_CLIENTE'] || "unknown_client";
         const clientsCollection = collection(db, 'clients');
         const clientsSnapshot = await getDocs(clientsCollection);
-    
+
         // Encontrar el documento del cliente que coincide con el nombre seleccionado
         const clientDoc = clientsSnapshot.docs.find(
-          (doc) => doc.data().name === formData['02_CLIENTE']
+          (doc) => doc.data().name === formData[0]['02_CLIENTE']
         );
-    
+
         if (!clientDoc) {
           alert('No se pudo encontrar el ID del cliente.');
           return;
         }
-        const clientId = clientDoc.id; 
+        const clientId = clientDoc.id;
 
         // Obtener la hora local sin milisegundos
         const date = new Date();
@@ -55,89 +58,60 @@ const SaveClientData = ({ formData, additionalData }) => {
         const docId = sanitizeDocId(`${clientName}_${timestamp}`);
         const quotationsCol = collection(db, 'list of quotations');
 
-        // Obtener todos los documentos del cliente
-        const querySnapshot = await getDocs(quotationsCol);
-        let tooClose = false;
-
-        querySnapshot.forEach((doc) => {
-          const docData = doc.data();
-          const docTimestamp = docData.timestamp || "";
-          const docClientName = docData.quotationDetails?.['02_CLIENTE'] || "";
-
-          if (docClientName === clientName) {
-            // Comparar los timestamps
-            const lastDate = new Date(docTimestamp.replace(/_/g, '-').replace('T', ' ').replace('Z', ''));
-            const currentDate = new Date(date.getTime());
-            const diffInSeconds = (currentDate - lastDate) / 1000;
-
-            if (diffInSeconds < 3) {
-              tooClose = true;
-            }
-          }
-        });
-
-        // Si se encuentra una entrada muy cercana, cancelar la operación
-        if (tooClose) {
-          return;
-        }
-
         // Limpiar los datos antes de guardarlos
-        const cleanedFormData = cleanData(formData);
-        const cleanedAdditionalData = cleanData(additionalData);
+        const cleanedFormDataArray = formData.map(cleanData);
+        const cleanedAdditionalDataArray = additionalData.map(cleanData);
 
-        // Guardar el timestamp en la base de datos para futuras verificaciones
+        // Guardar todas las cotizaciones en un solo documento de Firestore
         const dataToSave = {
           timestamp: timestamp,
-          quotationDetails: cleanedFormData, // Guardar formData sin valores undefined o null
-          calculatedValues: cleanedAdditionalData,
-          clientId: clientId, // Guardar additionalData sin valores undefined o null
+          quotationDetails: cleanedFormDataArray, // Guardar todas las cotizaciones como un array
+          calculatedValues: cleanedAdditionalDataArray, // Guardar todos los valores calculados como un array
+          clientId: clientId,
+          state: "active",
+          solicitante: currentUser
         };
 
         // Guardar la cotización en la colección 'list of quotations'
         await setDoc(doc(quotationsCol, docId), dataToSave);
 
-        // Guardar la ubicación en la colección 'locations'
+        // Guardar una sola ubicación con el id más alto
         const locationsCol = collection(db, 'locations');
 
-        // Función para obtener el ID disponible más bajo
-        const getLowestAvailableId = async () => {
-          try {
-            const locationsCollection = collection(db, 'locations');
-            const snapshot = await getDocs(locationsCollection);
-        
-            let maxId = 0;
-            snapshot.forEach(doc => {
-              const data = doc.data();
-              if (data.id && typeof data.id === 'number') {
-                maxId = Math.max(maxId, data.id);
-              }
-            });
-        
-            return maxId + 1; // Next ID will be the highest ID + 1
-          } catch (error) {
-            console.error('Error al obtener el ID más alto:', error);
-            throw new Error('No se pudo obtener el próximo ID de ubicación.');
-          } // Devolver el ID como cadena
+        // Obtener el ID más alto de la colección 'locations'
+        const getHighestLocationId = async () => {
+          const q = query(locationsCol, orderBy('id', 'desc'));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const highestLocation = querySnapshot.docs[0];
+            return highestLocation.data().id;
+          }
+          return 0; // Si no hay ubicaciones previas, empezamos en 0
         };
 
-        // Obtener el ID disponible más bajo y luego guardar el documento
-        const lowestAvailableId = await getLowestAvailableId();
+        // Obtener el nuevo ID más alto
+        const highestId = await getHighestLocationId();
+        const newLocationId = highestId + 1; // Asignar el nuevo ID incrementado
+
+        // Limpiar y preparar los datos de la ubicación
+        const cleanedLocationData = cleanData(formData[0]); // Usamos la primera cotización para la ubicación principal
 
         const locationData = {
-          Direccion: cleanedFormData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
+          Direccion: cleanedLocationData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
           Tipo: [
-            cleanedFormData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
-            cleanedFormData['Tipo_1'] || "CA", // Segundo valor en el array
-            cleanedFormData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
+            cleanedLocationData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
+            cleanedLocationData['Tipo_1'] || "CA", // Segundo valor en el array
+            cleanedLocationData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
           ],
           client: clientName || "Cliente desconocido", // Nombre del cliente o valor por defecto
           createdAt: timestamp, // Marca de tiempo generada por Firestore
-          id: lowestAvailableId, // ID más bajo disponible
-          location: cleanedFormData['Ubicacion'],
+          id: newLocationId, // Asignamos el nuevo ID más alto
+          location: cleanedLocationData['Ubicacion'],
           state: "Cotizacion_A",
           clientId: clientId // Estado específico
         };
 
+        // Guardar la ubicación en la colección 'locations'
         await setDoc(doc(locationsCol, docId), locationData);
 
       } catch (err) {
