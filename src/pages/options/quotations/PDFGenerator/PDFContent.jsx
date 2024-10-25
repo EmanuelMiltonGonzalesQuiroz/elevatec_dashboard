@@ -223,6 +223,50 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
 
     downloadPDF();
   };
+  const handleDownloadWord = () => {
+    const numCotizaciones = quotationCode.split('-')[1];
+    const nombreCliente = formData[0]['02_CLIENTE'] || "ClienteDesconocido";
+    const cantidadPersonas = formData[0]['03_PERSONAS'] || "CantidadDesconocida";
+    const cantidadParadas = formData[0]['01_PARADAS'] || "ParadasDesconocidas";
+
+    const fileName = `Cotización ${numCotizaciones} Cliente ${nombreCliente} Personas ${cantidadPersonas} Paradas ${cantidadParadas}.docx`;
+
+    const downloadWord = async () => {
+        const generatedDoc = generatePDF(); // Genera el documento PDF
+        const pdfBlob = new Blob([await generatedDoc.output('arraybuffer')], { type: 'application/pdf' });
+        const formData = new FormData();
+        formData.append('file', pdfBlob, 'generated.pdf');
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/convert', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const wordBlob = await response.blob();
+                const wordUrl = window.URL.createObjectURL(wordBlob);
+
+                const link = document.createElement('a');
+                link.href = wordUrl;
+                link.setAttribute('download', fileName);  // Usa el nombre dinámico
+                document.body.appendChild(link);
+                link.click();
+
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(wordUrl);
+            } else {
+                console.error('Error en la conversión del archivo PDF a Word.');
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de conversión a Word:', error);
+        }
+    };
+
+    downloadWord();
+};
+
+  
 
   useEffect(() => {
     const generateMergedPDF = async () => {
@@ -243,27 +287,31 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
   return (
     <>
       <button 
-        onClick={handleSave} 
+        onClick={type.toLowerCase().includes('word') ? handleDownloadWord : handleSave}
         style={{
           width: '100%', 
-          backgroundColor: 'green', 
+          backgroundColor: type.toLowerCase().includes('word') ? 'blue' : 'green', 
           color: 'white', 
           textAlign: 'center', 
           padding: '10px', 
           fontSize: '16px',
           border: 'none',
           cursor: 'pointer'
-        }}>
-        Guardar
+        }}
+      >
+        {type.toLowerCase().includes('word') ? 'Guardar Word' : 'Guardar PDF'}
       </button> 
-
-      {isGenerating || isFetchingQuotations ? (
-        <div>Abriendo PDF, por favor espera...</div> 
-      ) : (
-        mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} width="100%" height="600px" title="Vista PDF" />
+  
+      {!type.toLowerCase().includes('word') && (
+        isGenerating || isFetchingQuotations ? (
+          <div>Abriendo PDF, por favor espera...</div> 
+        ) : (
+          mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} width="100%" height="600px" title="Vista PDF" />
+        )
       )}
     </>
   );
+  
 };
 
 export default PDFContent;

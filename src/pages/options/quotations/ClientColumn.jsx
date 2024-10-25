@@ -143,67 +143,74 @@ const validateCuotas = () => {
             Forma de Pago
           </label>
           <div className="flex flex-col space-y-2">
-            <label htmlFor="numCuotas" className="font-semibold text-black">
-              Número de cuotas:
-            </label>
-            <input
-              type="number"
-              id="numCuotas"
-              placeholder={1}
-              value={numCuotas}
-              onChange={handleNumCuotasChange}
-              className="p-2 border-2 border-gray-300 rounded-lg"
-              min="1"
-              max="30"
-            />
+          <label htmlFor="numCuotas" className="font-semibold text-black">
+            Número de cuotas:
+          </label>
+          <input
+            type="number"
+            id="numCuotas"
+            placeholder={1}
+            value={numCuotas}
+            onChange={handleNumCuotasChange}
+            className="p-2 border-2 border-gray-300 rounded-lg"
+            min="1"
+            max="30"
+          />
 
-            {cuotas.map((cuota, index) => (
-              <div key={index} className="flex items-center mt-2">
-                {/* Número de cuota */}
-                <span className="mr-2">{index + 1}.</span>
+          {cuotas.map((cuota, index) => (
+            <div key={index} className="flex items-center mt-2">
+              {/* Número de cuota */}
+              <span className="mr-2">{index + 1}.</span>
 
-                {/* Nombre de la cuota */}
-                <input
-                  type="text"
-                  placeholder={`Nombre de la cuota ${index + 1}`}
-                  value={cuota.nombre}
-                  onChange={(e) => handleCuotaChange(index, 'nombre', e.target.value)}
-                  className="p-2 border-2 border-gray-300 rounded-lg w-full mr-2"
-                />
+              {/* Nombre de la cuota */}
+              <input
+                type="text"
+                placeholder={`Nombre de la cuota ${index + 1}`}
+                value={cuota.nombre}
+                onChange={(e) => handleCuotaChange(index, 'nombre', e.target.value)}
+                className="p-2 border-2 border-gray-300 rounded-lg w-full mr-2"
+              />
 
-                {/* Porcentaje */}
-                <input
-                  type="number"
-                  step="0.01"  // Permitir decimales
-                  placeholder="Porcentaje"
-                  value={cuota.porcentaje}  // No redondear aquí
-                  onChange={(e) => handleCuotaChange(
-                    index,
-                    'porcentaje',
-                    cuota.nombre.toLowerCase() === 'descuento' ? e.target.value : Math.max(0, Math.min(100, e.target.value))
-                  )}
-                  className="p-2 border-2 border-gray-300 rounded-lg w-20"
-                  min={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "0"}
-                  max={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "100"}
-                />
-                <span className="ml-1">%</span>
+              {/* Porcentaje */}
+              <input
+                type="number"
+                step="0.01"  // Permitir decimales
+                placeholder="Porcentaje"
+                value={cuota.porcentaje}  // No redondear aquí
+                onChange={(e) => handleCuotaChange(
+                  index,
+                  'porcentaje',
+                  cuota.nombre.toLowerCase() === 'descuento' ? e.target.value : Math.max(0, Math.min(100, e.target.value))
+                )}
+                className="p-2 border-2 border-gray-300 rounded-lg w-20"
+                min={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "0"}
+                max={cuota.nombre.toLowerCase() === 'descuento' ? undefined : "100"}
+              />
+              <span className="ml-1">%</span>
+            </div>
+          ))}
+
+          {/* Condición para mostrar el mensaje según el número de cuotas */}
+          {cuotas.length > 1 ? (
+            <div className={`mt-4 font-bold ${validateCuotas() ? 'text-green-600' : 'text-red-600'}`}>
+              Suma total de porcentajes:
+              {(() => {
+                const totalPercentage = cuotas.reduce(
+                  (sum, cuota) => sum + parseFloat(cuota.porcentaje),
+                  0
+                );
+                return Math.abs(100 - totalPercentage) <= 0.01 ? '100.00' : totalPercentage.toFixed(2);
+              })()}%
+            </div>
+          ) : (
+            numCuotas!==0 && (
+              <div className="mt-4 font-bold text-red-600">
+                Se está descontando {cuotas[0].porcentaje}% del costo final
               </div>
-            ))}
+            )
+          )}
 
-            {/* Calculadora para validar la suma de los porcentajes */}
-            {cuotas.some(cuota => cuota.nombre.toLowerCase() !== 'descuento') && (
-              <div className={`mt-4 font-bold ${validateCuotas() ? 'text-green-600' : 'text-red-600'}`}>
-                Suma total de porcentajes:
-                {(() => {
-                  const totalPercentage = cuotas.reduce(
-                    (sum, cuota) => sum + (cuota.nombre.toLowerCase() === 'descuento' ? 0 : parseFloat(cuota.porcentaje)),
-                    0
-                  );
-                  return Math.abs(100 - totalPercentage) <= 0.01 ? '100.00' : totalPercentage.toFixed(2);
-                })()}%
-              </div>
-            )}
-          </div>
+        </div>
           {/* State Checkbox - Independent Field */}
           <label className="mt-4 text-black font-semibold">
             <input

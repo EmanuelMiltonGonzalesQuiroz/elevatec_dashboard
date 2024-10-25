@@ -94,54 +94,49 @@ const MaintenanceList = ({ showDeleted }) => {
           <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF o Word</h2>
       
           <div className="grid grid-cols-2 gap-4 mb-4">
-            {/* Primera columna */}
-            <div className="flex flex-col items-center">
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado')}
-              >
-                Ver PDF
-              </button>
-      
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Jalmeco')}
-              >
-                Ver PDF Jalmeco
-              </button>
-      
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Tecnolift')}
-              >
-                Ver PDF Tecnolift
-              </button>
-            </div>
-      
-            {/* Segunda columna */}
-            <div className="flex flex-col items-center">
-              <button
-                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'word_sin_membretado')}
-              >
-                Descargar Word
-              </button>
-      
-              <button
-                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Jalmeco')}
-              >
-                Ver PDF Jalmeco sin membretado
-              </button>
-      
-              <button
-                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-[140px] text-center"
-                onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Tecnolift')}
-              >
-                Ver PDF Tecnolift sin membretado
-              </button>
-            </div>
+          {/* Botón principal que ocupa las dos columnas */}
+          <button
+            className="col-span-2 bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-full text-center"
+            onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado')}
+          >
+            Ver PDF
+          </button>
+
+          {/* Primera columna de botones */}
+          <div className="flex flex-col items-center space-y-4">
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
+              onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Jalmeco')}
+            >
+              Ver PDF Jalmeco
+            </button>
+
+            <button
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
+              onClick={() => handlePDFOption(selectedMaintenance, 'con_membretado_Tecnolift')}
+            >
+              Ver PDF Tecnolift
+            </button>
           </div>
+
+          {/* Segunda columna de botones */}
+          <div className="flex flex-col items-center space-y-4">
+            <button
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
+              onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Jalmeco')}
+            >
+              Ver PDF Jalmeco sin membretado
+            </button>
+
+            <button
+              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
+              onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Tecnolift')}
+            >
+              Ver PDF Tecnolift sin membretado
+            </button>
+          </div>
+        </div>
+
       
           <button
             className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px] text-center"

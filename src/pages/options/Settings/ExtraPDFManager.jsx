@@ -64,8 +64,23 @@ const ExtraPDFManager = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg max-h-[60vh] overflow-auto">
+    <div className="p-6 space-y-4 bg-white rounded-lg shadow-lg max-h-[70vh] overflow-auto">
       <h2 className="text-xl font-bold mb-4">Gestión del PDF Extra</h2>
+      <div className="flex gap-4">
+        <div className="mb-4">
+          <input type="file" accept="application/pdf" onChange={handleFileChange} />
+        </div>
+
+        {/* Botón de subida */}
+        <button
+          className={`p-2 ${isUploading ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded`}
+          onClick={handleUpload}
+          disabled={isUploading}
+        >
+          {isUploading ? `Subiendo... ${Math.round(uploadProgress)}%` : 'Subir nuevo PDF'}
+        </button>
+      </div>
+      
 
       {/* Vista previa del PDF */}
       {pdfUrl ? (
@@ -82,18 +97,7 @@ const ExtraPDFManager = () => {
       )}
 
       {/* Carga de un nuevo archivo PDF */}
-      <div className="mb-4">
-        <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      </div>
-
-      {/* Botón de subida */}
-      <button
-        className={`p-2 ${isUploading ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded`}
-        onClick={handleUpload}
-        disabled={isUploading}
-      >
-        {isUploading ? `Subiendo... ${Math.round(uploadProgress)}%` : 'Subir nuevo PDF'}
-      </button>
+      
     </div>
   );
 };

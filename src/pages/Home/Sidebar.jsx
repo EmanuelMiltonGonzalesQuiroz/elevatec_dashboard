@@ -48,7 +48,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
   const userRole = getUserRole();
 
   return ( 
-    <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-full ${isMinimized ? 'w-16 items-center justify-center' : 'max-w-[15%] min-w-[15%]'}`}>
+    <div className={`bg-gray-900 text-white flex flex-col transition-all duration-300 h-full ${isMinimized ? 'w-16 items-center justify-center' : 'max-w-[15%] min-w-[250px]'}`}>
       <div className="p-4 flex justify-between items-center">
         {!isMinimized && <span className="text-lg font-bold">{homeText.company}</span>}
         <button onClick={handleToggleSidebar} className="text-white">
