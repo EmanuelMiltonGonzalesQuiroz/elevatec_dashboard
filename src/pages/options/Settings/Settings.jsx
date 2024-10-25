@@ -7,6 +7,7 @@ import PriceTable from './PriceTable';
 import BasicConfigurations from './BasicConfigurations';
 import InternalConfigurations from './InternalConfigurations';
 import { settingsText } from '../../../components/common/Text/texts';
+import ExtraPDFManager from './ExtraPDFManager';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('Groups');
@@ -56,6 +57,12 @@ const Settings = () => {
         >
           {settingsText.internalConfigurations}
         </button>
+        <button
+          className={`mr-4 p-2 ${activeTab === 'ExtraPDF' ? 'bg-blue-500 text-white' : 'bg-white text-black'} rounded-lg`}
+          onClick={() => setActiveTab('ExtraPDF')}
+        >
+          Gestionar PDF
+        </button>
       </div>
       
       {/* Aquí definimos la altura fija del 60% de la pantalla */}
@@ -67,6 +74,7 @@ const Settings = () => {
         {activeTab === 'PriceTable' && <PriceTable />}
         {activeTab === 'BasicConfigurations' && <BasicConfigurations />}
         {activeTab === 'InternalConfigurations' && <InternalConfigurations />}
+        {activeTab === 'ExtraPDF' && <ExtraPDFManager />}
       </div>
     </div>
   );

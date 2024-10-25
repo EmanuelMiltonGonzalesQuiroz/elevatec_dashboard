@@ -34,8 +34,6 @@ function extractDoorDetails(doorName) {
   return { hojas: null, size: null };
 }
 
-
-
 const TechnicalDetails = ({ doc, formData, startY, config }) => {
   const { leftMargin = 20, rightMargin = 20, topMargin = 20, bottomMargin = 20 } = config;
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -49,158 +47,166 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
     "SEÑALIZACIÓN"
   ];
 
-  const technicalDetails = [
-    [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
-    ["FRENTE", formData['04_Frente'] || " ", "PROFUNDIDAD", formData['05_ProfundidadR'] || " "],
-    ["FOSO", formData['06_Foso'] || " ", "HUIDA", formData['07_Huida'] || " "],
+  let currentYPosition = startY;
 
-    [{ content: "CABINA", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
-    ["Cabina", formData['Cabina']?.nombre || " ", { content: "Según catálogo", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
-    ["Dimensiones", { content: "De acuerdo a diseño de ingeniería", colSpan: 3, styles: { halign: 'center', fontStyle: 'bold' } }],
+  formData.forEach((dataItem, index) => {
+    currentYPosition += 10;
 
-    [{ content: "En cumplimiento a Normativa europea EN81", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
+    const technicalDetails = [
+      [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
+      ["FRENTE", dataItem['04_Frente'] || " ", "PROFUNDIDAD", dataItem['05_ProfundidadR'] || " "],
+      ["FOSO", dataItem['06_Foso'] || " ", "HUIDA", dataItem['07_Huida'] || " "],
 
-    // Sección de BOTONERA
-    [{ content: "BOTONERA", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: formData['TipoBotonera']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    
-    [{ content: "Techo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: formData['SubTecho']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "CABINA", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
+      ["Cabina", dataItem['Cabina']?.nombre || " ", { content: "Según catálogo", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
+      ["Dimensiones", { content: "De acuerdo a diseño de ingeniería", colSpan: 3, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    // Imagen de Techo
-    [{ content: "Techos ", colSpan: 4, styles: { minCellHeight: imageList["Techo"].height + 15, fontStyle: 'bold' } }],
+      [{ content: "En cumplimiento a Normativa europea EN81", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Piso", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: formData['Piso']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    // Imagen de Piso
-    [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Piso"].height + 5 } }],
+      // Sección de BOTONERA
+      [{ content: "BOTONERA", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['TipoBotonera']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      
+      [{ content: "Techo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['SubTecho']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Pasamanos", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: formData['PasamanosAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Espejo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: formData['EspejoAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Iluminación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Iluminación LED.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      // Imagen de Techo
+      [{ content: "Techos ", colSpan: 4, styles: { minCellHeight: imageList["Techo"].height + 15, fontStyle: 'bold' } }],
 
-    [{ content: "Intercomunicador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Sintetizador de voz", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Sistema de voz y gong incluido.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Piso", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['Piso']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      // Imagen de Piso
+      [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Piso"].height + 5 } }],
 
-    // Imagen de Sintetizador
-    [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Sintetizador de voz"].height + 5 } }],
+      [{ content: "Pasamanos", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['PasamanosAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Espejo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['EspejoAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Iluminación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Iluminación LED.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Luz de emergencia", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Intercomunicador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Sintetizador de voz", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Sistema de voz y gong incluido.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Ventilación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
-     { content: formData['Ventilación']?.valor && formData['Ventilación'].valor !== 0 ? "Incluido con Sistema Desinfección covid-19" : "No Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      // Imagen de Sintetizador
+      [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Sintetizador de voz"].height + 5 } }],
 
-    [{ content: "Boton Abre puerta", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Boton Cierra Puerta", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Llave on/off en PB", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Llave de Mudanzas", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Llave de Control acceso", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Luz de emergencia", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Llave on/off vent/luces", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
-     { content: formData['Llavines_con_llave']?.UNIDADES && formData['Llavines_con_llave'].UNIDADES !== 'llaves' ? "Incluido" : "No Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Ventilación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
+       { content: dataItem['Ventilación']?.valor && dataItem['Ventilación'].valor !== 0 ? "Incluido con Sistema Desinfección covid-19" : "No Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    // Imagen de Llaves
-    [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Llave on/off vent/luces"].height + 5 } }],
+      [{ content: "Boton Abre puerta", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Boton Cierra Puerta", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Llave on/off en PB", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Llave de Mudanzas", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Llave de Control acceso", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    [{ content: "Llave on/off en PB", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
-     { content: "Llave de mudanzas", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
-     { content: "Llave de control de acceso", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
-     { content: "Llave on/off vent/luces", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }],
+      [{ content: "Llave on/off vent/luces", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
+       { content: dataItem['Llavines_con_llave']?.UNIDADES && dataItem['Llavines_con_llave'].UNIDADES !== 'llaves' ? "Incluido" : "No Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    // Sección de PUERTAS
-    [{ content: "PUERTAS", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
-     { content: "CABINA", styles: { fontStyle: 'bold' } },
-     { content: "PISOS", styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{content: "Tipo", colSpan: 2}, "Automática", "Automática"],
-    [{content: "Hoja", colSpan: 2}, "Normal " + (extractDoorDetails(formData['doors']?.nombre)?.hojas || " "),"Normal " + (extractDoorDetails(formData['doors']?.nombre)?.hojas || " ")],
-    [{ content: "Paso libre", colSpan: 2}, { content: extractDoorDetails(formData['doors']?.nombre)?.size + " x 2100mm" || " " }, { content: extractDoorDetails(formData['doors']?.nombre)?.size + " x 2100mm" || " "}],
-    
-    [{ content: "Acabado", colSpan: 2}, "INOXIDABLE", { content: formData['Puertas_en_inoxidable']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "", colSpan: 2}, "EPOXI", { content: formData['Puertas_En_Epoxi']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "", colSpan: 2}, "VIDRIO", { content: formData['Puertas_En_Vidrio']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
-    [{ content: "Detector", colSpan: 2 }, { content: formData['PuertaDetector'] || "Barrera Infrarroja", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      // Imagen de Llaves
+      [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Llave on/off vent/luces"].height + 5 } }],
 
-    // Imagen de Puertas
-    [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Detector"].height + 5 } }],
+      [{ content: "Llave on/off en PB", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
+       { content: "Llave de mudanzas", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
+       { content: "Llave de control de acceso", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
+       { content: "Llave on/off vent/luces", colSpan: 1, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }],
 
-    [{ content: "Puerta en Inox", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
-     { content: "Puerta en Acero pintado", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }],
+      // Sección de PUERTAS
+      [{ content: "PUERTAS", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } },
+       { content: "CABINA", styles: { fontStyle: 'bold' } },
+       { content: "PISOS", styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{content: "Tipo", colSpan: 2}, "Automática", "Automática"],
+      [{content: "Hoja", colSpan: 2}, "Normal " + (extractDoorDetails(dataItem['doors']?.nombre)?.hojas || " "),"Normal " + (extractDoorDetails(dataItem['doors']?.nombre)?.hojas || " ")],
+      [{ content: "Paso libre", colSpan: 2}, { content: extractDoorDetails(dataItem['doors']?.nombre)?.size + " x 2100mm" || " " }, { content: extractDoorDetails(dataItem['doors']?.nombre)?.size + " x 2100mm" || " "}],
+      
+      [{ content: "Acabado", colSpan: 2}, "INOXIDABLE", { content: dataItem['Puertas_en_inoxidable']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "", colSpan: 2}, "EPOXI", { content: dataItem['Puertas_En_Epoxi']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "", colSpan: 2}, "VIDRIO", { content: dataItem['Puertas_En_Vidrio']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Detector", colSpan: 2 }, { content: dataItem['PuertaDetector'] || "Barrera Infrarroja", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
-    // Sección de SEÑALIZACIÓN
-    [{ content: "SEÑALIZACIÓN", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, "CABINA", "PISOS"],
-    [{ content: "Tipo pulsador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['TipoBotonera']?.nombre || " ", formData['TipoBotonera']?.nombre || " "],
-    [{ content: "Acabado botoneras", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['BotonesCabina']?.nombre || " ", formData['BotonesPiso']?.nombre || " "],
-    [{ content: "Indicadores", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, formData['Indicador_de_Cabina']?.nombre || " ", formData['Indicador_de_piso']?.nombre || " "],
-    [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Indicadores"].height + 5 } }],
-    [{ content: "TFT A COLOR CON IMÁGENES A GUSTO DEL CLIENTE (MAX 5 IMÁGENES HD)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }]
-  ];
+      // Imagen de Puertas
+      [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Detector"].height + 5 } }],
 
-  const lineThickness = 0.2; // Variable para controlar el grosor de la línea (en mm)
-  let rowContentList = [];
-  doc.autoTable({
-    startY: startY + 10,
-    head: [[{ content: "INFORMACIÓN TÉCNICA", colSpan: 4, styles: { halign: 'left' } }]],
-    body: technicalDetails,
-    theme: 'plain',
-    tableWidth: tableWidth,
-    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, rightMargin },
-    styles: { overflow: 'linebreak' },
-    pageBreak: 'auto',
-    rowPageBreak: 'avoid',
+      [{ content: "Puerta en Inox", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } },
+       { content: "Puerta en Acero pintado", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }],
 
-    willDrawCell: function (data) {
-      const rowContent = data.row.raw[0]?.content || "";
-      if (rowsWithLines.includes(rowContent)) {
-        doc.setDrawColor(0);
-        doc.setLineWidth(lineThickness);
-        const startX = data.cell.x;
-        const endX = data.cell.x + data.cell.width;
-        const y = data.cell.y + data.cell.height;
+      // Sección de SEÑALIZACIÓN
+      [{ content: "SEÑALIZACIÓN", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, "CABINA", "PISOS"],
+      [{ content: "Tipo pulsador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['TipoBotonera']?.nombre || " ", dataItem['TipoBotonera']?.nombre || " "],
+      [{ content: "Acabado botoneras", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['BotonesCabina']?.nombre || " ", dataItem['BotonesPiso']?.nombre || " "],
+      [{ content: "Indicadores", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['Indicador_de_Cabina']?.nombre || " ", dataItem['Indicador_de_piso']?.nombre || " "],
+      [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Indicadores"].height + 5 } }],
+      [{ content: "TFT A COLOR CON IMÁGENES A GUSTO DEL CLIENTE (MAX 5 IMÁGENES HD)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }]
+    ];
 
-        // Dibujar líneas superior e inferior
-        doc.line(startX, data.cell.y, endX, data.cell.y); // Línea superior
-        doc.line(startX, y, endX, y); // Línea inferior
-      }
-    },
+    const lineThickness = 0.2; // Grosor de la línea en mm
+    let rowContentList = [];
+    doc.autoTable({
+      startY: currentYPosition + 10,
+      head: [[{ content: `INFORMACIÓN TÉCNICA N° ${index + 1}`, colSpan: 4, styles: { halign: 'left' } }]],
+      body: technicalDetails,
+      theme: 'plain',
+      tableWidth: tableWidth,
+      margin: { top: topMargin+10, bottom: bottomMargin, left: leftMargin, rightMargin },
+      styles: { overflow: 'linebreak' },
+      pageBreak: 'auto',
+      rowPageBreak: 'avoid',
 
-    didDrawCell: function (data) {
-      const rowContent = data.row.raw[0]?.content || "";
+      willDrawCell: function (data) {
+        const rowContent = data.row.raw[0]?.content || "";
+        if (rowsWithLines.includes(rowContent)) {
+          doc.setDrawColor(0);
+          doc.setLineWidth(lineThickness);
+          const startX = data.cell.x;
+          const endX = data.cell.x + data.cell.width;
+          const y = data.cell.y + data.cell.height;
 
-      // Verificar si el contenido de la fila coincide con una entrada de imageList
-      if (imageList[rowContent]) {
-        // Llenar rowContentList con el nombre y la fila actual (data.row.index)
-        rowContentList.push({ name: rowContent, rowIndex: data.row.index + 1 }); // Sumamos 1 para la fila de imágenes
-      }
-
-      // Filtrar duplicados por 'name'
-      rowContentList = rowContentList.filter((item, index, self) =>
-        index === self.findIndex((t) => t.name === item.name)
-      );
-
-      // Agregar imágenes basado en el rowContentList
-      rowContentList.forEach(({ name, rowIndex }) => {
-        if (data.row.index === rowIndex && data.column.index === 0) {
-          const { width, height, images } = imageList[name];
-
-          // Asegurarse de que haya imágenes disponibles
-          if (images && images.length > 0) {
-            const imgSpacing = 10; // Espacio entre imágenes
-            const totalWidth = (images.length * width) + ((images.length - 1) * imgSpacing);
-
-            // Centrar las imágenes horizontalmente dentro de la celda
-            let startX = data.cell.x + (data.cell.width - totalWidth) / 2;
-
-            // Calcular el espacio disponible para centrar las imágenes verticalmente dentro de la celda
-            let availableHeight = data.cell.height;
-            let offsetY = (availableHeight - height) / 2; // Desplazamiento vertical para centrar
-
-            // Añadir cada imagen
-            images.forEach((img, i) => {
-              if (img) {
-                doc.addImage(img, 'JPEG', startX + i * (width + imgSpacing), data.cell.y + offsetY, width, height);
-              }
-            });
-          }
+          // Dibujar líneas superior e inferior
+          doc.line(startX, data.cell.y, endX, data.cell.y); // Línea superior
+          doc.line(startX, y, endX, y); // Línea inferior
         }
-      });
-    }
+      },
+
+      didDrawCell: function (data) {
+        const rowContent = data.row.raw[0]?.content || "";
+
+        // Verificar si el contenido de la fila coincide con una entrada de imageList
+        if (imageList[rowContent]) {
+          // Llenar rowContentList con el nombre y la fila actual (data.row.index)
+          rowContentList.push({ name: rowContent, rowIndex: data.row.index + 1 }); // Sumamos 1 para la fila de imágenes
+        }
+
+        // Filtrar duplicados por 'name'
+        rowContentList = rowContentList.filter((item, index, self) =>
+          index === self.findIndex((t) => t.name === item.name)
+        );
+
+        // Agregar imágenes basado en el rowContentList
+        rowContentList.forEach(({ name, rowIndex }) => {
+          if (data.row.index === rowIndex && data.column.index === 0) {
+            const { width, height, images } = imageList[name];
+
+            // Asegurarse de que haya imágenes disponibles
+            if (images && images.length > 0) {
+              const imgSpacing = 10; // Espacio entre imágenes
+              const totalWidth = (images.length * width) + ((images.length - 1) * imgSpacing);
+
+              // Centrar las imágenes horizontalmente dentro de la celda
+              let startX = data.cell.x + (data.cell.width - totalWidth) / 2;
+
+              // Calcular el espacio disponible para centrar las imágenes verticalmente dentro de la celda
+              let availableHeight = data.cell.height;
+              let offsetY = (availableHeight - height) / 2; // Desplazamiento vertical para centrar
+
+              // Añadir cada imagen
+              images.forEach((img, i) => {
+                if (img) {
+                  doc.addImage(img, 'JPEG', startX + i * (width + imgSpacing), data.cell.y + offsetY, width, height);
+                }
+              });
+            }
+          }
+        });
+      }
+    });
+
+    currentYPosition = doc.lastAutoTable.finalY + 10;
   });
 
   return doc.lastAutoTable.finalY;

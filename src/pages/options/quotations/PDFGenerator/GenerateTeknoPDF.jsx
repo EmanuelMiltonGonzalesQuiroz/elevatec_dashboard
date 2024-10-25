@@ -9,10 +9,10 @@ import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg';
 import teknoliftWaterMark from '../../../../assets/images/teknoliftWaterMark.jpg'; 
 import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg'; 
 
-export const generateTeknoPDF = (doc, formData, values, config) => {
+export const generateTeknoPDF = (doc, formData, values, config) => { 
   const pageWidth = doc.internal.pageSize.getWidth(); 
   const pageHeight = doc.internal.pageSize.getHeight(); 
-  const headerHeight = 40; 
+  const headerHeight = 40;  
   const footerHeight = 30; 
   const rightImageWidth = 40; // Ajusta el ancho de la imagen del lado derecho según sea necesario
   const { topMargin = 30, bottomMargin = 20, leftMargin = 20, rightMargin = 20 } = config; // Obtener márgenes de config

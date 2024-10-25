@@ -47,7 +47,6 @@ const QuotationList = ({ showDeleted }) => {
         quotationSnapshot.docs.map(async (doc) => {
           const data = doc.data();
           const quotationDetails = data.quotationDetails[0] || {};
-          console.log(quotationDetails)
           const clientName = quotationDetails['02_CLIENTE'];
 
           if (!clientName) {

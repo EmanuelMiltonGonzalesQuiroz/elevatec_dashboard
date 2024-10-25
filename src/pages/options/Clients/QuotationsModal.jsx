@@ -182,35 +182,68 @@ const QuotationsModal = ({ clientId, clientName, onClose }) => {
         </div>
 
         {showModal && (
-          <CustomModal show={showModal} onClose={() => setShowModal(false)}>
-            <div className="flex flex-col items-center mx-auto">
-              <h2 className="text-xl font-bold mb-4">Selecciona una opción de PDF</h2>
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
-              >
-                Ver PDF
-              </button>
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
-              >
-                Ver PDF Jalmeco
-              </button>
-              <button
-                className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-blue-700 transition w-[140px]"
-                onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
-              >
-                Ver PDF Tecnolift
-              </button>
-              <button
-                className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 transition w-[140px]"
-                onClick={() => setShowModal(false)}
-              >
-                Cerrar
-              </button>
+          <CustomModal show={showModal} >
+          <div className="flex flex-col items-center">
+            <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Botones azules (a la izquierda) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
+                >
+                  Ver PDF
+                </button>
+
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco
+                </button>
+
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift
+                </button>
+              </div>
+
+              {/* Nuevos botones verdes (a la derecha) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'word')}
+                >
+                  Ver Word
+                </button>
+
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco Sin Membretado
+                </button>
+
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-[140px] text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift Sin Membretado
+                </button>
+              </div>
             </div>
-          </CustomModal>
+
+            {/* Botón para cerrar */}
+            <button
+              className="bg-gray-500 text-white py-2 px-4 mt-4 rounded hover:bg-gray-700 transition w-[140px] text-center"
+              onClick={() => setShowModal(false)}
+            >
+              Cerrar
+            </button>
+          </div>
+        </CustomModal>
         )}
 
         {showPDFModal && (

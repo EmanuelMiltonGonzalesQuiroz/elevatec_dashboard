@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // Configuración de Firebase para tu aplicación web
 const firebaseConfig = {
@@ -20,6 +21,7 @@ const app = initializeApp(firebaseConfig);
 // Inicializa Firestore y Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app); 
 
 // Variable para controlar el número de lecturas
 let readCount = 0;
@@ -43,4 +45,4 @@ const resetReadCount = () => {
 // const collectionRef = collection(db, "tu-coleccion");
 // const snapshot = await controlledGetDocs(collectionRef);
 
-export { db, auth, controlledGetDocs, resetReadCount };
+export { db, auth, storage, controlledGetDocs, resetReadCount };

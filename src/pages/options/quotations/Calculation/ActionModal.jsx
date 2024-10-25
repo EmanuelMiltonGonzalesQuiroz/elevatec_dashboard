@@ -1,6 +1,18 @@
 import React from 'react';
 
-const ActionModal = ({ show, onClose, onConfirm, onViewProcedure, onViewPDFNoHeader, onViewPDFjalmeco, onViewPDFtecnolif, handleCloseModal }) => {
+const ActionModal = ({ 
+  show, 
+  onClose, 
+  onConfirm, 
+  onViewProcedure, 
+  onViewPDFNoHeader, 
+  onViewPDFjalmeco, 
+  onViewPDFtecnolif, 
+  onViewPDFjalmecoSin, 
+  onViewPDFtecnolifSin, 
+  onViewWord, 
+  handleCloseModal 
+}) => {
   if (!show) {
     return null;
   }
@@ -14,21 +26,42 @@ const ActionModal = ({ show, onClose, onConfirm, onViewProcedure, onViewPDFNoHea
             className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onViewPDFNoHeader}  // PDF sin membrete
           >
-            Ver PDF 
+            Ver PDF
           </button> 
 
           <button
-              className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
-              onClick={onViewPDFjalmeco}
-            >
-              Ver PDF Jalmeco
-            </button>
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewPDFjalmeco}
+          >
+            Ver PDF Jalmeco
+          </button>
 
           <button
             className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onViewPDFtecnolif}
           >
             Ver PDF Tecnolift
+          </button>
+
+          <button
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewPDFjalmecoSin}
+          >
+            Ver PDF Jalmeco Sin Membretado
+          </button>
+
+          <button
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewPDFtecnolifSin}
+          >
+            Ver PDF Tecnolift Sin Membretado
+          </button>
+
+          <button
+            className="bg-blue-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+            onClick={onViewWord}
+          >
+            Ver Word
           </button>
 
           <button
@@ -45,7 +78,6 @@ const ActionModal = ({ show, onClose, onConfirm, onViewProcedure, onViewPDFNoHea
             Confirmar
           </button>
 
-          {/* Este botón ahora llama a handleCloseModal para actualizar `isGenerated` a false */}
           <button
             className="bg-red-500 text-white py-2 px-4 mb-4 rounded hover:bg-red-700 transition w-full"
             onClick={() => { 

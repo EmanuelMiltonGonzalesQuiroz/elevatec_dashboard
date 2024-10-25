@@ -5,15 +5,15 @@ import { generateJalmecoPDF } from './GenerateJalmecoPDF';
 import { generateTeknoPDF } from './GenerateTeknoPDF';
 import { generateBasePDF } from './GenerateBasePDF';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../../connection/firebase.js';
-import extraPDFJalmeco from '../../../../assets/images/extraPdfJalmeco.pdf'; 
+import { db, storage } from '../../../../connection/firebase.js';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { generateJalmecoPDFSin } from './GenerateJalmecoPDFSin.jsx';
+import { generateTeknoPDFSin } from './GenerateTeknoPDFSin.jsx';
 
-// Función para detectar si es un dispositivo móvil
 const isMobileDevice = () => {
   return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 };
 
-// Función para obtener la abreviatura de la ciudad
 const getCityAbbreviation = (cityName) => {
   const cityMap = {
     "potosi": "PT",
@@ -72,7 +72,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     };
     
     fetchQuotations();
-  }, [timestamp, formData[0]]);
+  }, [formData, timestamp]);
 
   const generatePDF = () => {
     const doc = new jsPDF({
@@ -142,28 +142,60 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
       };
     }
 
-    if (type.toLowerCase().includes('jalmeco')) {
-      generateJalmecoPDF(doc, formData[0], values, config);
+    if (type.toLowerCase().includes('sin_membretado_jalmeco')) {
+      generateJalmecoPDFSin(doc, formData, values, config);
+    } else if (type.toLowerCase().includes('sin_membretado_teknolift') || type.toLowerCase().includes('sin_membretado_tecnolift')) {
+      generateTeknoPDFSin(doc, formData, values, config);
+    } else if (type.toLowerCase().includes('jalmeco')) {
+      generateJalmecoPDF(doc, formData, values, config);
     } else if (type.toLowerCase().includes('tekno') || type.toLowerCase().includes('tecno')) {
-      generateTeknoPDF(doc, formData[0], values, config);
+      generateTeknoPDF(doc, formData, values, config);
     } else {
-      generateBasePDF(doc, formData[0], values, config);
+      generateBasePDF(doc, formData, values, config);
     }
 
     return doc;
   };
+  const fetchExtraPDF = async (url) => {
+    try {
+      const response = await fetch(url);
+  
+      // Verifica si la respuesta es correcta antes de intentar leer el cuerpo
+      if (!response.ok) {
+        throw new Error(`Error fetching PDF from ${url}: ${response.statusText}`);
+      }
+  
+      // Solo lee el cuerpo una vez
+      const arrayBuffer = await response.arrayBuffer();
+      return arrayBuffer;
+    } catch (error) {
+      console.error('Error al obtener el PDF desde Firebase Storage:', error);
+      throw error;
+    }
+  };
+  
 
   const mergePDFs = async (generatedDoc) => {
-    const pdfDoc = await PDFDocument.load(await generatedDoc.output('arraybuffer'));
-    const extraPDFBytes = await fetch(extraPDFJalmeco).then(res => res.arrayBuffer());
-    const extraPdf = await PDFDocument.load(extraPDFBytes);
+    try {
+      const pdfDoc = await PDFDocument.load(await generatedDoc.output('arraybuffer'));
+      
+      // Obtener URL del PDF adicional desde Firebase Storage
+      const extraPdfUrl = await getDownloadURL(ref(storage, 'PDF/extraPdfJalmeco.pdf'));
+      
+      // Descargar y cargar el PDF adicional
+      const extraPdfBytes = await fetchExtraPDF(extraPdfUrl);
+      const extraPdfDoc = await PDFDocument.load(extraPdfBytes);
+      
+      const copiedPages = await pdfDoc.copyPages(extraPdfDoc, extraPdfDoc.getPageIndices());
+      copiedPages.forEach(page => pdfDoc.addPage(page));
 
-    const copiedPages = await pdfDoc.copyPages(extraPdf, extraPdf.getPageIndices());
-    copiedPages.forEach(page => pdfDoc.addPage(page));
-
-    const pdfBytes = await pdfDoc.save();
-    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-    return URL.createObjectURL(pdfBlob);
+      const pdfBytes = await pdfDoc.save();
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      return URL.createObjectURL(pdfBlob);
+    } catch (error) {
+      console.error("Error al combinar los PDFs:", error);
+      throw error;
+    }
   };
 
   const generateAndMergePDF = async () => {
@@ -173,13 +205,12 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
   };
 
   const handleSave = () => {
-    const numCotizaciones = quotationCode.split('-')[1]; // Extract the number from the quotation code
+    const numCotizaciones = quotationCode.split('-')[1];
     const nombreCliente = formData[0]['02_CLIENTE'] || "ClienteDesconocido";
     const cantidadPersonas = formData[0]['03_PERSONAS'] || "CantidadDesconocida";
     const cantidadParadas = formData[0]['01_PARADAS'] || "ParadasDesconocidas";
 
     const fileName = `Cotización ${numCotizaciones} Cliente ${nombreCliente} Personas ${cantidadPersonas} Paradas ${cantidadParadas}.pdf`;
-
 
     const downloadPDF = async () => {
       const generatedDoc = generatePDF();
@@ -200,7 +231,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         setMergedPdfUrl(pdfUrl);
         setIsGenerating(false);
         
-        // Detectar si es móvil y abrir automáticamente el PDF
         if (isMobileDevice() && pdfUrl) {
           window.open(pdfUrl, '_blank');
         }
@@ -208,7 +238,6 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
     };
 
     generateMergedPDF();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timestamp, formData[0], isFetchingQuotations]);
 
   return (

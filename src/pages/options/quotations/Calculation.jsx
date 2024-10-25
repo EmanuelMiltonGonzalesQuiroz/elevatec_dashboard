@@ -103,51 +103,76 @@ const Calculation = ({ formData, allData, setFormData, handleCloseModal }) => {
 
   const handleViewPDF = () => {
     const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
-    
     setModalContent(
-      updatedFormData.map((quotationData, index) => (
         <PDFContent 
-          key={index} 
-          formData={quotationData} 
-          values={valuesArray[index]} 
-          type="sin_membrete" 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="sin_membrete" 
         />
-      ))
     );
     setShowProcedureModal(true);
-  };
+};
 
-  const handleViewPDFjalmeco = () => {
-    const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
-    
+const handleViewPDFjalmeco = () => {
+  const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
     setModalContent(
-      updatedFormData.map((quotationData, index) => (
         <PDFContent 
-          key={index} 
-          formData={quotationData} 
-          values={valuesArray[index]} 
-          type="con_membretado_Jalmeco" 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="con_membretado_Jalmeco" 
         />
-      ))
     );
     setShowProcedureModal(true);
-  };
+};
 
-  const handleViewPDFtecnolif = () => {
-    const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
-    
+const handleViewPDFtecnolif = () => {
+  const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
     setModalContent(
-      updatedFormData.map((quotationData, index) => (
         <PDFContent 
-          key={index} 
-          formData={quotationData} 
-          values={valuesArray[index]} 
-          type="con_membretado_Tecnolift" 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="con_membretado_Tecnolift" 
         />
-      ))
     );
     setShowProcedureModal(true);
-  };
+};
+
+const handleViewPDFjalmecosin = () => {
+  const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
+    setModalContent(
+        <PDFContent 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="sin_membretado_Jalmeco" 
+        />
+    );
+    setShowProcedureModal(true);
+};
+
+const handleViewPDFtecnolifsin = () => {
+  const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
+    setModalContent(
+        <PDFContent 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="sin_membretado_Tecnolift" 
+        />
+    );
+    setShowProcedureModal(true);
+};
+
+
+const handleViewWord = () => {
+  const valuesArray = updatedFormData.map((quotationData) => calculateValues(quotationData, allData));
+    setModalContent(
+        <PDFContent 
+            formData={updatedFormData} 
+            values={valuesArray} 
+            type="word" 
+        />
+    );
+    setShowProcedureModal(true);
+};
 
   const handleViewProcedure = () => {
     setModalContent(
@@ -177,13 +202,15 @@ const Calculation = ({ formData, allData, setFormData, handleCloseModal }) => {
         show={showActionModal}
         onClose={() => setShowActionModal(false)}
         onConfirm={handleConfirm}
-        onViewPDFNoHeader={handleViewPDF}  
-        onViewPDFtecnolif={handleViewPDFtecnolif} 
-        onViewPDFjalmeco={handleViewPDFjalmeco}  
-        onViewProcedure={handleViewProcedure}
+        onViewPDFNoHeader={handleViewPDF}  // Ver PDF sin membrete
+        onViewPDFtecnolif={handleViewPDFtecnolif}  // Ver PDF Tecnolift
+        onViewPDFjalmeco={handleViewPDFjalmeco}  // Ver PDF Jalmeco
+        onViewPDFjalmecoSin={handleViewPDFjalmecosin}  // Ver PDF Jalmeco sin membrete
+        onViewPDFtecnolifSin={handleViewPDFtecnolifsin}  // Ver PDF Tecnolift sin membrete
+        onViewWord={handleViewWord}  // Ver Word
+        onViewProcedure={handleViewProcedure}  // Ver Procedimiento
         handleCloseModal={handleCloseModal}
-      />
-
+    />
       <Modal show={showProcedureModal} onClose={closeProcedureModal}>
         {modalContent}
       </Modal>
