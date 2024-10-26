@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 
 const BuildingFields = ({ formFields, handleFieldChange }) => {
   const [dynamicInputs, setDynamicInputs] = useState([]);
+  const [personInputs, setPersonInputs] = useState({});
 
   // Actualizar la lista de inputs adicionales según el valor de PISOS
   useEffect(() => {
     if (formFields.PISOS) {
       const pisos = parseInt(formFields.PISOS, 10);
       const newDynamicInputs = [];
-      const secondFieldKey = Object.keys(formFields)[1]; // Segundo campo como base
+      const secondFieldKey = Object.keys(formFields)[1]; // Segundo campo como base (ej. DEPARTAMENTOS)
 
       for (let i = 1; i <= pisos; i++) {
         newDynamicInputs.push({
           label: `${secondFieldKey} en el Piso ${i}`,
           name: `${secondFieldKey.toLowerCase()}_${i}`,
-          value: (formFields[secondFieldKey] && formFields[secondFieldKey][i - 1]) || '',
+          value: formFields[secondFieldKey]?.[i - 1] || '',
+          subInputs: []
         });
       }
 
@@ -24,13 +26,40 @@ const BuildingFields = ({ formFields, handleFieldChange }) => {
     }
   }, [formFields.PISOS, formFields]);
 
-  // Manejar cambios en los inputs dinámicos y guardar como array bajo el segundo campo
+  // Manejar cambios en los inputs de departamentos y actualizar la cantidad de departamentos por piso
   const handleDynamicChange = (index, value) => {
     const secondFieldKey = Object.keys(formFields)[1];
     const updatedArray = Array.isArray(formFields[secondFieldKey]) ? [...formFields[secondFieldKey]] : [];
     updatedArray[index] = value;
 
-    handleFieldChange(secondFieldKey, updatedArray); // Guardar el array completo bajo el segundo campo
+    handleFieldChange(secondFieldKey, updatedArray);
+
+    // Crear inputs para las personas en cada departamento en el piso actual
+    const newPersonInputs = { ...personInputs };
+    newPersonInputs[`piso_${index + 1}`] = Array.from({ length: parseInt(value, 10) || 0 }, (_, deptIndex) => ({
+      label: `Personas en el ${secondFieldKey} ${deptIndex + 1} en el Piso ${index + 1}`,
+      name: `${secondFieldKey.toLowerCase()}_${index + 1}_personas_${deptIndex + 1}`,
+      value: formFields[`${secondFieldKey}_personas`] ? formFields[`${secondFieldKey}_personas`][`${index + 1}_${deptIndex + 1}`] || '' : ''
+    }));
+
+    setPersonInputs(newPersonInputs);
+  };
+
+  // Manejar cambios en los inputs de personas por departamento y guardarlos en el estado
+  const handlePersonChange = (piso, deptIndex, value) => {
+    const secondFieldKey = Object.keys(formFields)[1];
+    const personDataKey = `${secondFieldKey}_personas`;
+    const updatedPersonData = { ...(formFields[personDataKey] || {}) };
+    updatedPersonData[`${piso}_${deptIndex + 1}`] = value;
+
+    handleFieldChange(personDataKey, updatedPersonData);
+    // Actualiza el estado local para mostrar el valor en el input
+    setPersonInputs((prev) => ({
+      ...prev,
+      [`piso_${piso}`]: prev[`piso_${piso}`].map((input, i) => 
+        i === deptIndex ? { ...input, value } : input
+      ),
+    }));
   };
 
   // Manejar cambios en los inputs normales
@@ -54,11 +83,12 @@ const BuildingFields = ({ formFields, handleFieldChange }) => {
           name="PISOS"
           value={formFields.PISOS || ''}
           onChange={handleChange}
+          onWheel={(e) => e.target.blur()}
           className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
-      {/* Inputs adicionales generados en base al segundo campo */}
+      {/* Inputs adicionales generados en base al segundo campo (ej. DEPARTAMENTOS) */}
       {dynamicInputs.length > 0 && (
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4">{dynamicInputs[0].label.split(' ')[0]} por Piso</h3>
@@ -71,8 +101,24 @@ const BuildingFields = ({ formFields, handleFieldChange }) => {
                 name={input.name}
                 value={input.value}
                 onChange={(e) => handleDynamicChange(index, e.target.value)}
+                onWheel={(e) => e.target.blur()}
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {/* Inputs para el número de personas en cada departamento en el piso actual */}
+              {personInputs[`piso_${index + 1}`]?.map((subInput, deptIndex) => (
+                <div key={subInput.name} className="mb-2 ml-4">
+                  <label className="block font-semibold mb-1 text-gray-700">{subInput.label}</label>
+                  <input
+                    type="number"
+                    min="0"
+                    name={subInput.name}
+                    value={subInput.value}
+                    onChange={(e) => handlePersonChange(index + 1, deptIndex, e.target.value)}
+                    onWheel={(e) => e.target.blur()}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -90,6 +136,7 @@ const BuildingFields = ({ formFields, handleFieldChange }) => {
             name={Object.keys(formFields)[2]}
             value={formFields[Object.keys(formFields)[2]] || ''}
             onChange={handleChange}
+            onWheel={(e) => e.target.blur()}
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

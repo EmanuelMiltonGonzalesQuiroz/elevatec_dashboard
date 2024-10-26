@@ -29,7 +29,7 @@ const Home = () => {
     loadData();
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (currentUser) {
       const timer = setTimeout(() => {
         logout();
@@ -38,7 +38,7 @@ const Home = () => {
     
       return () => clearTimeout(timer);
     }
-  }, [currentUser, logout]);
+  }, [currentUser, logout]);*/
 
   if (!currentUser) {
     window.location.href = '/login';
