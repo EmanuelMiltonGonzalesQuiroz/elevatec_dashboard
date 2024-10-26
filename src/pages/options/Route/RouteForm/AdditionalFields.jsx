@@ -2,31 +2,32 @@ import React from 'react';
 
 const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => {
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === 'Pasajeros' && /^\d+$/.test(value)) { // Solo acepta enteros positivos
-      handleAdditionalFieldChange(name, value);
+    const { name, value, type, checked } = e.target;
+    
+    if (type === 'checkbox') {
+      handleAdditionalFieldChange(name, checked); // Actualiza el estado con true/false para el checkbox
+    } else if (name === 'Pasajeros' && /^\d+$/.test(value)) {
+      handleAdditionalFieldChange(name, value); // Solo acepta enteros positivos para Pasajeros
     } else {
-      handleAdditionalFieldChange(name, value); // Para manejar el cambio de Detención Puertas y otros campos
+      handleAdditionalFieldChange(name, value); // Maneja el cambio de otros campos
     }
   };
 
   return (
-    <div className="p-4 bg-gray-100 rounded-lg shadow-md">
+    <div className="p-4 bg-gray-100 rounded-lg shadow-md min-h-[50vh] max-h-[50vh]">
       <h2 className="text-xl font-bold mb-4">Campos Adicionales</h2>
 
       <div className="mb-4">
         <label className="block font-semibold mb-2 text-gray-700">Pasajeros</label>
         <input
           type="number"
-          step="1" // Garantiza que se salte en enteros
-          min="4" // El mínimo es 4
+          step="1"
+          min="4"
           name="Pasajeros"
           value={additionalFields['Pasajeros'] || ''}
           placeholder="0"
           onChange={(e) => {
             const value = e.target.value;
-            // Permitir solo valores enteros positivos
             if (/^\d*$/.test(value)) {
               handleChange(e);
             }
@@ -34,7 +35,6 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
           className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
 
       <div className="mb-4">
         <label className="block font-semibold mb-2 text-gray-700">Detención Puertas</label>
@@ -48,6 +48,33 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
           <option value="Abre de un lado">Abre de un lado</option>
           <option value="Abre del centro">Abre del centro</option>
         </select>
+      </div>
+
+      <div className="mb-4">
+        <label className="block font-semibold mb-2 text-gray-700">Velocidad</label>
+        <select
+          name="Velocidad"
+          value={additionalFields['Velocidad'] || ''}
+          onChange={handleChange}
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="" disabled>Seleccionar velocidad</option>
+          <option value="1m/s">1m/s</option>
+          <option value="1,5m/s">1,5m/s</option>
+          <option value="1,75m/s">1,75m/s</option>
+          <option value="2m/s">2m/s</option>
+        </select>
+      </div>
+
+      <div className="mb-4 flex items-center">
+        <input
+          type="checkbox"
+          name="Garaje"
+          checked={additionalFields['Garaje'] || false}
+          onChange={handleChange}
+          className="mr-2"
+        />
+        <label className="font-semibold text-gray-700">Garaje</label>
       </div>
     </div>
   );

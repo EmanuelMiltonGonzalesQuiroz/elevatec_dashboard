@@ -3,44 +3,75 @@ import { db } from '../../../connection/firebase';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import FilteredLocationMap from './FilteredLocationMap';  // Usando el nuevo mapa
 
-const ClientInfoModal = ({ clientId, onClose }) => {
+const ClientInfoModal = ({ clientId, workerId, onClose }) => {
   const [clientInfo, setClientInfo] = useState(null);
   const [clientLocations, setClientLocations] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: -16.495543, lng: -68.133543 });
-  const [stateColors, setStateColors] = useState({});  // Estado para los colores de estado
+  const [stateColors, setStateColors] = useState({});
 
-  // Cargar la información del cliente y sus ubicaciones
+  // Cargar la información del cliente y las ubicaciones asignadas al trabajador
   useEffect(() => {
     const fetchClientData = async () => {
+      if (!clientId || !workerId) {
+        console.error('clientId o workerId es undefined, no se puede realizar la consulta.');
+        return;
+      }
+
       try {
         const clientDoc = await getDoc(doc(db, 'clients', clientId));
         if (clientDoc.exists()) {
           setClientInfo(clientDoc.data());
         }
 
-        // Obtener las ubicaciones relacionadas con el cliente
+        // Obtener la asignación del trabajador para este cliente
+        const assignmentsQuery = query(
+          collection(db, 'assignments'),
+          where('clientId', '==', clientId),
+          where('workerId', '==', workerId)
+        );
+        const assignmentsSnapshot = await getDocs(assignmentsQuery);
+
+        // Convertir todos los projectIds asignados a cadenas
+        const assignedProjectIds = assignmentsSnapshot.docs.flatMap((doc) => 
+          doc.data().projectIds.map(id => id.toString())
+        );
+
+        if (assignedProjectIds.length === 0) {
+          console.log('No se encontraron proyectos asignados.');
+          return;
+        }
+
+        // Obtener las ubicaciones del cliente y filtrar por las asignadas al trabajador
         const locationsQuery = query(collection(db, 'locations'), where('clientId', '==', clientId));
         const locationsSnapshot = await getDocs(locationsQuery);
-        const locationsData = locationsSnapshot.docs.map((doc) => doc.data());
-        setClientLocations(locationsData);
 
-        // Centrar el mapa en la primera ubicación del cliente
-        if (locationsData.length > 0) {
-          setMapCenter({ lat: locationsData[0].location.lat, lng: locationsData[0].location.lng });
+        // Filtrar las ubicaciones que coincidan con los projectIds asignados, asegurando que `id` esté en formato string
+      const filteredLocations = locationsSnapshot.docs
+      .filter((doc) => {
+        const locationId = doc.data().id.toString();  // Convertir a string por consistencia
+        const isMatch = assignedProjectIds.includes(locationId);
+        return isMatch;
+      })
+      .map((doc) => ({ id: doc.data().id.toString(), ...doc.data() }));  // Convertir `id` y añadir datos
+
+        setClientLocations(filteredLocations);
+
+        // Centrar el mapa en la primera ubicación asignada
+        if (filteredLocations.length > 0) {
+          setMapCenter({ lat: filteredLocations[0].location.lat, lng: filteredLocations[0].location.lng });
         }
       } catch (error) {
-        console.error('Error al obtener datos del cliente:', error);
+        console.error('Error al obtener datos del cliente o ubicaciones:', error);
       }
     };
 
     const fetchStateColors = async () => {
       try {
-        // Obtener los colores de estado desde la colección 'locationStates'
         const statesSnapshot = await getDocs(collection(db, 'locationStates'));
         const colors = {};
         statesSnapshot.docs.forEach((doc) => {
           const data = doc.data();
-          colors[doc.id] = data.color;  // Guardar el color con el ID del estado
+          colors[doc.id] = data.color;
         });
         setStateColors(colors);
       } catch (error) {
@@ -50,7 +81,7 @@ const ClientInfoModal = ({ clientId, onClose }) => {
 
     fetchClientData();
     fetchStateColors();
-  }, [clientId]);
+  }, [clientId, workerId]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -66,14 +97,14 @@ const ClientInfoModal = ({ clientId, onClose }) => {
             <p><strong>Email:</strong> {clientInfo.email}</p>
             <p><strong>Teléfono:</strong> {clientInfo.phone}</p>
 
-            {/* Mapa que muestra las ubicaciones del cliente */}
+            {/* Mapa que muestra las ubicaciones asignadas al trabajador */}
             <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Ubicaciones</h3>
+              <h3 className="text-lg font-semibold mb-2">Ubicaciones Asignadas</h3>
               <FilteredLocationMap
                 mapLocations={clientLocations}
                 mapCenter={mapCenter}
                 clientId={clientId}
-                stateColors={stateColors}  // Pasar los colores de estado
+                stateColors={stateColors}
               />
             </div>
           </div>

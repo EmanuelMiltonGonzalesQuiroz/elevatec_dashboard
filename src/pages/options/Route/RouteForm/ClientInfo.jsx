@@ -36,7 +36,7 @@ const ClientInfo = ({
   };
 
   return (
-    <div className="p-4 bg-gray-100 rounded-lg shadow-md">
+    <div className="p-4 bg-gray-100 rounded-lg shadow-md min-h-[50vh] max-h-[50vh]">
       <h2 className="text-xl font-bold mb-4">Información del Cliente</h2>
       <label className="block mb-2 font-bold">Seleccione un tipo edificio:</label>
       <select

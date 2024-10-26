@@ -122,7 +122,7 @@ const RouteForm = () => {
 
     if (
       ['Oficinas Centricas', 'Oficinas Suburbios', 'Edificio empresarial', 'Edificio del gobierno'].includes(
-        buildingName
+        buildingName 
       )
     ) {
       fields = { PISOS: '', AREAS: '', OFICINAS: '' };
