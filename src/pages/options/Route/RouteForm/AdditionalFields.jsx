@@ -14,7 +14,7 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
   };
 
   return (
-    <div className="p-4 bg-gray-100 rounded-lg shadow-md min-h-[50vh] max-h-[50vh]">
+    <div className="lg:w-1/3 w-full p-4 bg-gray-100 rounded-lg shadow-md min-h-[50vh] max-h-[50vh]">
       <h2 className="text-xl font-bold mb-4">Campos Adicionales</h2>
 
       <div className="mb-4">
@@ -47,22 +47,6 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
           <option value="" disabled>Seleccionar opción</option>
           <option value="Abre de un lado">Abre de un lado</option>
           <option value="Abre del centro">Abre del centro</option>
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label className="block font-semibold mb-2 text-gray-700">Velocidad</label>
-        <select
-          name="Velocidad"
-          value={additionalFields['Velocidad'] || ''}
-          onChange={handleChange}
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="" disabled>Seleccionar velocidad</option>
-          <option value="1m/s">1m/s</option>
-          <option value="1,5m/s">1,5m/s</option>
-          <option value="1,75m/s">1,75m/s</option>
-          <option value="2m/s">2m/s</option>
         </select>
       </div>
 

@@ -1,22 +1,63 @@
 import React, { useState } from 'react';
 import EditDataForm from './EditDataForm';
+import AddDataForm from './AddDataForm';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { db } from '../../../connection/firebase';
 import { collectionNameMapping } from '../../../utils/collectionNames';
 import { formatTitle } from '../../../utils/formatTitle';
 import { columnOrders } from '../../../utils/columnOrders';
 
 const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); 
   const [currentData, setCurrentData] = useState({});
 
-  const handleOpenModal = (itemIndex, item) => {
+  const handleOpenEditModal = (itemIndex, item) => {
     setCurrentItemIndex(itemIndex);
     setCurrentData(item);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleDelete = async (docId, itemIndex) => {
+    try {
+      const docRef = doc(db, activeCollection, docId);
+      const docSnapshot = await getDoc(docRef);
+
+      if (docSnapshot.exists()) {
+        const docData = docSnapshot.data();
+        const dataArray = docData.data;
+
+        // Eliminar solo el elemento en el índice específico del array
+        if (Array.isArray(dataArray) && dataArray.length > itemIndex) {
+          const updatedDataArray = dataArray.filter((_, index) => index !== itemIndex);
+          
+          // Actualizar el documento en Firestore con el array modificado
+          await updateDoc(docRef, { data: updatedDataArray });
+          
+          // Actualizar la tabla después de eliminar
+          onDataUpdate();
+        } else {
+          console.error('El índice no es válido o el array de datos está vacío');
+        }
+      } else {
+        console.error('El documento no existe');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el elemento:', error);
+    }
   };
 
   const extractHeaders = (dataArray, activeCollection) => {
@@ -29,11 +70,10 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
   };
 
   const formatIntervaloEspera = (value) => {
-    // Verificamos si el valor es un array y lo convertimos a una cadena con un guion como separador
     if (Array.isArray(value)) {
       return value.join(' - ');
     }
-    return value; // Si no es un array, devolvemos el valor tal cual
+    return value;
   };
 
   return (
@@ -41,6 +81,13 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
       <h2 className="text-2xl font-bold mb-6">
         Ajustes de Recorrido - {collectionNameMapping[activeCollection]}
       </h2>
+
+      <button
+        className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-700 transition"
+        onClick={handleOpenAddModal}
+      >
+        Agregar Registro
+      </button>
 
       <table className="min-w-full bg-white border">
         <thead>
@@ -53,7 +100,7 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
                 {formatTitle(header)}
               </th>
             ))}
-            <th className="border px-4 py-2">Acciones</th>
+            <th className="border px-4 py-2" style={{ width: '160px' }}>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -68,12 +115,18 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
                     {header === 'intervalo de espera seg.' ? formatIntervaloEspera(item[header]) : item[header]}
                   </td>
                 ))}
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 flex flex-col items-center space-y-2" style={{ width: '160px' }}>
                   <button
-                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition"
-                    onClick={() => handleOpenModal(subIndex, item)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition w-full"
+                    onClick={() => handleOpenEditModal(subIndex, item)}
                   >
                     Editar
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition w-full"
+                    onClick={() => handleDelete(dataItem.id, subIndex)}
+                  >
+                    Eliminar
                   </button>
                 </td>
               </tr>
@@ -82,14 +135,22 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
         </tbody>
       </table>
 
-      {isModalOpen && (
+      {isEditModalOpen && (
         <EditDataForm
-          docId={activeCollection} // Usamos el nombre de la colección como docId
+          docId={activeCollection}
           itemIndex={currentItemIndex}
           collectionName={activeCollection}
           data={currentData}
-          onClose={handleCloseModal}
-          onSuccess={onDataUpdate} // Pasamos onDataUpdate para actualizar los datos
+          onClose={handleCloseEditModal}
+          onSuccess={onDataUpdate}
+        />
+      )}
+
+      {isAddModalOpen && (
+        <AddDataForm
+          collectionName={activeCollection}
+          onClose={handleCloseAddModal}
+          onSuccess={onDataUpdate}
         />
       )}
     </div>
