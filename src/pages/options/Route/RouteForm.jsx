@@ -125,19 +125,19 @@ const RouteForm = () => {
         buildingName 
       )
     ) {
-      fields = { PISOS: '', AREAS: '', OFICINAS: '' };
-      requiredFields = ['PISOS', 'AREAS', 'OFICINAS'];
+      fields = { PISOS: '', AREAS: ''};
+      requiredFields = ['PISOS', 'AREAS'];
     } else if (['Departamentos Centricos', 'Departamentos Suburbios'].includes(buildingName)) {
-      fields = { PISOS: '', DEPARTAMENTOS: '', HABITACIONES: '' };
-      requiredFields = ['PISOS', 'DEPARTAMENTOS', 'HABITACIONES'];
+      fields = { PISOS: '', DEPARTAMENTOS: ''};
+      requiredFields = ['PISOS', 'DEPARTAMENTOS'];
     } else if (['Hospital privado', 'Hospital publico'].includes(buildingName)) {
-      fields = { PISOS: '', HABITACIONES: '', CAMAS: '' };
-      requiredFields = ['PISOS', 'HABITACIONES', 'CAMAS'];
+      fields = { PISOS: '', DEPARTAMENTOS: ''};
+      requiredFields = ['PISOS', 'DEPARTAMENTOS'];
     } else if (
       ['Hotel centrico', 'Hotel vacacional', 'Hotel economico', 'Hotel economico vacacional'].includes(buildingName)
     ) {
-      fields = { PISOS: '', HABITACIONES: '' };
-      requiredFields = ['PISOS', 'HABITACIONES'];
+      fields = { PISOS: '', DEPARTAMENTOS: '' };
+      requiredFields = ['PISOS', 'DEPARTAMENTOS'];
     } else if (buildingName === 'Estacionamiento') {
       fields = { PISOS: '', AUTOMOVILES: '' };
       requiredFields = ['PISOS', 'AUTOMOVILES'];

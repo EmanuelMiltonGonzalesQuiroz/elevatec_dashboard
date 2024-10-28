@@ -114,19 +114,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       row[5],
       row[6]
     ]),
-    [{ content: "Valor Total del Equipo Instalado y Funcionando", colSpan: 7, styles: { halign: 'center', fontStyle: 'bold' } }, totalFormatted],
-    [{
-      content: `Son: ${totalInWords} ${decimals}/100 Dólares Americanos`,
-      colSpan: 7,
-      styles: { halign: 'center', fontStyle: 'bold' }
-    }, " "],
-    [{ content: "TIPO DE PAGO", colSpan: 8, styles: { halign: 'center', fontStyle: 'bold' } }, " "],
-    [
-      { content: "Efectivo", styles: { halign: 'center', fontStyle: 'bold' } },
-      { content: "Depósito", styles: { halign: 'center', fontStyle: 'bold' } },
-      { content: "Dólar", styles: { halign: 'center', fontStyle: 'bold' } },
-      { content: "Bolivianos", styles: { halign: 'center', fontStyle: 'bold' } },
-    ]
+    [{ content: "Valor Total del Equipo Instalado y Funcionando", colSpan: 7, styles: { halign: 'center', fontStyle: 'bold' } }, totalFormatted]
   ];
 
   doc.autoTable({

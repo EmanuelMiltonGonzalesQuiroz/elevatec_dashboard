@@ -3,12 +3,20 @@ export const validateFields = (routeData, allData) => {
   const lastBuilding = routeData[0] || {};
   const requiredFields = lastBuilding.requiredFields || [];
 
-  const missingFields = requiredFields.filter((field) => {
-    const fieldValue = lastBuilding[field] || lastBuilding.TipoDeEdificio?.[field];
-    return !fieldValue || String(fieldValue).trim() === ''; // Convertimos a string para evitar errores con trim
-  });
+  // Check if "Población Servida" exists and has a valid value
+  const poblacionServida = lastBuilding['Población Servida'];
+  const isPoblacionServidaValid = poblacionServida && String(poblacionServida).trim() !== '';
 
-  const detencionPuertas = lastBuilding["Detencion Puertas"];
+  // Only validate required fields if "Población Servida" is not valid
+  let missingFields = [];
+  if (!isPoblacionServidaValid) {
+    missingFields = requiredFields.filter((field) => {
+      const fieldValue = lastBuilding[field] || lastBuilding.TipoDeEdificio?.[field];
+      return !fieldValue || String(fieldValue).trim() === ''; // Convert to string to avoid errors with trim
+    });
+  }
+
+  const detencionPuertas = lastBuilding['Detencion Puertas'];
   const vendor = lastBuilding.cliente;
   const clientPhone = lastBuilding.clientPhone;
   const capacidad = parseInt(lastBuilding.Pasajeros, 10);
@@ -20,25 +28,30 @@ export const validateFields = (routeData, allData) => {
   const dataAscensor = allData.configuraciones_de_ascensor?.[0]?.data || [];
   const dataPuertas = allData.puertas_info?.[0]?.data || [];
 
-  if (routeData[0].TipoDeEdificio.Nombre.includes("Hospital")) {
-    minPasajeros = Math.min(...dataAscensor.map(info => info.Pasajeros));
-    maxPasajeros = Math.max(...dataAscensor.map(info => info.Pasajeros));
+  if (routeData[0].TipoDeEdificio.Nombre.includes('Hospital')) {
+    minPasajeros = Math.min(...dataAscensor.map((info) => info.Pasajeros));
+    maxPasajeros = Math.max(...dataAscensor.map((info) => info.Pasajeros));
   } else {
-    minPasajeros = Math.min(...dataPuertas.map(info => info.Pasajeros));
-    maxPasajeros = Math.max(...dataPuertas.map(info => info.Pasajeros));
+    minPasajeros = Math.min(...dataPuertas.map((info) => info.Pasajeros));
+    maxPasajeros = Math.max(...dataPuertas.map((info) => info.Pasajeros));
   }
 
-  // Verificar capacidad solo si Pasajeros es distinto de 0
+  // Verify capacity only if Pasajeros is not 0
   if (capacidad !== 0 && (capacidad < minPasajeros || capacidad > maxPasajeros)) {
-    additionalMissingFields.push(`Pasajeros (debe ser un entero positivo entre ${minPasajeros} y ${maxPasajeros})`);
+    additionalMissingFields.push(
+      `Pasajeros (debe ser un entero positivo entre ${minPasajeros} y ${maxPasajeros})`
+    );
   }
 
-  // Verificación de detención de puertas
-  if (!detencionPuertas || (detencionPuertas !== 'Abre de un lado' && detencionPuertas !== 'Abre del centro')) {
+  // Verification of door detentions
+  if (
+    !detencionPuertas ||
+    (detencionPuertas !== 'Abre de un lado' && detencionPuertas !== 'Abre del centro')
+  ) {
     additionalMissingFields.push('Detención Puertas (debe seleccionar una opción válida)');
   }
 
-  // Verificación de nombre de cliente y número de teléfono
+  // Verification of client name and phone number
   if (!vendor || String(vendor).trim() === '') {
     additionalMissingFields.push('Nombre del Cliente (debe estar completo)');
   }

@@ -108,7 +108,7 @@ const QuotationForm = () => {
 
       {allData && formDataArray.length > 0 && (
         <>
-          <div className="mb-4">
+          <div className="mb-4 space-y-4">
             {formDataArray.map((_, index) => (
               <button
                 key={index}

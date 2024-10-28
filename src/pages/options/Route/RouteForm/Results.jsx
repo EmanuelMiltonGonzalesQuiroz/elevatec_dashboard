@@ -17,13 +17,23 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
         updatedData[0].result = [calculatedResults];
         return updatedData;
       });
-      console.log(routeData);
     }
   };
 
   const formatValue = (value) => {
     // Verificar si el valor es numérico antes de aplicar toFixed
     return typeof value === 'number' ? value.toFixed(2) : 'No disponible';
+  };
+
+  // Etiquetas personalizadas para cada campo
+  const labels = {
+    totalPoblacion: 'Total de Población',
+    poblacionServida: 'Población Servida',
+    tiempoTotal: 'Resultado 5min',
+    ajustesFinales: 'Ajustes Finales',
+    numeroCabinasNecesarias: 'Número de Cabinas Necesarias',
+    intervaloEspera: 'Intervalo de Espera',
+    velocidadDesarrollada: 'Velocidad Recomendada',
   };
 
   return (
@@ -37,10 +47,10 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       <h2 className="text-xl font-bold mb-4">Resultados</h2>
 
       {routeData[0]?.result && (
-        <div className="grid grid-col sm:grid-cols-2 gap-4 mb-4 p-4 bg-white rounded-lg shadow-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 p-4 bg-white rounded-lg shadow-md">
           {Object.entries(routeData[0].result[0]).map(([key, value]) => (
             <div key={key}>
-              <h3 className="text-lg font-semibold">{key}:</h3>
+              <h3 className="text-lg font-semibold">{labels[key] || key}:</h3>
               <p className="text-blue-900 text-2xl font-bold">{formatValue(value)}</p>
             </div>
           ))}

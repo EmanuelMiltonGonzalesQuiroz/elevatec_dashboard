@@ -11,7 +11,7 @@ export const generateBasePDF = (doc, formData, values, config) => {
   // Página 1: Cabecera y contenido principal 
   startY = Header({ doc, config, startY }); 
   startY = MainContent({ doc, config, formData, startY }); 
- 
+  
   // Especificaciones técnicas  
   startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página 
   startY = TechnicalSpecifications({ doc, formData, startY , config});

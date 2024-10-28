@@ -98,13 +98,13 @@ const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un va
         <tbody>
           {sortedWorkers.map((workerName, index) => (
             <React.Fragment key={index}>
-              <tr className="bg-gray-100 border-b">
+              <tr className="bg-gray-100 border-t-4 border-gray-300"> {/* Borde superior más grueso */}
                 <td className="py-2 font-semibold text-center" rowSpan={assignmentsByWorker[workerName].length + 1}>
                   {workerName}
                 </td>
               </tr>
               {assignmentsByWorker[workerName].map((client, clientIndex) => (
-                <tr key={clientIndex} className="text-center border-b">
+                <tr key={clientIndex} className="text-center border-b border-gray-200"> {/* Borde inferior de cada cliente */}
                   <td className="py-2">{client.clientName}</td>
                   <td className="py-2">
                     <button
@@ -131,6 +131,7 @@ const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un va
             </React.Fragment>
           ))}
         </tbody>
+
       </table>
 
       {selectedClientId && selectedWorkerId && (
