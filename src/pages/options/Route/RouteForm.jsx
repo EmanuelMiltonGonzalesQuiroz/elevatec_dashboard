@@ -18,15 +18,23 @@ const collections = [
 
 const RouteForm = () => {
   const [allData, setAllData] = useState({});
+  const [buildingNames, setBuildingNames] = useState([]);
   const [vendor, setVendor] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [routeData, setRouteData] = useState([]);
+  const [additionalFields, setAdditionalFields] = useState({
+    Pasajeros: '',
+    'Detencion Puertas': '',
+    Garaje: false
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchAllCollectionsData(collections);
         setAllData(data);
+        const edificiosData = data['configuraciones_de_edificios']?.[0]?.data || [];
+        setBuildingNames(edificiosData.map((building) => building.Nombre));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -56,6 +64,11 @@ const RouteForm = () => {
     });
   };
 
+  const handleAdditionalFieldChange = (name, value) => {
+    setAdditionalFields((prev) => ({ ...prev, [name]: value }));
+    updateRouteData(name, value);
+  };
+
   return (
     <div className="flex flex-col p-6 rounded-lg shadow-lg w-full">
       <div className="grid space-y-4">
@@ -67,13 +80,14 @@ const RouteForm = () => {
             setClientPhone={handleClientPhoneChange}
           />
         </div>
-        <div className="w-full lg:flex  grid gp-4 ">
+        <div className="w-full lg:flex grid gp-4">
           <BuildingFields
             formFields={{ PISOS: '', DEPARTAMENTOS: '' }}
             handleFieldChange={updateRouteData}
+            buildingNames={buildingNames}
             allData={allData}
           />
-          <AdditionalFields additionalFields={{ Pasajeros: '', 'Detencion Puertas': '' }} handleAdditionalFieldChange={updateRouteData} />
+          <AdditionalFields additionalFields={additionalFields} handleAdditionalFieldChange={handleAdditionalFieldChange} />
         </div>
       </div>
 
