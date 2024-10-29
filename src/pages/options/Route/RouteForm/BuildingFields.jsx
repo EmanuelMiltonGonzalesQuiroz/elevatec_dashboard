@@ -14,7 +14,7 @@ const buildingTypeMapping = {
   'Estacionamiento': { fields: { AUTOMOVILES: '' }, required: ['AUTOMOVILES'] },
 };
 
-const BuildingFields = ({ handleFieldChange, buildingNames = [] }) => {
+const BuildingFields = ({ handleFieldChange, buildingNames = [], allData }) => {
   const [pisos, setPisos] = useState('');
   const [inputOption, setInputOption] = useState('detailed');
   const [floorTypes, setFloorTypes] = useState({});
@@ -25,7 +25,7 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [] }) => {
   useEffect(() => {
     if (pisos) {
       const newDynamicInputs = Array.from({ length: parseInt(pisos, 10) }, (_, i) => {
-        const floorType = floorTypes[i] || 'Departamentos Centricos';
+        const floorType = floorTypes[i] || 'Departamentos Suburbios';
         const fieldsForType = buildingTypeMapping[floorType]?.fields || { DEPARTAMENTOS: '' };
         return {
           label: `Tipo de edificio para el Piso ${i + 1}`,
@@ -60,10 +60,29 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [] }) => {
         i === index ? { ...input, fields: fieldsForType } : input
       )
     );
+
+    // Obtener los datos completos del edificio seleccionado desde `allData`
+    const buildingData = allData['configuraciones_de_edificios']?.[0]?.data.find(
+      (building) => building.Nombre === buildingType
+    );
+
+    // Almacenar datos completos en `routeData`
     handleFieldChange(`piso_${index + 1}_tipoEdificio`, buildingType);
     if (index === 0) {
       handleFieldChange('selectedBuildingType', buildingType);
+      handleFieldChange('TipoDeEdificio', { Nombre: buildingType, ...buildingData });
     }
+  };
+
+  const handleSimpleBuildingTypeChange = (buildingType) => {
+    // Obtener los datos completos del edificio seleccionado en modo "simple"
+    const buildingData = allData['configuraciones_de_edificios']?.[0]?.data.find(
+      (building) => building.Nombre === buildingType
+    );
+
+    // Almacenar todos los datos del edificio seleccionado en `TipoDeEdificio`
+    handleFieldChange('TipoDeEdificio', { Nombre: buildingType, ...buildingData });
+    handleFieldChange('selectedBuildingType', buildingType);
   };
 
   const handleFieldCountChange = (index, fieldKey, count) => {
@@ -225,10 +244,7 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [] }) => {
             <label className="block font-semibold mb-2 text-gray-700">Tipo de Edificio</label>
             <select
               className="w-full p-2 border rounded mb-4"
-              onChange={(e) => {
-                handleFloorTypeChange(0, e.target.value);
-                handleFieldChange('TipoDeEdificio', e.target.value);
-              }}
+              onChange={(e) => handleSimpleBuildingTypeChange(e.target.value)}
             >
               <option value="">-- Seleccionar tipo de edificio --</option>
               {buildingNames.length > 0 &&
