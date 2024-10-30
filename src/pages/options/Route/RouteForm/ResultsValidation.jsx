@@ -1,5 +1,4 @@
 export const validateFields = (routeData, allData) => {
-  console.log(routeData);
   const lastBuilding = routeData[0] || {};
   const requiredFields = lastBuilding.requiredFields || [];
 
