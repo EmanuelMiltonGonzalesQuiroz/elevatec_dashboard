@@ -48,16 +48,6 @@ const AdditionalFields = ({ additionalFields, handleAdditionalFieldChange }) => 
       </div>
 
       {/* Checkbox para habilitar/deshabilitar garaje */}
-      <div className="mb-4 flex items-center">
-        <input
-          type="checkbox"
-          name="Garaje"
-          checked={!!additionalFields['Garaje']}
-          onChange={handleChange}
-          className="mr-2"
-        />
-        <label className="font-semibold text-gray-700">Garaje</label>
-      </div>
     </div>
   );
 };

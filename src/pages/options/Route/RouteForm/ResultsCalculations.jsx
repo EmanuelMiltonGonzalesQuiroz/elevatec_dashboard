@@ -66,7 +66,7 @@ export const calculateResults = (routeData, allData) => {
     } else if (Velocidad_Desarrollada <= 1.75) {
         Velocidad_Desarrollada = 1.75;
     } else {
-        Velocidad_Desarrollada = 3;
+        Velocidad_Desarrollada = 2;
     }    
     Distancia_Recorrida = pisos*alt_entre_pisos
     Tiempo_de_Recorrido_con_Detenciones_Parciales = Distancia_Recorrida / Velocidad_Desarrollada
@@ -234,7 +234,7 @@ const calcularPoblacionPorM2 = (routeData, allData, pisos) => {
         const m2Edificio = parseFloat(edificioConfig["m^2"]);
 
         // Calcular la población servida en este piso
-        const poblacionPiso = (m2Piso * personasPorM2) / m2Edificio;
+        const poblacionPiso = Math.ceil(((m2Piso * personasPorM2) / m2Edificio) * ( parseFloat(edificioConfig["Demora recomendable"]) / 100));
 
         // Acumular la población servida total
         totalPoblacionServida += poblacionPiso;
