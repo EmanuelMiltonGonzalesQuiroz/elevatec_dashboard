@@ -1,9 +1,8 @@
 [
   {
-    "origin": ["http://localhost:3000", "cotizaciones-elevatec.web.app", "cotizaciones-elevatec.firebaseapp.com"], 
+    "origin": ["http://localhost:3000", "https://cotizaciones-elevatec.web.app", "https://cotizaciones-elevatec.firebaseapp.com"],
     "method": ["GET", "HEAD", "OPTIONS"],
-    "responseHeader": ["Content-Type"],
+    "responseHeader": ["Content-Type", "Access-Control-Allow-Origin"],
     "maxAgeSeconds": 3600
   }
 ]
-
