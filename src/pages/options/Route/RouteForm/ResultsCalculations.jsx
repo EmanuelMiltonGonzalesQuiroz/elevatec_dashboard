@@ -1,4 +1,6 @@
 export const calculateResults = (routeData, allData) => {
+  console.log(routeData)
+  let result = {}
   let totalPoblacion = 0;
   let poblacionServida = 0;
   let pisos = 0;
@@ -40,7 +42,7 @@ export const calculateResults = (routeData, allData) => {
     } else if (TipoDeEdificio && TipoDeEdificio["m^2"] && TipoDeEdificio.Persona) {
       // Verificar si estamos en el caso con `m^2` especificado en los pisos
       if (routeData[0][`piso_1_m2`] !== undefined && !isNaN(parseFloat(routeData[0][`piso_1_m2`]))) {
-        // Caso con `m^2` especificado: usar `calcularPoblacionPorM2`
+        // Caso con `m^2` especificado: usar `calcularPoblacionPorM2
         poblacionServida = calcularPoblacionPorM2(routeData, allData, pisos);
       } else if (
         routeData[0][`piso_1_AREAS`] !== undefined ||
@@ -48,6 +50,7 @@ export const calculateResults = (routeData, allData) => {
         routeData[0][`piso_1_HABITACIONES`] !== undefined
       ) {
         // Caso con `áreas`, `departamentos` o `habitaciones` especificados: usar `calcularPoblacionPorPiso`
+        
         poblacionServida = calcularPoblacionPorPiso(routeData, allData, pisos);
       }
     } else if (Pasajeros && !isNaN(parseInt(Pasajeros))) {
@@ -98,7 +101,7 @@ export const calculateResults = (routeData, allData) => {
   }
   
   // Resultado final con valores asignados
-  const result = {
+  result = {
     Pisos: pisos,
     totalPoblacion: totalPoblacion,
     poblacionServida: poblacionServida,
@@ -250,11 +253,20 @@ const calcularPoblacionPorPiso = (routeData, allData, pisos) => {
   const edificiosData = allData.configuraciones_de_edificios[0].data;
 
   for (let i = 1; i <= pisos; i++) {
-    // Obtener tipo de edificio y cantidad de personas por piso (áreas, departamentos, habitaciones)
+    // Obtener tipo de edificio y sumar personas en subáreas dinámicamente
     const tipoEdificio = routeData[0][`piso_${i}_tipoEdificio`];
-    const personasPorPiso = parseInt(routeData[0][`piso_${i}_AREAS`] || 0) +
-                            parseInt(routeData[0][`piso_${i}_DEPARTAMENTOS`] || 0) +
-                            parseInt(routeData[0][`piso_${i}_HABITACIONES`] || 0);
+    
+    // Sumar todas las personas en las subáreas de este piso
+    const subAreas = ["AREAS", "DEPARTAMENTOS", "HABITACIONES", "AUTOMOVILES"];
+    let personasPorPiso = 0;
+
+    subAreas.forEach((subArea) => {
+      const cantidad = parseInt(routeData[0][`piso_${i}_${subArea}`] || 0);
+      for (let j = 1; j <= cantidad; j++) {
+        const clavePersona = `piso_${i}_piso_${i}_${subArea}_${j}_personas`;
+        personasPorPiso += parseInt(routeData[0][clavePersona] || 0);
+      }
+    });
 
     if (tipoEdificio && personasPorPiso) {
       // Buscar configuración del edificio
@@ -272,25 +284,6 @@ const calcularPoblacionPorPiso = (routeData, allData, pisos) => {
         // Acumular la población servida total
         totalPoblacionServida += poblacionPiso;
       }
-    }
-  }
-
-  // Agregar autos si el garaje está en true
-  if (routeData[0].Garaje) {
-    const estacionamientoConfig = edificiosData.find(
-      (edificio) => edificio.Nombre === "Estacionamiento"
-    );
-
-    if (estacionamientoConfig && estacionamientoConfig.Persona && estacionamientoConfig["Demora recomendable"]) {
-      const autos = 3; // Ejemplo: Número fijo de autos en garaje
-      const personasPorAuto = parseFloat(estacionamientoConfig.Persona);
-      const demoraRecomendable = parseFloat(estacionamientoConfig["Demora recomendable"]) / 100;
-
-      // Calcular la población servida en el garaje y redondear al entero superior
-      const poblacionGaraje = Math.ceil(autos * personasPorAuto * demoraRecomendable);
-
-      // Agregar la población servida por el garaje
-      totalPoblacionServida += poblacionGaraje;
     }
   }
 

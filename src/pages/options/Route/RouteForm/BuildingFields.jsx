@@ -14,7 +14,7 @@ const buildingTypeMapping = {
   'Estacionamiento': { fields: { AUTOMOVILES: '' }, required: ['AUTOMOVILES'] },
 };
 
-const BuildingFields = ({ handleFieldChange, buildingNames = [], allData }) => {
+const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeData = [] }) => {
   const [pisos, setPisos] = useState('');
   const [inputOption, setInputOption] = useState('detailed');
   const [floorTypes, setFloorTypes] = useState({});
@@ -45,27 +45,51 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData }) => {
     if (/^\d+$/.test(value) && parseInt(value, 10) >= 2) {
       setPisos(value);
       handleFieldChange('PISOS', value);
+  
+      // Limpiar todos los datos de pisos anteriores
+      setFloorTypes({});
+      setDynamicInputs([]);
+      setSquareMeters({});
+      setPeoplePerDepartment({});
+  
+      // Limpia todos los datos específicos de cada piso en `routeData`
+      for (let i = 1; i <= parseInt(value); i++) {
+        Object.keys(routeData[0] || {}).forEach((key) => {
+          if (key.startsWith(`piso_${i}_`)) {
+            handleFieldChange(key, null); // Eliminar cada campo con prefijo `piso_n_`
+          }
+        });
+      }
     } else if (value === '') {
       setPisos('');
       setDynamicInputs([]);
       handleFieldChange('PISOS', '');
     }
   };
-
+  
   const handleFloorTypeChange = (index, buildingType) => {
     setFloorTypes((prev) => ({ ...prev, [index]: buildingType }));
     const fieldsForType = buildingTypeMapping[buildingType]?.fields || { DEPARTAMENTOS: '' };
+  
+    // Limpiar datos específicos del piso actual al cambiar el tipo de edificio
+    Object.keys(routeData[0] || {}).forEach((key) => {
+      if (key.startsWith(`piso_${index + 1}_`)) {
+        handleFieldChange(key, null); // Limpiar todos los campos de este piso
+      }
+    });
+  
+    // Actualizar los inputs dinámicos con los nuevos campos
     setDynamicInputs((prevInputs) =>
       prevInputs.map((input, i) =>
         i === index ? { ...input, fields: fieldsForType } : input
       )
     );
-
+  
     // Obtener los datos completos del edificio seleccionado desde `allData`
     const buildingData = allData['configuraciones_de_edificios']?.[0]?.data.find(
       (building) => building.Nombre === buildingType
     );
-
+  
     // Almacenar datos completos en `routeData`
     handleFieldChange(`piso_${index + 1}_tipoEdificio`, buildingType);
     if (index === 0) {
@@ -73,21 +97,17 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData }) => {
       handleFieldChange('TipoDeEdificio', { Nombre: buildingType, ...buildingData });
     }
   };
-
-  const handleSimpleBuildingTypeChange = (buildingType) => {
-    // Obtener los datos completos del edificio seleccionado en modo "simple"
-    const buildingData = allData['configuraciones_de_edificios']?.[0]?.data.find(
-      (building) => building.Nombre === buildingType
-    );
-
-    // Almacenar todos los datos del edificio seleccionado en `TipoDeEdificio`
-    handleFieldChange('TipoDeEdificio', { Nombre: buildingType, ...buildingData });
-    handleFieldChange('selectedBuildingType', buildingType);
-  };
-
+  
   const handleFieldCountChange = (index, fieldKey, count) => {
     handleFieldChange(`piso_${index + 1}_${fieldKey}`, count);
-
+  
+    // Limpiar todos los datos específicos de este campo en `routeData`
+    Object.keys(routeData[0] || {}).forEach((key) => {
+      if (key.startsWith(`piso_${index + 1}_${fieldKey}_`)) {
+        handleFieldChange(key, null); // Limpiar todos los subcampos específicos
+      }
+    });
+  
     if (count !== '') {
       const peopleInputs = Array.from({ length: count }, (_, i) => ({
         label: `Cantidad de personas en el ${fieldKey} ${i + 1}`,
@@ -107,6 +127,17 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData }) => {
         return updated;
       });
     }
+  };
+  
+  const handleSimpleBuildingTypeChange = (buildingType) => {
+    // Obtener los datos completos del edificio seleccionado en modo "simple"
+    const buildingData = allData['configuraciones_de_edificios']?.[0]?.data.find(
+      (building) => building.Nombre === buildingType
+    );
+
+    // Almacenar todos los datos del edificio seleccionado en `TipoDeEdificio`
+    handleFieldChange('TipoDeEdificio', { Nombre: buildingType, ...buildingData });
+    handleFieldChange('selectedBuildingType', buildingType);
   };
 
   const handlePeopleCountChange = (index, deptIndex, value) => {

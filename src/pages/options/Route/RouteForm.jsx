@@ -56,13 +56,20 @@ const RouteForm = () => {
     setRouteData((prev) => {
       const updatedData = Array.isArray(prev) ? [...prev] : [];
       if (updatedData.length > 0) {
-        updatedData[0] = { ...updatedData[0], [key]: value };
+        if (value === null) {
+          delete updatedData[0][key]; // Eliminar la propiedad
+        } else {
+          updatedData[0] = { ...updatedData[0], [key]: value };
+        }
       } else {
-        updatedData[0] = { [key]: value };
+        if (value !== null) {
+          updatedData[0] = { [key]: value };
+        }
       }
       return updatedData;
     });
   };
+  
 
   const handleAdditionalFieldChange = (name, value) => {
     setAdditionalFields((prev) => ({ ...prev, [name]: value }));
@@ -81,12 +88,13 @@ const RouteForm = () => {
           />
         </div>
         <div className="w-full lg:flex grid gp-4">
-          <BuildingFields
-            formFields={{ PISOS: '', DEPARTAMENTOS: '' }}
-            handleFieldChange={updateRouteData}
-            buildingNames={buildingNames}
-            allData={allData}
-          />
+        <BuildingFields
+          formFields={{ PISOS: '', DEPARTAMENTOS: '' }}
+          handleFieldChange={updateRouteData}
+          buildingNames={buildingNames}
+          allData={allData}
+          routeData={routeData} // <-- Añadido
+        />
           <AdditionalFields additionalFields={additionalFields} handleAdditionalFieldChange={handleAdditionalFieldChange} />
         </div>
       </div>

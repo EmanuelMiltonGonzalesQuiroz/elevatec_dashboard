@@ -26,7 +26,7 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
 
   const labels = {
     Pisos: 'Número de Pisos',
-    totalPoblacion: 'Total de Población',
+    totalPoblacion: 'Capacidad de Cabina',
     poblacionServida: 'Población Servida',
     Velocidad_Desarrollada: 'Velocidad Desarrollada (m/s)',
     Tiempo_total: 'Tiempo Total de Recorrido (seg)',
