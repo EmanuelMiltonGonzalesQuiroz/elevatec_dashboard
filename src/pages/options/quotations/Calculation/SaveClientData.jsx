@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { db } from '../../../../connection/firebase.js';
-import { doc, setDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, orderBy, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../../../context/AuthContext';
+import { calculateDistance } from '../../../../components/layout/calculateDistance';
 
 const sanitizeDocId = (id) => {
   return id.replace(/\//g, '_'); // Reemplaza '/' con '_' para asegurar IDs válidos en Firestore
 };
 
-// Función para limpiar el objeto y eliminar propiedades con valores undefined o null
 const cleanData = (data) => {
   if (Array.isArray(data)) {
     return data.map(cleanData);
@@ -25,16 +25,15 @@ const cleanData = (data) => {
 };
 
 const SaveClientData = ({ formData, additionalData }) => {
-  const { currentUser} = useAuth();
+  const { currentUser } = useAuth();
+  
   useEffect(() => {
     const saveData = async () => {
       try {
-        // Usamos la primera cotización para obtener el nombre del cliente
         const clientName = formData[0]['02_CLIENTE'] || "unknown_client";
         const clientsCollection = collection(db, 'clients');
         const clientsSnapshot = await getDocs(clientsCollection);
 
-        // Encontrar el documento del cliente que coincide con el nombre seleccionado
         const clientDoc = clientsSnapshot.docs.find(
           (doc) => doc.data().name === formData[0]['02_CLIENTE']
         );
@@ -43,76 +42,99 @@ const SaveClientData = ({ formData, additionalData }) => {
           alert('No se pudo encontrar el ID del cliente.');
           return;
         }
+        
         const clientId = clientDoc.id;
-
-        // Obtener la hora local sin milisegundos
         const date = new Date();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-
-        const timestamp = `${year}_${month}_${day}T${hours}_${minutes}_${seconds}Z`;
+        const timestamp = `${date.getFullYear()}_${String(date.getMonth() + 1).padStart(2, '0')}_${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}_${String(date.getMinutes()).padStart(2, '0')}_${String(date.getSeconds()).padStart(2, '0')}Z`;
         const docId = sanitizeDocId(`${clientName}_${timestamp}`);
         const quotationsCol = collection(db, 'list of quotations');
 
-        // Limpiar los datos antes de guardarlos
         const cleanedFormDataArray = formData.map(cleanData);
         const cleanedAdditionalDataArray = additionalData.map(cleanData);
 
-        // Guardar todas las cotizaciones en un solo documento de Firestore
         const dataToSave = {
           timestamp: timestamp,
-          quotationDetails: cleanedFormDataArray, // Guardar todas las cotizaciones como un array
-          calculatedValues: cleanedAdditionalDataArray, // Guardar todos los valores calculados como un array
+          quotationDetails: cleanedFormDataArray,
+          calculatedValues: cleanedAdditionalDataArray,
           clientId: clientId,
           state: "active",
           solicitante: currentUser
         };
 
-        // Guardar la cotización en la colección 'list of quotations'
         await setDoc(doc(quotationsCol, docId), dataToSave);
 
-        // Guardar una sola ubicación con el id más alto
         const locationsCol = collection(db, 'locations');
 
-        // Obtener el ID más alto de la colección 'locations'
         const getHighestLocationId = async () => {
           const q = query(locationsCol, orderBy('id', 'desc'));
           const querySnapshot = await getDocs(q);
-          if (!querySnapshot.empty) {
-            const highestLocation = querySnapshot.docs[0];
-            return highestLocation.data().id;
+          for (const locationDoc of querySnapshot.docs) {
+            const locationId = locationDoc.data().id;
+            if (Number.isInteger(locationId)) { // Filtrar solo enteros
+              return locationId;
+            }
           }
-          return 0; // Si no hay ubicaciones previas, empezamos en 0
+          return 0;
         };
 
-        // Obtener el nuevo ID más alto
         const highestId = await getHighestLocationId();
-        const newLocationId = highestId + 1; // Asignar el nuevo ID incrementado
+        const newLocationId = highestId + 1;
 
-        // Limpiar y preparar los datos de la ubicación
-        const cleanedLocationData = cleanData(formData[0]); // Usamos la primera cotización para la ubicación principal
-
-        const locationData = {
-          Direccion: cleanedLocationData['Ubicacion_nombre'] || "Sin dirección", // Dirección o valor por defecto
+        const cleanedLocationData = cleanData(formData[0]);
+        const newLocation = {
+          Direccion: cleanedLocationData['Ubicacion_nombre'] || "Sin dirección",
           Tipo: [
-            cleanedLocationData['Tipo_0'] || "CONSTRUCCION", // Primer valor en el array
-            cleanedLocationData['Tipo_1'] || "CA", // Segundo valor en el array
-            cleanedLocationData['Tipo_2'] || "C. ASCENSORES" // Tercer valor en el array
+            cleanedLocationData['Tipo_0'] || "CONSTRUCCION",
+            cleanedLocationData['Tipo_1'] || "CA",
+            cleanedLocationData['Tipo_2'] || "C. ASCENSORES"
           ],
-          client: clientName || "Cliente desconocido", // Nombre del cliente o valor por defecto
-          createdAt: timestamp, // Marca de tiempo generada por Firestore
-          id: newLocationId, // Asignamos el nuevo ID más alto
+          client: clientName || "Cliente desconocido",
+          createdAt: timestamp,
+          id: newLocationId,
           location: cleanedLocationData['Ubicacion'],
           state: "Cotizacion_A",
-          clientId: clientId // Estado específico
+          clientId: clientId
         };
 
-        // Guardar la ubicación en la colección 'locations'
-        await setDoc(doc(locationsCol, docId), locationData);
+        const existingLocationsSnapshot = await getDocs(locationsCol);
+
+        // Guardar IDs de ubicaciones y cotizaciones cercanas
+        const closeLocationsIds = [];
+        const closeQuotationsIds = [];
+
+        // Iterar sobre cada ubicación existente para encontrar las cercanas
+        for (const locationDoc of existingLocationsSnapshot.docs) {
+          const existingLocation = locationDoc.data();
+          
+          if (existingLocation.location && Number.isInteger(existingLocation.id)) {
+            const distance = calculateDistance(
+              existingLocation.location.lat,
+              existingLocation.location.lng,
+              newLocation.location.lat,
+              newLocation.location.lng
+            );
+
+            if (distance < 20) {
+              // Agregar el ID de la ubicación cercana
+              closeLocationsIds.push(locationDoc.id);
+
+              // Cambiar estado de la ubicación cercana a "default"
+              await updateDoc(locationDoc.ref, { state: "default" });
+
+              // Buscar y actualizar el estado de la cotización correspondiente a "deleted"
+              const quotationId = sanitizeDocId(existingLocation.client + "_" + existingLocation.createdAt);
+              const quotationDocRef = doc(db, 'list of quotations', quotationId);
+
+              // Agregar el ID de la cotización cercana
+              closeQuotationsIds.push(quotationId);
+              await updateDoc(quotationDocRef, { state: "deleted" });
+            }
+          }
+        }
+
+
+        // Guardar la nueva ubicación
+        await setDoc(doc(locationsCol, docId), newLocation);
 
       } catch (err) {
         console.error('Error saving quotation data or location data', err);
@@ -120,7 +142,7 @@ const SaveClientData = ({ formData, additionalData }) => {
     };
 
     saveData();
-  }, [formData, additionalData]);
+  }, [formData, additionalData, currentUser]);
 
   return <p>¡Datos guardados con éxito!</p>;
 };

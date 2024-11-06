@@ -298,7 +298,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
           border: 'none',
           cursor: 'pointer'
         }}
-      >
+      > 
         {type.toLowerCase().includes('word') ? 'Guardar Word' : 'Guardar PDF'}
       </button> 
   

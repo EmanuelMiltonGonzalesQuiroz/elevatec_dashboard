@@ -71,8 +71,9 @@ const ClientColumn = ({
     setIsButtonDisabled(false);
   };
 // Manejar el cambio de número de cuotas
+// Manejar el cambio de número de cuotas
 const handleNumCuotasChange = (e) => {
-  const value = parseInt(e.target.value, 10);
+  const value = parseInt(e.target.value, 10) || 1; // Si el campo está vacío, asigna 1
 
   // Limitar el valor de cuotas entre 1 y 30
   const cuotasNum = Math.max(1, Math.min(30, value));
@@ -92,6 +93,7 @@ const handleNumCuotasChange = (e) => {
   // Guardar el número de cuotas y las cuotas en formData
   handleClientChange('MetodoDePago', cuotas);
 };
+
 
 // Manejar el cambio de las cuotas
 // Manejar el cambio de las cuotas

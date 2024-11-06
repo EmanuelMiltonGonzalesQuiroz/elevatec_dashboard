@@ -35,7 +35,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       `Ascensor de pasajeros Eléctrico ${formData[n].Tipo.nombre}`,
       formData[n]["08_Número de ascensores"],
       formData[n]?.Velocidad?.nombre || "0",
-      formData[n]["03_PERSONAS"] * 75 + "Kg." || "0",
+      formData[n]["03_PERSONAS"] || "0",
       formData[n]["01_PARADAS"] || "0",
       valorFormateadoUnitario,
       valorFormateado

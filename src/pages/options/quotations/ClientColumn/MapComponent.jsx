@@ -13,10 +13,16 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
       try {
         const locationsCol = collection(db, 'locations');
         const locationSnapshot = await getDocs(locationsCol);
-        const locationList = locationSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const locationList = locationSnapshot.docs
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter(location =>
+            location.Tipo?.[0] === 'CONSTRUCCION' &&
+            location.Tipo?.[1] === 'CA' &&
+            location.Tipo?.[2] === 'C. ASCENSORES'
+          );
         setLocations(locationList);
       } catch (error) {
         console.error('Error obteniendo datos de Firestore:', error);
@@ -45,11 +51,11 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     }
 
     let tooClose = false;
-    const threshold = 10; // Distancia mínima de 10 metros
+    const threshold = 20; // Distancia mínima de 20 metros
 
-    // Verificar si la nueva ubicación está muy cerca de alguna ubicación existente
+    // Verificar si la nueva ubicación está muy cerca de alguna ubicación existente con "Cotizacion_A"
     locations.forEach((location) => {
-      if (isValidLatLng(location.location?.lat, location.location?.lng)) {
+      if (location.state === 'Cotizacion_A' && isValidLatLng(location.location?.lat, location.location?.lng)) {
         const distance = calculateDistance(
           location.location.lat,
           location.location.lng,
@@ -63,11 +69,19 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     });
 
     if (tooClose) {
-      setButtonDisabled(true);
+      // Pregunta de confirmación para continuar
+      const userConfirmed = window.confirm('Ya hay una cotización para esta ubicación. ¿Desea continuar?');
+      if (!userConfirmed) {
+        setButtonDisabled(true);
+        return;
+      } else {
+        setButtonDisabled(false);
+      }
     } else {
       setButtonDisabled(false);
-      handleMapClick(event); // Procesar la lógica normal del clic
     }
+    
+    handleMapClick(event); // Procesar la lógica normal del clic
   };
 
   return (

@@ -25,6 +25,6 @@ export const generateBasePDF = (doc, formData, values, config) => {
   startY = TableComponent({ doc, formData, values, startY, config });
 
 
-  // Sección final
+  // Sección final 
  
 };
