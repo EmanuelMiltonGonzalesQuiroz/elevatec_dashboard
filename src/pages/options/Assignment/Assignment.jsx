@@ -5,11 +5,15 @@ import AssignmentFilter from './AssignmentFilter'; // Agregar filtro
 import { db } from '../../../connection/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../../context/AuthContext';  // Asumiendo que tienes un contexto de autenticación
+import DirectionsModal from '../Location/DirectionsModal';
 
 const Assignment = () => {
   const { currentUser } = useAuth();  // Obtenemos el usuario actual
   const [assignments, setAssignments] = useState([]);
   const [filteredAssignments, setFilteredAssignments] = useState([]);
+  const [showDirectionsModal, setShowDirectionsModal] = useState(false); // Estado para el modal de direcciones
+  const [selectedLocationForDirections, setSelectedLocationForDirections] = useState(null); // Estado para la ubicación seleccionada
+
 
   // Cargar asignaciones desde Firebase al inicio
   useEffect(() => {
@@ -56,6 +60,10 @@ const Assignment = () => {
 
     setFilteredAssignments(filtered);
   };
+  const handleShowDirections = (location) => {
+    setSelectedLocationForDirections(location);
+    setShowDirectionsModal(true);
+  };
 
   return (
     <div className="flex flex-col p-6 rounded-lg shadow-lg w-full text-black space-y-4">
@@ -68,7 +76,13 @@ const Assignment = () => {
       )}
 
       {/* Mostrar la tabla de asignaciones */}
-      <AssignmentTable assignments={filteredAssignments} />
+      <AssignmentTable assignments={filteredAssignments} onShowDirections={handleShowDirections}/>
+      {showDirectionsModal && selectedLocationForDirections && (
+        <DirectionsModal
+          location={selectedLocationForDirections}
+          onClose={() => setShowDirectionsModal(false)}
+        />
+      )}
     </div>
   );
 };

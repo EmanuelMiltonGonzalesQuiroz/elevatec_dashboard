@@ -4,7 +4,7 @@ import EditAssignmentModal from './EditAssignmentModal';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
 
-const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un valor predeterminado para assignments
+const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { // Agregamos un valor predeterminado para assignments
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [selectedWorkerId, setSelectedWorkerId] = useState(null);
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
@@ -113,7 +113,7 @@ const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un va
                     >
                       Info
                     </button>
-                    <button
+                    {/*<button
                       className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
                       onClick={() => handleEditClick(client.assignmentId)}
                     >
@@ -124,7 +124,7 @@ const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un va
                       onClick={() => handleDelete(client.assignmentId)}
                     >
                       Eliminar
-                    </button>
+                    </button>*/}
                   </td>
                 </tr>
               ))}
@@ -142,6 +142,7 @@ const AssignmentTable = ({ assignments = [], onDelete }) => { // Agregamos un va
             setSelectedClientId(null);
             setSelectedWorkerId(null);
           }}
+          onShowDirections={onShowDirections}
         />
       )}
       {selectedAssignmentId && (

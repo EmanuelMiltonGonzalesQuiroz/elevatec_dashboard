@@ -1,15 +1,16 @@
+// src/components/ClientInfoModal.jsx
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import FilteredLocationMap from './FilteredLocationMap';  // Usando el nuevo mapa
+import FilteredLocationMap from './FilteredLocationMap';
+import ClientLocationTable from './ClientLocationTable'; // Importar el nuevo componente
 
-const ClientInfoModal = ({ clientId, workerId, onClose }) => {
+const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
   const [clientInfo, setClientInfo] = useState(null);
   const [clientLocations, setClientLocations] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: -16.495543, lng: -68.133543 });
   const [stateColors, setStateColors] = useState({});
 
-  // Cargar la información del cliente y las ubicaciones asignadas al trabajador
   useEffect(() => {
     const fetchClientData = async () => {
       if (!clientId || !workerId) {
@@ -23,7 +24,6 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
           setClientInfo(clientDoc.data());
         }
 
-        // Obtener la asignación del trabajador para este cliente
         const assignmentsQuery = query(
           collection(db, 'assignments'),
           where('clientId', '==', clientId),
@@ -31,7 +31,6 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
         );
         const assignmentsSnapshot = await getDocs(assignmentsQuery);
 
-        // Convertir todos los projectIds asignados a cadenas
         const assignedProjectIds = assignmentsSnapshot.docs.flatMap((doc) => 
           doc.data().projectIds.map(id => id.toString())
         );
@@ -41,22 +40,15 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
           return;
         }
 
-        // Obtener las ubicaciones del cliente y filtrar por las asignadas al trabajador
         const locationsQuery = query(collection(db, 'locations'), where('clientId', '==', clientId));
         const locationsSnapshot = await getDocs(locationsQuery);
 
-        // Filtrar las ubicaciones que coincidan con los projectIds asignados, asegurando que `id` esté en formato string
-      const filteredLocations = locationsSnapshot.docs
-      .filter((doc) => {
-        const locationId = doc.data().id.toString();  // Convertir a string por consistencia
-        const isMatch = assignedProjectIds.includes(locationId);
-        return isMatch;
-      })
-      .map((doc) => ({ id: doc.data().id.toString(), ...doc.data() }));  // Convertir `id` y añadir datos
+        const filteredLocations = locationsSnapshot.docs
+          .filter((doc) => assignedProjectIds.includes(doc.data().id.toString()))
+          .map((doc) => ({ id: doc.data().id.toString(), ...doc.data() }));
 
         setClientLocations(filteredLocations);
 
-        // Centrar el mapa en la primera ubicación asignada
         if (filteredLocations.length > 0) {
           setMapCenter({ lat: filteredLocations[0].location.lat, lng: filteredLocations[0].location.lng });
         }
@@ -70,8 +62,7 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
         const statesSnapshot = await getDocs(collection(db, 'locationStates'));
         const colors = {};
         statesSnapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          colors[doc.id] = data.color;
+          colors[doc.id] = doc.data().color;
         });
         setStateColors(colors);
       } catch (error) {
@@ -97,7 +88,6 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
             <p><strong>Email:</strong> {clientInfo.email}</p>
             <p><strong>Teléfono:</strong> {clientInfo.phone}</p>
 
-            {/* Mapa que muestra las ubicaciones asignadas al trabajador */}
             <div className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Ubicaciones Asignadas</h3>
               <FilteredLocationMap
@@ -107,6 +97,9 @@ const ClientInfoModal = ({ clientId, workerId, onClose }) => {
                 stateColors={stateColors}
               />
             </div>
+
+            {/* Tabla de ubicaciones asignadas al cliente */}
+            <ClientLocationTable locations={clientLocations} onShowDirections={onShowDirections}/>
           </div>
         ) : (
           <p>Cargando información del cliente...</p>
