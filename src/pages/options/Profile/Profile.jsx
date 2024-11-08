@@ -112,10 +112,12 @@ const Profile = () => {
             )}
           </div>
           <div className="space-y-4 flex flex-col items-center text-center">
+          {!currentUser.role === 'Trabajador' && (
             <div className="w-full max-w-md">
               <label className="font-semibold">Rol de Usuario:</label>
               <p>{currentUser.role}</p>
             </div>
+          )}
           </div>
           <div className="w-full max-w-md">
             <label className="font-semibold">Correo electrónico:</label>

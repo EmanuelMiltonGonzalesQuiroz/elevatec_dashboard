@@ -3,10 +3,12 @@ import ClientInfoModal from './ClientInfoModal';
 import EditAssignmentModal from './EditAssignmentModal';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
+import { useAuth } from '../../../context/AuthContext';
 
 const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { // Agregamos un valor predeterminado para assignments
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [selectedWorkerId, setSelectedWorkerId] = useState(null);
+  const { currentUser } = useAuth();  // Obtenemos el usuario actual
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [workerNames, setWorkerNames] = useState({});
   const [clientNames, setClientNames] = useState({});
@@ -90,7 +92,7 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            <th className="py-2">Trabajador</th>
+            <th className="py-2">Usuario</th>
             <th className="py-2">Clientes</th>
             <th className="py-2">Acciones</th>
           </tr>
@@ -107,24 +109,30 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
                 <tr key={clientIndex} className="text-center border-b border-gray-200"> {/* Borde inferior de cada cliente */}
                   <td className="py-2">{client.clientName}</td>
                   <td className="py-2">
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
-                      onClick={() => handleInfoClick(client.clientId, client.workerId)}
-                    >
-                      Info
-                    </button>
-                    {/*<button
-                      className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
-                      onClick={() => handleEditClick(client.assignmentId)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                      onClick={() => handleDelete(client.assignmentId)}
-                    >
-                      Eliminar
-                    </button>*/}
+                    <div className="grid grid-cols-1 gap-2  mx-auto justify-items-center">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-[150px]"
+                        onClick={() => handleInfoClick(client.clientId, client.workerId)}
+                      >
+                        Info
+                      </button>
+                      {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
+                        <div className="flex flex-col gap-2">
+                          <button
+                            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded w-[150px]"
+                            onClick={() => handleEditClick(client.assignmentId)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded w-[150px]"
+                            onClick={() => handleDelete(client.assignmentId)}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

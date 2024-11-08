@@ -15,46 +15,38 @@ const AssignmentForm = ({ onNewAssignment }) => {
   const [allProjectsAssigned, setAllProjectsAssigned] = useState(false); // Indica si todos los proyectos están asignados
 
   // Manejar la selección del cliente
-  const handleClientChange = async (selectedClient) => {
-    setAssignmentFields((prev) => ({
-      ...prev,
-      selectedClient,
-    }));
-    setSelectedProjects([]); // Reinicia los proyectos seleccionados
+  // Manejar la selección del cliente
+const handleClientChange = async (selectedClient) => {
+  setAssignmentFields((prev) => ({
+    ...prev,
+    selectedClient,
+  }));
+  setSelectedProjects([]); // Reinicia los proyectos seleccionados
 
-    if (selectedClient) {
-      try {
-        // Obtener proyectos asignados de la colección "assignments"
-        const assignmentsQuery = query(
-          collection(db, 'assignments'),
-          where('clientId', '==', selectedClient.value)
-        );
-        const assignmentsSnapshot = await getDocs(assignmentsQuery);
-        const assignedProjectIds = assignmentsSnapshot.docs.flatMap((doc) => doc.data().projectIds);
+  if (selectedClient) {
+    try {
+      // Cargar proyectos de la colección "locations" filtrados por clientId
+      const projectsQuery = query(
+        collection(db, 'locations'),
+        where('clientId', '==', selectedClient.value)
+      );
+      const projectsSnapshot = await getDocs(projectsQuery);
+      const projectsList = projectsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-        // Cargar proyectos de la colección "locations" filtrados por clientId
-        const projectsQuery = query(
-          collection(db, 'locations'),
-          where('clientId', '==', selectedClient.value)
-        );
-        const projectsSnapshot = await getDocs(projectsQuery);
-        const projectsList = projectsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        // Filtrar proyectos no asignados
-        const unassignedProjects = projectsList.filter((project) => !assignedProjectIds.includes(project.id));
-
-        setClientProjects(unassignedProjects);
-        setAllProjectsAssigned(unassignedProjects.length === 0); // Verificar si todos los proyectos ya están asignados
-      } catch (error) {
-        console.error('Error cargando proyectos:', error);
-      }
-    } else {
-      setClientProjects([]);
+      // Asignar todos los proyectos al cliente sin verificar asignaciones previas
+      setClientProjects(projectsList);
+      setAllProjectsAssigned(projectsList.length === 0);
+    } catch (error) {
+      console.error('Error cargando proyectos:', error);
     }
-  };
+  } else {
+    setClientProjects([]);
+  }
+};
+
 
   // Manejar la selección del trabajador
   const handleWorkerChange = (selectedWorker) => {

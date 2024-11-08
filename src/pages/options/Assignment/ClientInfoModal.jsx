@@ -1,9 +1,8 @@
-// src/components/ClientInfoModal.jsx
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../connection/firebase';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import FilteredLocationMap from './FilteredLocationMap';
-import ClientLocationTable from './ClientLocationTable'; // Importar el nuevo componente
+import ClientLocationTable from './ClientLocationTable';
 
 const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
   const [clientInfo, setClientInfo] = useState(null);
@@ -13,10 +12,7 @@ const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
 
   useEffect(() => {
     const fetchClientData = async () => {
-      if (!clientId || !workerId) {
-        console.error('clientId o workerId es undefined, no se puede realizar la consulta.');
-        return;
-      }
+      if (!clientId || !workerId) return;
 
       try {
         const clientDoc = await getDoc(doc(db, 'clients', clientId));
@@ -30,19 +26,14 @@ const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
           where('workerId', '==', workerId)
         );
         const assignmentsSnapshot = await getDocs(assignmentsQuery);
-
         const assignedProjectIds = assignmentsSnapshot.docs.flatMap((doc) => 
           doc.data().projectIds.map(id => id.toString())
         );
 
-        if (assignedProjectIds.length === 0) {
-          console.log('No se encontraron proyectos asignados.');
-          return;
-        }
+        if (assignedProjectIds.length === 0) return;
 
         const locationsQuery = query(collection(db, 'locations'), where('clientId', '==', clientId));
         const locationsSnapshot = await getDocs(locationsQuery);
-
         const filteredLocations = locationsSnapshot.docs
           .filter((doc) => assignedProjectIds.includes(doc.data().id.toString()))
           .map((doc) => ({ id: doc.data().id.toString(), ...doc.data() }));
@@ -74,9 +65,15 @@ const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
     fetchStateColors();
   }, [clientId, workerId]);
 
+  const handleRowClick = (location) => {
+    if (location.location && location.location.lat && location.location.lng) {
+      setMapCenter({ lat: location.location.lat, lng: location.location.lng });
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-1/2 relative">
+      <div className="bg-white p-6 rounded-lg w-1/2 relative max-h-[90vh] overflow-auto">
         <button onClick={onClose} className="absolute top-2 right-2 text-red-500 font-bold">
           X
         </button>
@@ -98,8 +95,7 @@ const ClientInfoModal = ({ clientId, workerId, onClose, onShowDirections }) => {
               />
             </div>
 
-            {/* Tabla de ubicaciones asignadas al cliente */}
-            <ClientLocationTable locations={clientLocations} onShowDirections={onShowDirections}/>
+            <ClientLocationTable locations={clientLocations} onShowDirections={onShowDirections} onRowClick={handleRowClick}/>
           </div>
         ) : (
           <p>Cargando información del cliente...</p>
