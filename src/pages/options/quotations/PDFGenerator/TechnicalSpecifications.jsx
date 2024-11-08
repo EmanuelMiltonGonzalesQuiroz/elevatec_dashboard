@@ -7,13 +7,13 @@ const checkAddPage = (doc, currentY, additionalSpace = 20, config) => {
   const pageHeight = doc.internal.pageSize.height;
   if (currentY + additionalSpace > pageHeight - bottomMargin) {
     doc.addPage();
-    return 30; // Reinicia la posición Y en la nueva página
+    return config.topMargin +10 || 30; // Reinicia la posición Y en la nueva página, respetando el margen superior
   }
   return currentY;
 };
 
 const TechnicalSpecifications = ({ doc, formData, startY, config }) => {
-  const { leftMargin = 20, rightMargin = 20, topMargin = 0, bottomMargin = 20 } = config;
+  const { leftMargin = 20, rightMargin = 20, topMargin = 30, bottomMargin = 20 } = config;
 
   // Lista de contenidos que deben tener líneas horizontales
   const rowsWithLines = [

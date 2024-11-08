@@ -40,7 +40,7 @@ export const homeText = {
   company:"ELEVATEC",
   elevatorCalculations: "Calculo de Trafico ",
   elevatorCalculationsSettings: "Ajustes de Calculo de Trafico ",
-  assignment: "Asignación", 
+  assignment: "Ubicaciones", 
 };
 export const clientColumnText = {
   searchClient: "Buscar cliente",

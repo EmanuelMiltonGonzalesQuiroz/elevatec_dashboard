@@ -62,7 +62,7 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
     return currentY;
   };
 
-  // Añadir la imagen de encabezado y la marca de agua a la primera página
+  // Añadir la imagen de encabezado y la marca de agua a la primera página 
   addHeaderImage(doc, jalmecoHeaderJPG, 0, 0, pageWidth, headerHeight); // Colocar la imagen en (0, 0)
   addWatermark(doc, jalmecoWaterMark); // Añadir marca de agua centrada
   addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); // Añadir footer
@@ -71,7 +71,7 @@ export const generateJalmecoPDF = (doc, formData, values, config) => {
   startY = Header({ doc, config, startY });
   startY = MainContent({ doc, config, formData, startY });
 
-  // Especificaciones técnicas
+  // Especificaciones técnicas  
   startY = checkAddPage(doc, startY); // Verificar si se necesita una nueva página
   startY = TechnicalSpecifications({ doc, formData, startY, config });
 

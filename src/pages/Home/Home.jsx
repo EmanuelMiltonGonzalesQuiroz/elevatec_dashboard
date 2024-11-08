@@ -54,7 +54,7 @@ const Home = () => {
         <Sidebar activeContent={activeContent} setActiveContent={setActiveContent} />
         <main className="flex-grow bg-gray-100 p-6">
           <div className="w-full">
-            {activeContent === 'Ubicación' && <Location />}
+            {!['Trabajador'].includes(userRole) && activeContent === 'Ubicación' && <Location />}
             {activeContent === 'Cotizaciones' && <Quotations />}
             {['Administrador', 'Gerencia'].includes(userRole) && activeContent === 'Ajustes' && <Settings />}
             {!['Trabajador'].includes(userRole) && activeContent === 'Mantenimiento' && <Maintenance />}

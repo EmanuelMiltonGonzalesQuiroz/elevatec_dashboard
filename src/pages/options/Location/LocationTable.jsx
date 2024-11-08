@@ -79,7 +79,9 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                       {location.state === 'Cotizacion_A' 
                         ? 'Cotización Ascensor' 
                         : location.state === 'Cotizacion_M' 
-                        ? 'Cotización Mantenimiento' 
+                        ? 'Cotización Mantenimiento'
+                        : location.state === 'default' 
+                        ? 'No Disponible' 
                         : location.state}
                     </span>
                   </div>

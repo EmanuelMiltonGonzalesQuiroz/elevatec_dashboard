@@ -4,8 +4,8 @@ import TechnicalSpecifications from './TechnicalSpecifications';
 import TechnicalDetails from './TechnicalDetails'; 
 import TableComponent from './TableComponent'; 
 
-import teknoliftHeader from '../../../../assets/images/teknoliftHeader.jpg'; 
-import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg'; 
+import teknoliftHeader from '../../../../assets/images/teknoliftHeader.jpg';  
+import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg';    
 import teknoliftWaterMark from '../../../../assets/images/teknoliftWaterMark.jpg'; 
 import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg'; 
 
@@ -19,7 +19,7 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   let startY = topMargin + 20; 
 
-  // Función para añadir la imagen del encabezado
+  // Función para añadir la imagen del encabezado 
   const addHeaderImage = (doc, imageBase64, x = 0, y = 0, width, height) => {
     try {
       doc.addImage(imageBase64, 'JPEG', x, y, width, height);

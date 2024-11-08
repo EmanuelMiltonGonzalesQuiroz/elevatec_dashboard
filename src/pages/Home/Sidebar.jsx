@@ -57,7 +57,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
       </div>
       <nav className="flex-grow overflow-y-auto">
         <ul>
-          {renderItem(homeText.location, <FaLocationArrow />, 'Ubicación')}
+          {userRole !== 'Trabajador' && renderItem(homeText.location, <FaLocationArrow />, 'Ubicación')}
           {userRole !== 'Trabajador' && renderItem(homeText.quotations, <FaFileInvoiceDollar />, 'Cotizaciones')}
           {['Administrador', 'Gerencia'].includes(userRole) && renderItem(homeText.settings, <FaCog />, 'Ajustes')}
           {!['Trabajador'].includes(userRole) && renderItem(homeText.maintenance, <FaWrench />, 'Mantenimiento')}

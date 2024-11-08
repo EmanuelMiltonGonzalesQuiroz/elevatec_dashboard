@@ -6,22 +6,20 @@ import { FaTimes } from 'react-icons/fa';
 const RestoreStateModal = ({ location, onClose, onStateRestore }) => {
   const [state, setState] = useState(location.state || '');
   const [availableStates, setAvailableStates] = useState([]);
-  const [locationDocId, setLocationDocId] = useState(null);  // Guardar el ID del documento
+  const [locationDocId, setLocationDocId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAvailableStates = async () => {
       try {
-        // Obtenemos los estados disponibles desde la colección "locationStates"
         const statesSnapshot = await getDocs(collection(db, 'locationStates'));
         const states = statesSnapshot.docs.map(doc => ({
           id: doc.id,
           color: doc.data().color,
           state: doc.data().state,
         }));
-        // Filtramos los estados, excluyendo "Eliminar" y "default"
         const filteredStates = states.filter(state => state.state === true && state.id !== 'Eliminar' && state.id !== 'default');
-        setAvailableStates(filteredStates); // Solo mostramos estados activos y válidos
+        setAvailableStates(filteredStates);
       } catch (error) {
         console.error('Error al obtener los estados: ', error);
       }
@@ -29,13 +27,12 @@ const RestoreStateModal = ({ location, onClose, onStateRestore }) => {
 
     const fetchLocationDocument = async () => {
       try {
-        // Buscar el documento de la ubicación en Firestore usando el campo 'id' numérico
         const q = query(collection(db, 'locations'), where('id', '==', location.id));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
           const docSnapshot = querySnapshot.docs[0];
-          setLocationDocId(docSnapshot.id);  // Guardamos el ID del documento Firestore
+          setLocationDocId(docSnapshot.id);
         } else {
           console.error('No se encontró ningún documento con el id proporcionado.');
         }
@@ -52,16 +49,18 @@ const RestoreStateModal = ({ location, onClose, onStateRestore }) => {
 
   const handleSave = async () => {
     try {
-      // Verificar que se haya encontrado un ID válido del documento
       if (!locationDocId) {
         throw new Error('No se encontró el ID del documento para actualizar.');
       }
 
-      // Actualizar el estado del documento en Firestore
+      if (!state) {
+        throw new Error('Seleccione un estado válido antes de guardar.');
+      }
+
       const locationRef = doc(db, 'locations', locationDocId);
       await updateDoc(locationRef, { state: state });
 
-      // Llamar la función de restauración y cerrar el modal
+      console.log('Estado actualizado exitosamente en Firestore:', state);
       onStateRestore();
       onClose();
     } catch (error) {
