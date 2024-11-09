@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import CustomSelectUsses from '../../../components/UI/CustomSelectUsses';
 import { db } from '../../../connection/firebase';
 import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
@@ -10,45 +10,39 @@ const AssignmentForm = ({ onNewAssignment }) => {
   };
 
   const [assignmentFields, setAssignmentFields] = useState(initialState);
-  const [clientProjects, setClientProjects] = useState([]); // Proyectos del cliente
-  const [selectedProjects, setSelectedProjects] = useState([]); // Proyectos seleccionados
-  const [allProjectsAssigned, setAllProjectsAssigned] = useState(false); // Indica si todos los proyectos están asignados
+  const [clientProjects, setClientProjects] = useState([]);
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [allProjectsAssigned, setAllProjectsAssigned] = useState(false);
 
-  // Manejar la selección del cliente
-  // Manejar la selección del cliente
-const handleClientChange = async (selectedClient) => {
-  setAssignmentFields((prev) => ({
-    ...prev,
-    selectedClient,
-  }));
-  setSelectedProjects([]); // Reinicia los proyectos seleccionados
+  const handleClientChange = async (selectedClient) => {
+    setAssignmentFields((prev) => ({
+      ...prev,
+      selectedClient,
+    }));
+    setSelectedProjects([]);
 
-  if (selectedClient) {
-    try {
-      // Cargar proyectos de la colección "locations" filtrados por clientId
-      const projectsQuery = query(
-        collection(db, 'locations'),
-        where('clientId', '==', selectedClient.value)
-      );
-      const projectsSnapshot = await getDocs(projectsQuery);
-      const projectsList = projectsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    if (selectedClient) {
+      try {
+        const projectsQuery = query(
+          collection(db, 'locations'),
+          where('clientId', '==', selectedClient.value)
+        );
+        const projectsSnapshot = await getDocs(projectsQuery);
+        const projectsList = projectsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-      // Asignar todos los proyectos al cliente sin verificar asignaciones previas
-      setClientProjects(projectsList);
-      setAllProjectsAssigned(projectsList.length === 0);
-    } catch (error) {
-      console.error('Error cargando proyectos:', error);
+        setClientProjects(projectsList);
+        setAllProjectsAssigned(projectsList.length === 0);
+      } catch (error) {
+        console.error('Error cargando proyectos:', error);
+      }
+    } else {
+      setClientProjects([]);
     }
-  } else {
-    setClientProjects([]);
-  }
-};
+  };
 
-
-  // Manejar la selección del trabajador
   const handleWorkerChange = (selectedWorker) => {
     setAssignmentFields((prev) => ({
       ...prev,
@@ -56,7 +50,6 @@ const handleClientChange = async (selectedClient) => {
     }));
   };
 
-  // Manejar la selección de proyectos en la tabla
   const handleProjectSelect = (project) => {
     setSelectedProjects((prev) => {
       if (prev.find((p) => p.id === project.id)) {
@@ -67,9 +60,12 @@ const handleClientChange = async (selectedClient) => {
     });
   };
 
-  // Guardar los proyectos seleccionados en la BD
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!window.confirm('¿Estás seguro de asignar estos proyectos?')) {
+      return;
+    }
 
     const newAssignment = {
       clientId: assignmentFields.selectedClient?.value,
@@ -116,10 +112,8 @@ const handleClientChange = async (selectedClient) => {
           />
         </div>
 
-        {/* Mostrar la tabla de proyectos solo si hay un cliente seleccionado */}
         {assignmentFields.selectedClient && (
           <div className="w-full overflow-auto h-[30vh] mb-4">
-            {/* Mostrar mensaje si todos los proyectos están asignados */}
             {allProjectsAssigned ? (
               <p className="text-center text-gray-500">Todos los proyectos de este cliente han sido asignados</p>
             ) : (
@@ -130,12 +124,17 @@ const handleClientChange = async (selectedClient) => {
                     <th className="py-3 px-6 text-left">Tipo</th>
                     <th className="py-3 px-6 text-left">Dirección</th>
                     <th className="py-3 px-6 text-left">Estado</th>
-                    <th className="py-3 px-6 text-left">Seleccionar</th>
+                    <th className="py-3 px-6 text-center">Seleccionar</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-600 text-sm font-light">
                   {clientProjects.map((project) => (
-                    <tr key={project.id} className="border-b border-gray-200 hover:bg-gray-100">
+                    <tr
+                      key={project.id}
+                      className={`border-b border-gray-200 hover:bg-gray-100 ${
+                        selectedProjects.some((p) => p.id === project.id) ? 'bg-green-200' : ''
+                      }`}
+                    >
                       <td className="py-3 px-6 text-left">{project.id}</td>
                       <td className="py-3 px-6 text-left">{project.Tipo || 'Sin Tipo'}</td>
                       <td className="py-3 px-6 text-left">{project.Direccion || 'Sin Dirección'}</td>
@@ -150,9 +149,10 @@ const handleClientChange = async (selectedClient) => {
                           </span>
                         </div>
                       </td>
-                      <td className="py-3 px-6 text-left">
+                      <td className="py-3 px-6 text-center">
                         <input
                           type="checkbox"
+                          className="w-6 h-6"
                           checked={selectedProjects.some((p) => p.id === project.id)}
                           onChange={() => handleProjectSelect(project)}
                         />

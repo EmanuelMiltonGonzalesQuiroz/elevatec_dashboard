@@ -41,7 +41,7 @@ const DirectionsModal = ({ location, onClose }) => {
             console.error(`Error obteniendo las direcciones: ${status}`);
           }
         }
-      );
+      ); 
     }
   }, [currentLocation, location]);
 
