@@ -306,7 +306,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         isGenerating || isFetchingQuotations ? (
           <div>Abriendo PDF, por favor espera...</div> 
         ) : (
-          mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} width="100%" height="600px" title="Vista PDF" />
+          mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} className="h-[80vh] min-w-[80vw]" title="Vista PDF" />
         )
       )}
     </>

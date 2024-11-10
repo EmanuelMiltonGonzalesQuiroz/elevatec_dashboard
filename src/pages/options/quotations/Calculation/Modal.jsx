@@ -7,7 +7,7 @@ const Modal = ({ show, onClose, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden min-w-[90%] w-[95%] max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden min-w-[10vw] max-w-[90vw] max-h-[90vh] flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto">
           {children}
         </div>

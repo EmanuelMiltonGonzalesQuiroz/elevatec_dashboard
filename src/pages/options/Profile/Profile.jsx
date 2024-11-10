@@ -81,7 +81,7 @@ const Profile = () => {
 
   return (
     <div className="p-6 bg-gray-100 text-black">
-      <h2 className="text-2xl font-bold mb-6 text-center">Perfil de usuario</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Perfil</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <div className="relative flex justify-center items-center mb-6">
           <h3 className="text-xl font-semibold text-center w-full">Mi Información</h3>
@@ -112,7 +112,7 @@ const Profile = () => {
             )}
           </div>
           <div className="space-y-4 flex flex-col items-center text-center">
-          {!currentUser.role === 'Trabajador' && (
+          {currentUser?.role !== 'Trabajador' && (
             <div className="w-full max-w-md">
               <label className="font-semibold">Rol de Usuario:</label>
               <p>{currentUser.role}</p>

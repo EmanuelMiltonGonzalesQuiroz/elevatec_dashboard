@@ -68,7 +68,7 @@ const Assignment = () => {
   return (
     <div className="flex flex-col p-6 rounded-lg shadow-lg w-full text-black space-y-4">
       {/* Mostrar el formulario y el filtro solo si el rol es Administrador o Gerencia */}
-      {['Administrador', 'Gerencia'].includes(currentUser?.role) && (
+      {['Administrador', 'Gerencia', "Super Usuario"].includes(currentUser?.role) && (
         <>
           <AssignmentForm onNewAssignment={handleNewAssignment} />
           <AssignmentFilter onFilter={handleFilter} />

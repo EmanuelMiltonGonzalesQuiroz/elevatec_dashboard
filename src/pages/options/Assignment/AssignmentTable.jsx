@@ -5,14 +5,21 @@ import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
 import { useAuth } from '../../../context/AuthContext';
 
-const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { // Agregamos un valor predeterminado para assignments
+const AssignmentTable = ({ assignments: initialAssignments = [], onDelete, onShowDirections }) => {
+  const [assignments, setAssignments] = useState([]);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [selectedWorkerId, setSelectedWorkerId] = useState(null);
-  const { currentUser } = useAuth();  // Obtenemos el usuario actual
+  const { currentUser } = useAuth();
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
   const [workerNames, setWorkerNames] = useState({});
   const [clientNames, setClientNames] = useState({});
 
+  // Cargar datos iniciales
+  useEffect(() => {
+    setAssignments(initialAssignments);
+  }, [initialAssignments]);
+
+  // Cargar nombres de trabajadores y clientes
   useEffect(() => {
     const fetchNames = async () => {
       const workerIds = [...new Set(assignments.map((assignment) => assignment.workerId))];
@@ -45,9 +52,10 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
       }
     };
 
-    fetchNames();
+    if (assignments.length > 0) fetchNames();
   }, [assignments]);
 
+  // Agrupar asignaciones por trabajador
   const assignmentsByWorker = assignments.reduce((acc, assignment) => {
     const workerName = workerNames[assignment.workerId] || 'Trabajador desconocido';
     const clientName = clientNames[assignment.clientId] || 'Cliente desconocido';
@@ -59,7 +67,7 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
       clientName,
       clientId: assignment.clientId,
       workerId: assignment.workerId,
-      assignmentId: assignment.id 
+      assignmentId: assignment.id
     });
     return acc;
   }, {});
@@ -78,6 +86,7 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
   const handleDelete = async (assignmentId) => {
     try {
       await deleteDoc(doc(db, 'assignments', assignmentId));
+      setAssignments((prevAssignments) => prevAssignments.filter((assignment) => assignment.id !== assignmentId));
       if (onDelete) {
         onDelete(assignmentId); // Llamar a la función de eliminación si está proporcionada
       }
@@ -100,23 +109,23 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
         <tbody>
           {sortedWorkers.map((workerName, index) => (
             <React.Fragment key={index}>
-              <tr className="bg-gray-100 border-t-4 border-gray-300"> {/* Borde superior más grueso */}
+              <tr className="bg-gray-100 border-t-4 border-gray-300">
                 <td className="py-2 font-semibold text-center" rowSpan={assignmentsByWorker[workerName].length + 1}>
                   {workerName}
                 </td>
               </tr>
               {assignmentsByWorker[workerName].map((client, clientIndex) => (
-                <tr key={clientIndex} className="text-center border-b border-gray-200"> {/* Borde inferior de cada cliente */}
+                <tr key={clientIndex} className="text-center border-b border-gray-200">
                   <td className="py-2">{client.clientName}</td>
                   <td className="py-2">
-                    <div className="grid grid-cols-1 gap-2  mx-auto justify-items-center">
+                    <div className="grid grid-cols-1 gap-2 mx-auto justify-items-center">
                       <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-[150px]"
                         onClick={() => handleInfoClick(client.clientId, client.workerId)}
                       >
                         Info
                       </button>
-                      {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
+                      {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia'|| currentUser.role === 'Super Usuario') && (
                         <div className="flex flex-col gap-2">
                           <button
                             className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded w-[150px]"
@@ -139,7 +148,6 @@ const AssignmentTable = ({ assignments = [], onDelete,onShowDirections }) => { /
             </React.Fragment>
           ))}
         </tbody>
-
       </table>
 
       {selectedClientId && selectedWorkerId && (

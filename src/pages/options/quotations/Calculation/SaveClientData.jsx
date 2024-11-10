@@ -105,7 +105,7 @@ const SaveClientData = ({ formData, additionalData }) => {
             const distance = calculateDistance(
               existingLocation.location.lat,
               existingLocation.location.lng,
-              newLocation.location.lat,
+              newLocation.location.lat, 
               newLocation.location.lng
             );
 
