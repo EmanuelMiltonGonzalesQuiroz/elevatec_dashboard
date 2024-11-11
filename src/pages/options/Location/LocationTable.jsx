@@ -1,42 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
-import RestoreStateModal from './RestoreStateModal'; // Importamos el nuevo modal
+import RestoreStateModal from './RestoreStateModal';
+import PDFOptionsModal from './PDFOptionsModal';
 
 const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, onShowDirections, onStateRestore }) => {
-  const [clientNames, setClientNames] = useState({});
-  const [selectedLocation, setSelectedLocation] = useState(null); // Estado para abrir el modal
-  const [searchType, setSearchType] = useState(''); // Estado para búsqueda por tipo
-  const [searchAddress, setSearchAddress] = useState(''); // Estado para búsqueda por dirección
-  const [searchClient, setSearchClient] = useState(''); // Estado para búsqueda por cliente
+  const [clientNames] = useState({});
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [searchType, setSearchType] = useState('');
+  const [searchAddress, setSearchAddress] = useState('');
+  const [searchClient, setSearchClient] = useState('');
+  const [validPDFIds, setValidPDFIds] = useState(new Set());
+  const [locationDocIds, setLocationDocIds] = useState({});
+  const [isButtonLoading, setIsButtonLoading] = useState(true);
+  const [selectedPDFDocId, setSelectedPDFDocId] = useState(null); // Para manejar el ID del documento en el modal PDF
 
   useEffect(() => {
-    // Función para cargar los nombres de los clientes basados en el clientId
-    const fetchClientNames = async () => {
-      const clientsCollection = collection(db, 'clients');
-      const clientsSnapshot = await getDocs(clientsCollection);
+    const fetchValidPDFIds = async () => {
+      const collectionsToCheck = ['list of maintenance', 'list of quotations'];
+      const ids = new Set();
 
-      const clientsData = {};
-      clientsSnapshot.docs.forEach((doc) => {
-        clientsData[doc.id] = doc.data().name; // Crear un mapeo de clientId a nombre del cliente
-      });
-
-      setClientNames(clientsData);
+      for (const collectionName of collectionsToCheck) {
+        const collectionRef = collection(db, collectionName);
+        const snapshot = await getDocs(collectionRef);
+        snapshot.docs.forEach(doc => ids.add(doc.id));
+      }
+      setValidPDFIds(ids);
     };
 
-    fetchClientNames();
+    fetchValidPDFIds();
   }, []);
 
+  const fetchDocIdFromFirestore = async (numericId) => {
+    const locationsRef = collection(db, 'locations');
+    const q = query(locationsRef, where('id', '==', numericId));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty ? querySnapshot.docs[0].id : null;
+  };
+
+  useEffect(() => {
+    const fetchLocationDocIds = async () => {
+      const updatedLocationDocIds = {};
+      for (const location of locations) {
+        const docId = await fetchDocIdFromFirestore(location.id);
+        if (docId) {
+          updatedLocationDocIds[location.id] = docId;
+        }
+      }
+      setLocationDocIds(updatedLocationDocIds);
+      setIsButtonLoading(false);
+    };
+
+    fetchLocationDocIds();
+  }, [locations]);
+
   const getClientName = (location) => {
-    // Buscar el nombre del cliente basado en clientId primero, luego usar location.client si no se encuentra
     return clientNames[location.clientId] || location.client || 'Cliente desconocido';
   };
 
   const handleRestoreClick = (location) => {
-    setSelectedLocation(location); // Guardamos la ubicación seleccionada para restaurar
+    setSelectedLocation(location);
   };
 
-  // Filtrar ubicaciones según los criterios de búsqueda
   const filteredLocations = locations.filter((location) => {
     let tipoTexto;
     if (location.state === 'Cotizacion_A') {
@@ -106,7 +131,6 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
         <tbody className="text-gray-600 text-sm font-light">
           {filteredLocations
             .sort((a, b) => {
-              // Ordenar para que los estados "Eliminar" y "default" aparezcan al final
               if (a.state === 'Eliminar' || a.state === 'default') return 1;
               if (b.state === 'Eliminar' || b.state === 'default') return -1;
               return 0;
@@ -157,22 +181,39 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
                       Restaurar
                     </button>
                   ) : (
-                    (userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
-                      <div>
-                        <button
-                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mr-4"
-                          onClick={() => onEdit(location)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                          onClick={() => onShowDirections(location)}
-                        >
-                          Cómo Llegar
-                        </button>
-                      </div>
-                    )
+                    <>
+                      {(userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
+                        <div className="flex flex-col space-y-4 items-center">
+                            {isButtonLoading ? (
+                                <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div> 
+                            ) : (
+                                <>
+                                    <button
+                                        className="bg-blue-500 text-white w-32 px-4 py-2 rounded hover:bg-blue-700 transition text-center"
+                                        onClick={() => onEdit(location)}
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        className="bg-green-500 text-white w-32 px-4 py-2 rounded hover:bg-green-700 transition text-center"
+                                        onClick={() => onShowDirections(location)}
+                                    >
+                                        Cómo Llegar
+                                    </button>
+                                    {validPDFIds.has(locationDocIds[location.id]) && (
+                                      <button
+                                        className="bg-orange-500 text-white w-32 px-4 py-2 rounded hover:bg-red-700 transition text-center"
+                                        onClick={() => setSelectedPDFDocId(locationDocIds[location.id])} // Asignar el ID
+                                      >
+                                        Abrir PDF
+                                      </button>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    </>
                   )}
                 </td>
               </tr>
@@ -185,6 +226,14 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
           location={selectedLocation}
           onClose={() => setSelectedLocation(null)}
           onStateRestore={onStateRestore}
+        />
+      )}
+      
+      {selectedPDFDocId && ( // Modal de PDF solo se muestra si selectedPDFDocId tiene un valor
+        <PDFOptionsModal
+          show={Boolean(selectedPDFDocId)}
+          onClose={() => setSelectedPDFDocId(null)}
+          documentId={selectedPDFDocId}
         />
       )}
     </div>

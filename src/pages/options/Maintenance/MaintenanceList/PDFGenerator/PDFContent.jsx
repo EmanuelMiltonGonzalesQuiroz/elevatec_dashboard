@@ -126,8 +126,7 @@ const PDFContent = ({ recipe, type }) => {
           <>
             <iframe
               src={`${mergedPdfUrl}#filename=hola.pdf`}
-              width="100%"
-              height="600px"
+              className="h-[80vh] min-w-[80vw]"
               title="Vista PDF"
             />
           </>
