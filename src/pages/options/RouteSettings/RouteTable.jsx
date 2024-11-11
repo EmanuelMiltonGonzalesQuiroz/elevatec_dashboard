@@ -77,7 +77,7 @@ const RouteTable = ({ data, activeCollection, onDataUpdate }) => {
   };
 
   return (
-    <div className="overflow-auto max-h-[130vh] max-w-[155vh]">
+    <div className="overflow-auto max-h-[130vh] max-w-[155vw]">
       <h2 className="text-2xl font-bold mb-6">
         Ajustes de Recorrido - {collectionNameMapping[activeCollection]}
       </h2>

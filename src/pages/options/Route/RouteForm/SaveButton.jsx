@@ -9,16 +9,20 @@ const SaveButton = ({ routeData, resetFields }) => {
   const handleSave = async () => {
     try {
       const dataToSave = {
-        routeData: routeData, // Datos de la ruta
-        user: currentUser, // Email del usuario actual o un valor por defecto
-        fecha: new Date().toISOString() // Fecha y hora actual en formato ISO
+        routeData: routeData,
+        user: currentUser,
+        fecha: new Date().toISOString(),
       };
 
       await addDoc(collection(db, 'list_of_routes'), dataToSave);
       console.log('Datos guardados correctamente en la colección list_of_routes.');
 
-      // Resetea los campos después de guardar
-      resetFields();
+      // Llamamos a resetFields para reiniciar el formulario
+      if (typeof resetFields === 'function') {
+        resetFields();
+      } else {
+        console.error('resetFields no es una función:', resetFields);
+      }
     } catch (error) {
       console.error('Error al guardar los datos:', error);
     }

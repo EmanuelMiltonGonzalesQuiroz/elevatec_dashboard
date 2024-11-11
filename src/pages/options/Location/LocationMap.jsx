@@ -35,7 +35,7 @@ const LocationMap = ({ mapLocations = [], stateColors = {}, mapCenter = { lat: -
                   labelOrigin: labelOrigin // Ajuste de la posición de la etiqueta
                 }}
                 label={{
-                  text: location.client + " "+location.id || 'Sin nombre', // Texto de la etiqueta
+                  text: location.client || 'Sin nombre', // Texto de la etiqueta
                   color: 'black',
                   fontWeight: 'bold',
                   fontSize: '16px',

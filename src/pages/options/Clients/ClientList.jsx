@@ -31,12 +31,6 @@ const ClientList = ({ clients, filteredClients, handleOpenModal, handleOpenQuota
                 >
                   Editar
                 </button>
-                <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition mx-2"
-                    onClick={() => handleOpenQuotationsModal(client.id)} // Llamar a la función con el ID del cliente
-                    >
-                    Información
-                    </button>
                 {(currentUser.role === 'Administrador' || currentUser.role === 'Gerencia') && (
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition mx-2"

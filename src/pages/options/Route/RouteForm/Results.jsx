@@ -4,10 +4,9 @@ import { validateFields } from './ResultsValidation';
 import { calculateResults } from './ResultsCalculations';
 
 const Results = ({ routeData, setRouteData, allData, resetFields }) => {
-
   const handleCalculateClick = () => {
     const allMissingFields = validateFields(routeData, allData);
-    
+
     if (allMissingFields.length > 0) {
       alert(`Faltan los siguientes campos o tienen valores no válidos: ${allMissingFields.join(', ')}`);
     } else {
@@ -48,14 +47,13 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
       {routeData[0]?.result && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 p-4 bg-white rounded-lg shadow-md">
           {Object.entries(routeData[0].result[0])
-            .filter(([key]) => labels[key]) // Filtrar solo las claves que están en `labels`
+            .filter(([key]) => labels[key])
             .map(([key, value]) => (
               <div key={key}>
                 <h3 className="text-lg font-semibold">{labels[key]}:</h3>
                 <p className="text-blue-900 text-2xl font-bold">{key === 'Mensaje' ? value : formatValue(value)}</p>
               </div>
             ))}
-
         </div>
       )}
 

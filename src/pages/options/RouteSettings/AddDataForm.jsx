@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../connection/firebase';
 
-// Mapeo de los campos esperados para cada colección
 const collectionFieldMapping = {
   configuraciones_de_edificios: {
     'Nombre': 'text',
@@ -18,7 +17,44 @@ const collectionFieldMapping = {
     'Ancho': 'number',
     'Pasajeros': 'number',
   },
-  // Otras colecciones con sus campos respectivos pueden añadirse aquí
+  puertas_info: {
+    'Ancho': 'number',
+    'Pasajeros': 'number',
+  },
+  puertas_tiempo_total: {
+    'ANCHO DE PUERTA (m)': 'text',
+    'TIEMPO TOTAL (seg.)': 'number',
+  },
+  velocidades_tiempos: {
+    'VELOCIDADES (m/s)': 'number',
+    'TIEMPOS SUMADOS DE ACELERACIÓN Y DESACELERACIÓN (m/s)': 'number',
+  },
+  valores_de_salto: {
+    'VALORES DE SALTO (m)': 'number',
+    'VELOCIDAD DESARROLLADA (m/s)': 'number',
+  },
+  configuraciones_de_pisos: {
+    'pisos': 'number',
+    '4': 'number',
+    '5': 'number',
+    '6': 'number',
+    '7': 'number',
+    '8': 'number',
+    '9': 'number',
+    '10': 'number',
+    '11': 'number',
+    '12': 'number',
+    '13': 'number',
+    '14': 'number',
+    '15': 'number',
+    '16': 'number',
+    '17': 'number',
+    '18': 'number',
+    '19': 'number',
+    '20': 'number',
+    '21': 'number',
+    '50': 'number',
+  },
 };
 
 const AddDataForm = ({ collectionName, onClose, onSuccess }) => {
@@ -74,7 +110,7 @@ const AddDataForm = ({ collectionName, onClose, onSuccess }) => {
 
       if (onSuccess) {
         onSuccess();
-      }
+      } 
       onClose();
     } catch (error) {
       console.error('Error al agregar el nuevo registro al documento existente:', error);

@@ -1,5 +1,4 @@
 export const calculateResults = (routeData, allData) => {
-  console.log(routeData)
   let result = {}
   let totalPoblacion = 0;
   let poblacionServida = 0;

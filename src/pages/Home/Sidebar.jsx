@@ -67,7 +67,7 @@ const Sidebar = ({ activeContent, setActiveContent }) => {
           {userRole === 'Administrador' && renderItem(homeText.users, <FaUser />, 'Usuarios')}
           {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && renderItem(homeText.clients, <FaUsers />, 'Clientes')}
           {renderItem(homeText.profile, <CgProfile />, 'Perfil')}
-          {renderItem(homeText.assignment, <FaClipboardList />, 'Asignacion')} {/* Agregamos la nueva opción para 'Asignación' */}
+          {userRole !== 'Usuario' && renderItem(userRole !== 'Trabajador' ? homeText.assignment : homeText.locations , <FaClipboardList />, 'Asignacion')} {/* Agregamos la nueva opción para 'Asignación' */}
         </ul> 
       </nav>
       <div className="p-4">

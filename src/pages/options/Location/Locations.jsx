@@ -135,7 +135,7 @@ const Location = () => {
         onEdit={() => setShowEditModal(true)}
         onAdd={() => setShowAddModal(true)}
       />
-      <div className="flex flex-col w-full mt-4">
+      <div className="flex flex-col w-full mt-4 space-y-4">
         <LocationMap mapLocations={mapLocations} stateColors={stateColors} mapCenter={mapCenter} />
         <LocationTable
           locations={locations}

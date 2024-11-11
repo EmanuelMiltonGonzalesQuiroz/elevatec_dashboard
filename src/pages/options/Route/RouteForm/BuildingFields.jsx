@@ -14,13 +14,28 @@ const buildingTypeMapping = {
   'Estacionamiento': { fields: { AUTOMOVILES: '' }, required: ['AUTOMOVILES'] },
 };
 
-const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeData = [] }) => {
+const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeData = [], reset, onResetComplete }) => {
   const [pisos, setPisos] = useState('');
   const [inputOption, setInputOption] = useState('detailed');
   const [floorTypes, setFloorTypes] = useState({});
   const [dynamicInputs, setDynamicInputs] = useState([]);
   const [squareMeters, setSquareMeters] = useState({});
   const [peoplePerDepartment, setPeoplePerDepartment] = useState({});
+
+  // Observa cambios en la prop reset y limpia los campos cuando sea true
+  useEffect(() => {
+    if (reset) {
+      // Reseteo de todos los estados internos a sus valores iniciales
+      setPisos('');
+      setInputOption('detailed');
+      setFloorTypes({});
+      setDynamicInputs([]);
+      setSquareMeters({});
+      setPeoplePerDepartment({});
+      // Notifica a RouteForm que el reset se completó
+      onResetComplete();
+    }
+  }, [reset, onResetComplete]);
 
   useEffect(() => {
     if (pisos) {
@@ -45,21 +60,23 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeD
     if (/^\d+$/.test(value) && parseInt(value, 10) >= 2) {
       setPisos(value);
       handleFieldChange('PISOS', value);
-  
+
       // Limpiar todos los datos de pisos anteriores
       setFloorTypes({});
       setDynamicInputs([]);
       setSquareMeters({});
       setPeoplePerDepartment({});
-  
+
       // Limpia todos los datos específicos de cada piso en `routeData`
+      const resetRouteData = routeData[0] ? { ...routeData[0] } : {};
       for (let i = 1; i <= parseInt(value); i++) {
-        Object.keys(routeData[0] || {}).forEach((key) => {
+        Object.keys(resetRouteData).forEach((key) => {
           if (key.startsWith(`piso_${i}_`)) {
-            handleFieldChange(key, null); // Eliminar cada campo con prefijo `piso_n_`
+            delete resetRouteData[key];
           }
         });
       }
+      handleFieldChange('routeData', [resetRouteData]); // Actualizar los datos limpiados en routeData
     } else if (value === '') {
       setPisos('');
       setDynamicInputs([]);
@@ -72,12 +89,14 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeD
     const fieldsForType = buildingTypeMapping[buildingType]?.fields || { DEPARTAMENTOS: '' };
   
     // Limpiar datos específicos del piso actual al cambiar el tipo de edificio
-    Object.keys(routeData[0] || {}).forEach((key) => {
+    const resetRouteData = routeData[0] ? { ...routeData[0] } : {};
+    Object.keys(resetRouteData).forEach((key) => {
       if (key.startsWith(`piso_${index + 1}_`)) {
-        handleFieldChange(key, null); // Limpiar todos los campos de este piso
+        delete resetRouteData[key];
       }
     });
-  
+    handleFieldChange('routeData', [resetRouteData]); // Actualizar los datos limpiados en routeData
+
     // Actualizar los inputs dinámicos con los nuevos campos
     setDynamicInputs((prevInputs) =>
       prevInputs.map((input, i) =>
@@ -102,12 +121,14 @@ const BuildingFields = ({ handleFieldChange, buildingNames = [], allData, routeD
     handleFieldChange(`piso_${index + 1}_${fieldKey}`, count);
   
     // Limpiar todos los datos específicos de este campo en `routeData`
-    Object.keys(routeData[0] || {}).forEach((key) => {
+    const resetRouteData = routeData[0] ? { ...routeData[0] } : {};
+    Object.keys(resetRouteData).forEach((key) => {
       if (key.startsWith(`piso_${index + 1}_${fieldKey}_`)) {
-        handleFieldChange(key, null); // Limpiar todos los subcampos específicos
+        delete resetRouteData[key];
       }
     });
-  
+    handleFieldChange('routeData', [resetRouteData]);
+
     if (count !== '') {
       const peopleInputs = Array.from({ length: count }, (_, i) => ({
         label: `Cantidad de personas en el ${fieldKey} ${i + 1}`,

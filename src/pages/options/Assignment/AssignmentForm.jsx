@@ -25,14 +25,22 @@ const AssignmentForm = ({ onNewAssignment }) => {
       try {
         const projectsQuery = query(
           collection(db, 'locations'),
-          where('clientId', '==', selectedClient.value)
+          where('clientId', '==', selectedClient.value),
+          where('state', 'in', [
+            'Competencia',
+            'Construccion',
+            'Cotizacion_A',
+            'Cotizacion_M',
+            'Mantenimiento',
+            'Modernizacion'
+          ])
         );
         const projectsSnapshot = await getDocs(projectsQuery);
         const projectsList = projectsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
+    
         setClientProjects(projectsList);
         setAllProjectsAssigned(projectsList.length === 0);
       } catch (error) {

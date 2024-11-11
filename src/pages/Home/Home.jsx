@@ -64,7 +64,7 @@ const Home = () => {
             {['Administrador'].includes(userRole) && activeContent === 'Usuarios' && <Users />}
             {['Administrador', 'Gerencia', 'Usuario', "Super Usuario"].includes(userRole) && activeContent === 'Clientes' && <Clients />}
             {activeContent === 'Perfil' && <Profile />}
-            {activeContent === 'Asignacion' && <Assignment />} {/* Adding the new option for Asignacion */}
+            {!['Usuario'].includes(userRole) && activeContent === 'Asignacion' && <Assignment />} {/* Adding the new option for Asignacion */}
           </div>
         </main>
       </div>

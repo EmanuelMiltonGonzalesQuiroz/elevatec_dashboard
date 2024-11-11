@@ -25,8 +25,24 @@ const RouteForm = () => {
   const [additionalFields, setAdditionalFields] = useState({
     Pasajeros: '',
     'Detencion Puertas': '',
-    Garaje: false
+    Garaje: false,
   });
+
+  // Estados adicionales para manejar reset en componentes hijos
+  const [resetBuildingFields, setResetBuildingFields] = useState(false);
+
+  // Función para reiniciar los campos
+  const resetFields = () => {
+    setVendor('');
+    setClientPhone('');
+    setRouteData([]);
+    setAdditionalFields({
+      Pasajeros: '',
+      'Detencion Puertas': '',
+      Garaje: false,
+    });
+    setResetBuildingFields(true); // Indicar a BuildingFields que se reinicie
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +73,7 @@ const RouteForm = () => {
       const updatedData = Array.isArray(prev) ? [...prev] : [];
       if (updatedData.length > 0) {
         if (value === null) {
-          delete updatedData[0][key]; // Eliminar la propiedad
+          delete updatedData[0][key];
         } else {
           updatedData[0] = { ...updatedData[0], [key]: value };
         }
@@ -69,11 +85,15 @@ const RouteForm = () => {
       return updatedData;
     });
   };
-  
 
   const handleAdditionalFieldChange = (name, value) => {
     setAdditionalFields((prev) => ({ ...prev, [name]: value }));
     updateRouteData(name, value);
+  };
+
+  // Restablecer resetBuildingFields después de que BuildingFields haya sido reiniciado
+  const handleBuildingFieldsReset = () => {
+    setResetBuildingFields(false);
   };
 
   return (
@@ -88,14 +108,19 @@ const RouteForm = () => {
           />
         </div>
         <div className="w-full lg:flex grid gp-4">
-        <BuildingFields
-          formFields={{ PISOS: '', DEPARTAMENTOS: '' }}
-          handleFieldChange={updateRouteData}
-          buildingNames={buildingNames}
-          allData={allData}
-          routeData={routeData} // <-- Añadido
-        />
-          <AdditionalFields additionalFields={additionalFields} handleAdditionalFieldChange={handleAdditionalFieldChange} />
+          <BuildingFields
+            formFields={{ PISOS: '', DEPARTAMENTOS: '' }}
+            handleFieldChange={updateRouteData}
+            buildingNames={buildingNames}
+            allData={allData}
+            routeData={routeData}
+            reset={resetBuildingFields}
+            onResetComplete={handleBuildingFieldsReset}
+          />
+          <AdditionalFields
+            additionalFields={additionalFields}
+            handleAdditionalFieldChange={handleAdditionalFieldChange}
+          />
         </div>
       </div>
 
@@ -104,6 +129,7 @@ const RouteForm = () => {
           routeData={routeData}
           setRouteData={setRouteData}
           allData={allData}
+          resetFields={resetFields} // Pasamos resetFields a Results
         />
       </div>
     </div>
