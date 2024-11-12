@@ -138,60 +138,64 @@ const EditStatesModal = ({ onClose }) => {
               </tr>
             </thead>
             <tbody>
-              {locationStates.map((state) => (
-                <tr key={state.id}>
-                  <td className="border px-4 py-2">
-                    <input
-                      type="text"
-                      value={state.id === 'Cotizacion_A' 
-                        ? 'Cotización Ascensor' 
-                        : state.id === 'Cotizacion_M' 
-                        ? 'Cotización Mantenimiento' 
-                        : state.id}
-                      disabled
-                      className="p-2 border rounded w-full"
-                    />
-                  </td>
-                  <td className="border px-4 py-2">
-                    <select
-                      value={state.color}
-                      onChange={(e) => handleStateChange(state.id, 'color', e.target.value)}
-                      className="p-2 border rounded w-full"
-                      style={{
-                        backgroundColor: colorOptions.find((opt) => opt.color === state.color)?.color,
-                        border: '1px solid black',
-                        color: 'black',
-                      }}
-                    >
-                      {getAvailableColors(state.color).map((option) => (
-                        <option
-                          key={option.name}
-                          value={option.color}
-                          style={{ backgroundColor: option.color, color: 'black' }}
-                        >
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={state.state}
-                      onChange={(e) => handleStateChange(state.id, 'state', e.target.checked)}
-                      className="p-2"
-                    />
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    <button
-                      onClick={() => handleDeleteState(state.id)}
-                      className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-700 transition"
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {locationStates
+                .filter((state) => state.id !== 'default') // Excluir el estado 'default'
+                .map((state) => (
+                  <tr key={state.id}>
+                    <td className="border px-4 py-2">
+                      <input
+                        type="text"
+                        value={
+                          state.id === 'Cotizacion_A'
+                            ? 'Cotización Ascensor'
+                            : state.id === 'Cotizacion_M'
+                            ? 'Cotización Mantenimiento'
+                            : state.id
+                        }
+                        disabled
+                        className="p-2 border rounded w-full"
+                      />
+                    </td>
+                    <td className="border px-4 py-2">
+                      <select
+                        value={state.color}
+                        onChange={(e) => handleStateChange(state.id, 'color', e.target.value)}
+                        className="p-2 border rounded w-full"
+                        style={{
+                          backgroundColor: colorOptions.find((opt) => opt.color === state.color)?.color,
+                          border: '1px solid black',
+                          color: 'black',
+                        }}
+                      >
+                        {getAvailableColors(state.color).map((option) => (
+                          <option
+                            key={option.name}
+                            value={option.color}
+                            style={{ backgroundColor: option.color, color: 'black' }}
+                          >
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="border px-4 py-2 text-center">
+                      <input
+                        type="checkbox"
+                        checked={state.state}
+                        onChange={(e) => handleStateChange(state.id, 'state', e.target.checked)}
+                        className="p-2"
+                      />
+                    </td>
+                    <td className="border px-4 py-2 text-center">
+                      <button
+                        onClick={() => handleDeleteState(state.id)}
+                        className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-700 transition"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
