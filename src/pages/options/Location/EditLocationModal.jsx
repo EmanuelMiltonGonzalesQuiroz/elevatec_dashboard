@@ -226,16 +226,17 @@ const EditLocationModal = ({ location, onClose }) => {
                   <option value="" disabled>
                     Selecciona un estado
                   </option>
-                  {locationStates.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      
-                      {state.id=== 'Cotizacion_A' 
-                      ? 'Cotización Ascensor' 
-                      : state.id === 'Cotizacion_M' 
-                      ? 'Cotización Mantenimiento' 
-                      : state.id}
-                    </option>
-                  ))}
+                  {locationStates
+                    .filter((state) => state.id !== 'default') // Filtra el estado 'default'
+                    .map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.id === 'Cotizacion_A' 
+                          ? 'Cotización Ascensor' 
+                          : state.id === 'Cotizacion_M' 
+                            ? 'Cotización Mantenimiento' 
+                            : state.id}
+                      </option>
+                    ))}
                 </select>
                 {formData.state && (
                   <div
@@ -245,7 +246,6 @@ const EditLocationModal = ({ location, onClose }) => {
                 )}
               </div>
             </div>
-
             <div className="flex justify-between">
               <button
                 onClick={onClose}

@@ -35,7 +35,7 @@ const AddLocationModal = ({ onClose }) => {
   const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 });
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [distanceWarning, setDistanceWarning] = useState('');
-  const [lowestAvailableId, setLowestAvailableId] = useState(null);
+  const [nextAvailableId, setNextAvailableId] = useState(null); // Renombrado para mayor claridad
 
   const [formData, setFormData] = useState({
     Tipo0: '',
@@ -53,28 +53,30 @@ const AddLocationModal = ({ onClose }) => {
       ...prevData,
       [name]: value,
       ...(name === 'Tipo2' && {
-        Tipo1: typeOptions[formData.Tipo0]?.find((option) => option.label === value)?.id || '',
+        Tipo1: typeOptions[prevData.Tipo0]?.find((option) => option.label === value)?.id || '',
       }),
     }));
   };
 
-  const getLowestAvailableId = async () => {
-    const locationsCol = collection(db, 'locations');
-    const locationsSnapshot = await getDocs(locationsCol);
-
-    const usedIds = locationsSnapshot.docs
-      .map((doc) => parseInt(doc.data().id))
-      .filter((id) => !isNaN(id));
-
-    let lowestId = 1;
-    while (usedIds.includes(lowestId)) {
-      lowestId++;
+  // Función corregida para obtener el siguiente ID disponible
+  const getNextAvailableId = async () => {
+    try {
+      const locationsCol = collection(db, 'locations');
+      const snapshot = await getDocs(locationsCol);
+      const numericIds = snapshot.docs
+        .map((doc) => doc.data().id)
+        .filter((id) => typeof id === 'number');
+      const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+      const proposedId = maxId + 1;
+      setNextAvailableId(proposedId);
+    } catch (e) {
+      console.error("Error al obtener el siguiente ID disponible: ", e);
+      alert("Error al obtener el siguiente ID disponible. Por favor, intenta nuevamente.");
     }
-    setLowestAvailableId(lowestId.toString());
   };
 
   useEffect(() => {
-    getLowestAvailableId();
+    getNextAvailableId();
   }, []);
 
   const handleSaveLocation = async () => {
@@ -82,32 +84,38 @@ const AddLocationModal = ({ onClose }) => {
       alert('Por favor, completa todos los campos.');
       return;
     }
-  
+
+    if (nextAvailableId === null) {
+      alert('No se ha podido obtener el ID disponible. Intenta nuevamente.');
+      return;
+    }
+
     try {
       // Buscar el clientId basado en el nombre del cliente seleccionado
       const clientsCollection = collection(db, 'clients');
       const clientsSnapshot = await getDocs(clientsCollection);
-  
+
       // Encontrar el documento del cliente que coincide con el nombre seleccionado
       const clientDoc = clientsSnapshot.docs.find(
         (doc) => doc.data().name === selectedClient.label
       );
-  
+
       if (!clientDoc) {
         alert('No se pudo encontrar el ID del cliente.');
         return;
       }
-  
+
       const clientId = clientDoc.id; // Obtener el clientId del documento del cliente
-  
+
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().replace(/[:.]/g, '_');
       const locationId = `${selectedClient.label}_${formattedDate}`;
-  
+
+      // Guardar la ubicación con el ID disponible
       await setDoc(doc(db, 'locations', locationId), {
         client: selectedClient.label,
         clientId: clientId, // Guardar el clientId en el documento de ubicación
-        id: lowestAvailableId,
+        id: nextAvailableId, // Usar el ID numérico disponible
         Direccion: description,
         location: {
           lat: markerPosition.lat,
@@ -117,14 +125,13 @@ const AddLocationModal = ({ onClose }) => {
         state: formData.Tipo0 || 'Construccion', // Estado basado en el tipo
         createdAt: currentDate,
       });
-  
+
       onClose();
     } catch (error) {
       console.error('Error al guardar la ubicación:', error);
       alert('Ocurrió un error al guardar la ubicación. Por favor, inténtalo de nuevo.');
     }
   };
-  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-top sm:items-center sm:justify-center">
@@ -135,7 +142,7 @@ const AddLocationModal = ({ onClose }) => {
             <FaTimes />
           </button>
         </div>
-  
+
         <div>
           <label>Seleccionar Cliente</label>
           <CustomSelect
@@ -144,7 +151,7 @@ const AddLocationModal = ({ onClose }) => {
             selectedValue={selectedClient}
           />
         </div>
-  
+
         <div className="flex flex-col mb-4">
           <label className="mb-2 font-semibold text-black">Dirección</label>
           <input
@@ -153,7 +160,7 @@ const AddLocationModal = ({ onClose }) => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
-  
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="mb-4">
             <label className="block text-black">Tipo</label>
@@ -173,7 +180,7 @@ const AddLocationModal = ({ onClose }) => {
               ))}
             </select>
           </div>
-  
+
           {formData.Tipo0 && (
             <div className="mb-4">
               <label className="block text-black">Descripción</label>
@@ -195,7 +202,7 @@ const AddLocationModal = ({ onClose }) => {
             </div>
           )}
         </div>
-  
+
         <div className="bg-white p-6 rounded-lg shadow-lg h-[45%] text-black">
           <MapComponent
             mapCenter={markerPosition}
@@ -204,12 +211,12 @@ const AddLocationModal = ({ onClose }) => {
             setButtonDisabled={setIsButtonDisabled}
           />
         </div>
-  
+
         {distanceWarning && <p className="text-red-500">{distanceWarning}</p>}
-  
+
         <button
           className="bg-blue-500 text-white px-4 py-2 mt-4 w-full sm:w-auto"
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || nextAvailableId === null}
           onClick={handleSaveLocation}
         >
           Guardar Ubicación
@@ -217,7 +224,6 @@ const AddLocationModal = ({ onClose }) => {
       </div>
     </div>
   );
-  
 };
 
 export default React.memo(AddLocationModal);

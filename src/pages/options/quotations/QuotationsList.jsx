@@ -292,50 +292,48 @@ const QuotationList = ({ showDeleted }) => {
           <div className="flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4 text-center">Selecciona una opción de PDF</h2>
             <div className="grid grid-cols-2 gap-4">
-  {/* Botón principal que ocupa las dos columnas */}
-  <button
-    className="col-span-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
-    onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
-  >
-    Ver PDF
-  </button>
+              {/* Botón principal que ocupa las dos columnas */}
+              <button
+                className="col-span-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
+                onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado')}
+              >
+                Ver PDF
+              </button>
 
-  {/* Botones azules (a la izquierda) */}
-  <div className="flex flex-col items-center space-y-4">
-    <button
-      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
-      onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
-    >
-      Ver PDF Jalmeco
-    </button>
+              {/* Botones azules (a la izquierda) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco
+                </button>
 
-    <button
-      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
-      onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
-    >
-      Ver PDF Tecnolift
-    </button>
-  </div>
+                <button
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition w-full text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'con_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift
+                </button> 
+              </div>
 
-  {/* Botones verdes (a la derecha) */}
-  <div className="flex flex-col items-center space-y-4">
-    <button
-      className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
-      onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Jalmeco')}
-    >
-      Ver PDF Jalmeco Sin Membretado
-    </button>
+              {/* Botones verdes (a la derecha) */}
+              <div className="flex flex-col items-center space-y-4">
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Jalmeco')}
+                >
+                  Ver PDF Jalmeco Sin Membretado
+                </button>
 
-    <button
-      className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
-      onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Tecnolift')}
-    >
-      Ver PDF Tecnolift Sin Membretado
-    </button>
-  </div>
-</div>
-
-
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700 transition w-full text-center"
+                  onClick={() => handlePDFOption(selectedQuotation.data, 'sin_membretado_Tecnolift')}
+                >
+                  Ver PDF Tecnolift Sin Membretado
+                </button>
+              </div>
+            </div>
             {/* Botón para cerrar */}
             <button
               className="bg-gray-500 text-white py-2 px-4 mt-4 rounded hover:bg-gray-700 transition w-[140px] text-center"

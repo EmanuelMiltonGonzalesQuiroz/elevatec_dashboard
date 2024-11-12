@@ -50,7 +50,7 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
       setLocationDocIds(updatedLocationDocIds);
       setIsButtonLoading(false);
     };
-
+ 
     fetchLocationDocIds();
   }, [locations]);
 
@@ -129,96 +129,96 @@ const LocationTable = ({ locations, userRole, stateColors, onRowClick, onEdit, o
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {filteredLocations
-            .sort((a, b) => {
-              if (a.state === 'Eliminar' || a.state === 'default') return 1;
-              if (b.state === 'Eliminar' || b.state === 'default') return -1;
-              return 0;
-            })
-            .map((location) => (
-              <tr
-                key={location.id}
-                className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                onClick={() => onRowClick(location)}
-              >
-                <td className="py-3 px-6 text-left whitespace-nowrap">{location.id}</td>
-                <td className="py-3 px-6 text-left">
-                  <div className="flex flex-col">
-                    <span>{location.Tipo ? location.Tipo[0] || 0 : 0}</span>
-                    <span>{location.Tipo ? location.Tipo[2] || 0 : 0}</span>
-                  </div>
-                </td>
-                <td className="py-3 px-6 text-left">{getClientName(location)}</td>
-                <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
-                <td className="py-3 px-6 text-left">
-                  <div className="flex items-center">
-                    <span
-                      className="inline-block w-4 h-4 rounded-full mr-2"
-                      style={{ backgroundColor: stateColors[location.state] || 'black' }}
-                    ></span>
-                    <span>
-                      {location.state === 'Cotizacion_A'
-                        ? 'Cotización Ascensor'
-                        : location.state === 'Cotizacion_M'
-                        ? 'Cotización Mantenimiento'
-                        : location.state === 'default'
-                        ? 'No Disponible'
-                        : location.state}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-600 mt-1">
-                    <span>Latitud: {location.location.lat || 'n/a'}</span>
-                    <br />
-                    <span>Longitud: {location.location.lng || 'n/a'}</span>
-                  </div>
-                </td>
-                <td className="py-3 px-6 text-left">
-                  {(location.state === 'Eliminar' || location.state === 'default') ? (
-                    <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-                      onClick={() => handleRestoreClick(location)}
-                    >
-                      Restaurar
-                    </button>
-                  ) : (
-                    <>
-                      {(userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario") && (
-                        <div className="flex flex-col space-y-4 items-center">
-                            {isButtonLoading ? (
-                                <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div> 
-                            ) : (
-                                <>
-                                    <button
-                                        className="bg-blue-500 text-white w-32 px-4 py-2 rounded hover:bg-blue-700 transition text-center"
-                                        onClick={() => onEdit(location)}
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        className="bg-green-500 text-white w-32 px-4 py-2 rounded hover:bg-green-700 transition text-center"
-                                        onClick={() => onShowDirections(location)}
-                                    >
-                                        Cómo Llegar
-                                    </button>
-                                    {validPDFIds.has(locationDocIds[location.id]) && (
-                                      <button
-                                        className="bg-orange-500 text-white w-32 px-4 py-2 rounded hover:bg-red-700 transition text-center"
-                                        onClick={() => setSelectedPDFDocId(locationDocIds[location.id])} // Asignar el ID
-                                      >
-                                        Abrir PDF
-                                      </button>
-                                    )}
-                                </>
+        {filteredLocations
+          .sort((a, b) => {
+            if (a.state === 'Eliminar' || a.state === 'default') return 1;
+            if (b.state === 'Eliminar' || b.state === 'default') return -1;
+            return 0;
+          })
+          .map((location, index) => (
+            <tr
+              key={`${location.id}-${index}`}  
+              className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+              onClick={() => onRowClick(location)}
+            >
+              <td className="py-3 px-6 text-left whitespace-nowrap">{location.id}</td>
+              <td className="py-3 px-6 text-left">
+                <div className="flex flex-col">
+                  <span>{location.Tipo ? location.Tipo[0] || 0 : 0}</span>
+                  <span>{location.Tipo ? location.Tipo[2] || 0 : 0}</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-left">{getClientName(location)}</td>
+              <td className="py-3 px-6 text-left">{location.Direccion || 'Sin dirección'}</td>
+              <td className="py-3 px-6 text-left">
+                <div className="flex items-center">
+                  <span
+                    className="inline-block w-4 h-4 rounded-full mr-2"
+                    style={{ backgroundColor: stateColors[location.state] || 'black' }}
+                  ></span>
+                  <span>
+                    {location.state === 'Cotizacion_A'
+                      ? 'Cotización Ascensor'
+                      : location.state === 'Cotizacion_M'
+                      ? 'Cotización Mantenimiento'
+                      : location.state === 'default'
+                      ? 'No Disponible'
+                      : location.state}
+                  </span>
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  <span>Latitud: {location.location.lat || 'n/a'}</span>
+                  <br />
+                  <span>Longitud: {location.location.lng || 'n/a'}</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-left">
+                {(location.state === 'Eliminar' || location.state === 'default') ? (
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                    onClick={() => handleRestoreClick(location)}
+                  >
+                    Restaurar
+                  </button>
+                ) : (
+                  <>
+                    {(userRole === 'Administrador' || userRole === 'Gerencia' || userRole === "Super Usuario"|| userRole === "Usuario") && (
+                      <div className="flex flex-col space-y-4 items-center">
+                        {isButtonLoading ? (
+                          <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
+                        ) : (
+                          <>
+                            <button
+                              className="bg-blue-500 text-white w-32 px-4 py-2 rounded hover:bg-blue-700 transition text-center"
+                              onClick={() => onEdit(location)}
+                            >
+                              Editar
+                            </button>
+                            <button
+                              className="bg-green-500 text-white w-32 px-4 py-2 rounded hover:bg-green-700 transition text-center"
+                              onClick={() => onShowDirections(location)}
+                            >
+                              Cómo Llegar
+                            </button>
+                            {validPDFIds.has(locationDocIds[location.id]) && (
+                              <button
+                                className="bg-orange-500 text-white w-32 px-4 py-2 rounded hover:bg-red-700 transition text-center"
+                                onClick={() => setSelectedPDFDocId(locationDocIds[location.id])} // Asignar el ID
+                              >
+                                Abrir PDF
+                              </button>
                             )}
-                        </div>
+                          </>
+                        )}
+                      </div>
                     )}
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+      </tbody>
 
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-        </tbody>
       </table>
 
       {selectedLocation && (

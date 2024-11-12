@@ -133,7 +133,7 @@ const MaintenanceList = ({ showDeleted }) => {
               onClick={() => handlePDFOption(selectedMaintenance, 'sin_membretado_Tecnolift')}
             >
               Ver PDF Tecnolift sin membretado
-            </button>
+            </button> 
           </div>
         </div>
 
