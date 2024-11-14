@@ -7,6 +7,8 @@ import ClientForm from './ClientForm';
 import ClientSearch from './ClientSearch';
 import QuotationsModal from './QuotationsModal';
 import DownloadData from '../../../components/layout/DownloadData';
+import UploadData from '../../../components/layout/UploadData';
+import GenerateExample from '../../../components/layout/GenerateExample';
 
 const Clients = () => {
   const { currentUser } = useAuth();
@@ -84,6 +86,11 @@ const Clients = () => {
       {['Administrador', 'Gerencia'].includes(currentUser.role) && (
         <div className="flex space-x-4 mb-6">
           <DownloadData collectionName="clients" name="Clientes" />
+          <UploadData collectionName="clients"  />
+          <GenerateExample
+            headers={['name', 'address', 'ciNIT', 'email', 'phone']}
+            name="Ejemplo para Clientes"
+          />
         </div>
       )}
       <ClientList

@@ -3,9 +3,6 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import { db } from '../../../connection/firebase';
 import { usersText } from '../../../components/common/Text/texts';
 import { useAuth } from '../../../context/AuthContext'; // Importar para obtener currentUser
-import DownloadData from '../../../components/layout/DownloadData';
-import UploadData from '../../../components/layout/UploadData';
-import GenerateExample from '../../../components/layout/GenerateExample';
 
 const Users = () => {
   const { currentUser } = useAuth(); // Obtener currentUser
@@ -98,13 +95,6 @@ const Users = () => {
           {usersText.addUser}
         </button>
       </div>
-      {['Administrador', 'Gerencia'].includes(currentUser.role) && (
-        <div className="flex space-x-4 mb-6">
-          <DownloadData collectionName="login firebase" name="Usuarios" />
-          <UploadData collectionName="login firebase"  />
-          <GenerateExample headers={['username', 'password', 'email', 'phone', 'role']} name="Ejemplo para Usuarios"  />
-        </div>
-      )}
       <div className="overflow-auto">
         <table className="w-full bg-white border ">
           <thead>
