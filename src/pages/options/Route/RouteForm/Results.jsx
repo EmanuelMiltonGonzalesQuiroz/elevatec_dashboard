@@ -1,3 +1,5 @@
+// Results.js
+
 import React from 'react';
 import SaveButton from './SaveButton';
 import { validateFields } from './ResultsValidation';
@@ -8,11 +10,16 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     const allMissingFields = validateFields(routeData, allData);
 
     if (allMissingFields.length > 0) {
-      alert(`Faltan los siguientes campos o tienen valores no válidos: ${allMissingFields.join(', ')}`);
+      alert(
+        `Faltan los siguientes campos o tienen valores no válidos: ${allMissingFields.join(
+          ', '
+        )}`
+      );
     } else {
-      const calculatedResults = calculateResults(routeData, allData, setRouteData);
       setRouteData((prev) => {
         const updatedData = [...prev];
+        delete updatedData[0].modifiedResults;
+        const calculatedResults = calculateResults(updatedData, allData);
         updatedData[0].result = [calculatedResults];
         return updatedData;
       });
@@ -20,7 +27,13 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
   };
 
   const formatValue = (value) => {
-    return typeof value === 'number' ? value.toFixed(2) : 'No disponible';
+    if (typeof value === 'number') {
+      return value.toFixed(2);
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+    return 'No disponible';
   };
 
   const labels = {
@@ -32,6 +45,21 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
     Pasajeros_Atendidos_en_5_min: 'Pasajeros Atendidos en 5 Minutos',
     Cabinas_Nesesarias: 'Cabinas Necesarias',
     Mensaje: 'Calificación de Servicio',
+  };
+
+  const handleResultInputChange = (key, inputValue) => {
+    setRouteData((prev) => {
+      const updatedData = [...prev];
+      const updatedValue = parseFloat(inputValue);
+
+      updatedData[0].modifiedResults = {};
+      updatedData[0].modifiedResults[key] = isNaN(updatedValue) ? '' : updatedValue;
+
+      const newResults = calculateResults(updatedData, allData);
+      updatedData[0].result = [newResults];
+
+      return updatedData;
+    });
   };
 
   return (
@@ -51,7 +79,32 @@ const Results = ({ routeData, setRouteData, allData, resetFields }) => {
             .map(([key, value]) => (
               <div key={key}>
                 <h3 className="text-lg font-semibold">{labels[key]}:</h3>
-                <p className="text-blue-900 text-2xl font-bold">{key === 'Mensaje' ? value : formatValue(value)}</p>
+                {key === 'Mensaje' ? (
+                  <p className="text-blue-900 text-2xl font-bold">
+                    {formatValue(value)}
+                  </p>
+                ) : key === 'Tiempo_total' ||
+                  key === 'Pasajeros_Atendidos_en_5_min' ||
+                  key === 'Cabinas_Nesesarias' ? (
+                  <input
+                    type="number"
+                    className="w-full p-2 border rounded"
+                    value={
+                      routeData[0].modifiedResults?.[key] ?? formatValue(value)
+                    }
+                    onChange={(e) =>
+                      handleResultInputChange(
+                        key,
+                        e.target.value.replace(/[^\d.]/g, '')
+                      )
+                    }
+                    step="0.01"
+                  />
+                ) : (
+                  <p className="text-blue-900 text-2xl font-bold">
+                    {formatValue(value)}
+                  </p>
+                )}
               </div>
             ))}
         </div>

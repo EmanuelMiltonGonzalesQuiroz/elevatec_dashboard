@@ -1,105 +1,148 @@
+// calculateResults.js
+
 export const calculateResults = (routeData, allData) => {
-  let result = {}
+  let result = {};
   let totalPoblacion = 0;
   let poblacionServida = 0;
   let pisos = 0;
-  let Ancho
-  let Tiempo_de_apaertura_Cabina
-  let Detencion
-  let Valor_de_Salto
-  let Velocidad_Desarrollada
-  const alt_entre_pisos=4
-  let Distancia_Recorrida
-  let Tiempo_de_Recorrido_con_Detenciones_Parciales
-  let Tiempo_Sumado_Aceleracion
-  let Aceleracion_Desaceleracion
-  let Tiempo_de_Entrada_y_Salida_de_Pasajeros
-  let Tiempo_Total_Puerta 
-  let Tiempo_de_apaertura_cierre_de_Cabina
-  let Tiempo_de_Recuperacion
-  const Recuperacion = 0.2
-  let Tiempo_total
-  let Pasajeros_Atendidos_en_5_min 
-  let Cabinas_Nesesarias
-  let Mensaje = "x"
+  let Ancho;
+  let Tiempo_de_apaertura_Cabina;
+  let Detencion;
+  let Valor_de_Salto;
+  let Velocidad_Desarrollada;
+  const alt_entre_pisos = 4;
+  let Distancia_Recorrida;
+  let Tiempo_de_Recorrido_con_Detenciones_Parciales;
+  let Tiempo_Sumado_Aceleracion;
+  let Aceleracion_Desaceleracion;
+  let Tiempo_de_Entrada_y_Salida_de_Pasajeros;
+  let Tiempo_Total_Puerta;
+  let Tiempo_de_apaertura_cierre_de_Cabina;
+  let Tiempo_de_Recuperacion;
+  const Recuperacion = 0.2;
+  let Tiempo_total;
+  let Pasajeros_Atendidos_en_5_min;
+  let Cabinas_Nesesarias;
+  let Mensaje = "x";
 
-  // Asegurarse de que routeData[0] es un objeto antes de acceder a sus propiedades
   const data = routeData[0];
-  const Hospital = data.TipoDeEdificio?.Nombre?.includes('Hospital')
+  const modifiedResults = data.modifiedResults || {};
+  const Hospital = data.TipoDeEdificio?.Nombre?.includes("Hospital");
+
   if (data) {
     const { PISOS, Pasajeros, TipoDeEdificio } = data;
-
-    // Si 'PISOS' está presente, asignarlo a la variable 'pisos'
     pisos = parseInt(PISOS) || 0;
-
-    // Definir la población total como el número de pasajeros
     totalPoblacion = parseInt(Pasajeros) || 0;
 
     if (data["Población Servida"]) {
-      // Caso 1: La población servida ya está en los datos
       poblacionServida = parseInt(data["Población Servida"]) || 0;
     } else if (TipoDeEdificio && TipoDeEdificio["m^2"] && TipoDeEdificio.Persona) {
-      // Verificar si estamos en el caso con `m^2` especificado en los pisos
-      if (routeData[0][`piso_1_m2`] !== undefined && !isNaN(parseFloat(routeData[0][`piso_1_m2`]))) {
-        // Caso con `m^2` especificado: usar `calcularPoblacionPorM2
+      if (
+        routeData[0][`piso_1_m2`] !== undefined &&
+        !isNaN(parseFloat(routeData[0][`piso_1_m2`]))
+      ) {
         poblacionServida = calcularPoblacionPorM2(routeData, allData, pisos);
       } else if (
         routeData[0][`piso_1_AREAS`] !== undefined ||
         routeData[0][`piso_1_DEPARTAMENTOS`] !== undefined ||
         routeData[0][`piso_1_HABITACIONES`] !== undefined
       ) {
-        // Caso con `áreas`, `departamentos` o `habitaciones` especificados: usar `calcularPoblacionPorPiso`
-        
         poblacionServida = calcularPoblacionPorPiso(routeData, allData, pisos);
       }
     } else if (Pasajeros && !isNaN(parseInt(Pasajeros))) {
-      // Caso 3: Tomar la cantidad de pasajeros como base de población servida
       poblacionServida = parseInt(Pasajeros) || 0;
     }
-    Ancho = encontrarAnchoPorPasajeros(Pasajeros, allData, Hospital)
-    Tiempo_de_apaertura_Cabina = encontrarTiempoDeApertura(Ancho, data["Detencion Puertas"], allData)
-    Detencion = encontrarConfiguracionPorPisosYPasajeros(pisos, Pasajeros, allData)
-    Valor_de_Salto = (pisos * alt_entre_pisos)/Detencion
-    Velocidad_Desarrollada = encontrarVelocidadDesarrolladaPorValorDeSalto(Valor_de_Salto, allData);
+
+    Ancho = encontrarAnchoPorPasajeros(Pasajeros, allData, Hospital);
+    Tiempo_de_apaertura_Cabina = encontrarTiempoDeApertura(
+      Ancho,
+      data["Detencion Puertas"],
+      allData
+    );
+    Detencion = encontrarConfiguracionPorPisosYPasajeros(pisos, Pasajeros, allData);
+    Valor_de_Salto = (pisos * alt_entre_pisos) / Detencion;
+    Velocidad_Desarrollada = encontrarVelocidadDesarrolladaPorValorDeSalto(
+      Valor_de_Salto,
+      allData
+    );
+
     if (Velocidad_Desarrollada <= 1) {
       Velocidad_Desarrollada = 1;
     } else if (Velocidad_Desarrollada <= 1.5) {
-        Velocidad_Desarrollada = 1.5;
+      Velocidad_Desarrollada = 1.5;
     } else if (Velocidad_Desarrollada <= 1.75) {
-        Velocidad_Desarrollada = 1.75;
+      Velocidad_Desarrollada = 1.75;
     } else {
-        Velocidad_Desarrollada = 2;
-    }    
-    Distancia_Recorrida = pisos*alt_entre_pisos
-    Tiempo_de_Recorrido_con_Detenciones_Parciales = Distancia_Recorrida / Velocidad_Desarrollada
-    Tiempo_Sumado_Aceleracion = encontrarTiemposSumadosPorVelocidad(Velocidad_Desarrollada, allData);
-    Aceleracion_Desaceleracion = Detencion * Tiempo_Sumado_Aceleracion
+      Velocidad_Desarrollada = 2;
+    }
+
+    Distancia_Recorrida = pisos * alt_entre_pisos;
+    Tiempo_de_Recorrido_con_Detenciones_Parciales =
+      Distancia_Recorrida / Velocidad_Desarrollada;
+    Tiempo_Sumado_Aceleracion = encontrarTiemposSumadosPorVelocidad(
+      Velocidad_Desarrollada,
+      allData
+    );
+    Aceleracion_Desaceleracion = Detencion * Tiempo_Sumado_Aceleracion;
     Tiempo_Total_Puerta = encontrarTiempoTotalPorAnchoDePuerta(Ancho, allData);
-    Tiempo_de_Entrada_y_Salida_de_Pasajeros = Pasajeros * Tiempo_Total_Puerta
-    Tiempo_de_apaertura_cierre_de_Cabina = Detencion * Tiempo_de_apaertura_Cabina
-    Tiempo_de_Recuperacion = Detencion * Recuperacion
-    Tiempo_total = Tiempo_de_Recorrido_con_Detenciones_Parciales + Aceleracion_Desaceleracion + Tiempo_de_Entrada_y_Salida_de_Pasajeros + 
-                    Tiempo_de_apaertura_cierre_de_Cabina + Tiempo_de_Recuperacion
-    Pasajeros_Atendidos_en_5_min = (5 *60*Pasajeros)/Tiempo_total
-    Cabinas_Nesesarias = Math.ceil(poblacionServida / Pasajeros_Atendidos_en_5_min)
-      if (Tiempo_total <= data.TipoDeEdificio["intervalo de espera seg."][0] - 15) {
+    Tiempo_de_Entrada_y_Salida_de_Pasajeros = Pasajeros * Tiempo_Total_Puerta;
+    Tiempo_de_apaertura_cierre_de_Cabina = Detencion * Tiempo_de_apaertura_Cabina;
+    Tiempo_de_Recuperacion = Detencion * Recuperacion;
+
+    const isTiempoTotalModified = modifiedResults.hasOwnProperty('Tiempo_total');
+    const isPasajerosAtendidosModified = modifiedResults.hasOwnProperty('Pasajeros_Atendidos_en_5_min');
+    const isCabinasNecesariasModified = modifiedResults.hasOwnProperty('Cabinas_Nesesarias');
+
+    if (isTiempoTotalModified && !isPasajerosAtendidosModified && !isCabinasNecesariasModified) {
+      Tiempo_total = modifiedResults.Tiempo_total;
+      Pasajeros_Atendidos_en_5_min = (5 * 60 * Pasajeros) / Tiempo_total;
+      Cabinas_Nesesarias = Math.ceil(poblacionServida / Pasajeros_Atendidos_en_5_min);
+    } else if (!isTiempoTotalModified && isPasajerosAtendidosModified && !isCabinasNecesariasModified) {
+      Pasajeros_Atendidos_en_5_min = modifiedResults.Pasajeros_Atendidos_en_5_min;
+      Tiempo_total = (5 * 60 * Pasajeros) / Pasajeros_Atendidos_en_5_min;
+      Cabinas_Nesesarias = Math.ceil(poblacionServida / Pasajeros_Atendidos_en_5_min);
+    } else if (!isTiempoTotalModified && !isPasajerosAtendidosModified && isCabinasNecesariasModified) {
+      Cabinas_Nesesarias = modifiedResults.Cabinas_Nesesarias;
+      Pasajeros_Atendidos_en_5_min = poblacionServida / Cabinas_Nesesarias;
+      Tiempo_total = (5 * 60 * Pasajeros) / Pasajeros_Atendidos_en_5_min;
+    } else {
+      Tiempo_total =
+        Tiempo_de_Recorrido_con_Detenciones_Parciales +
+        Aceleracion_Desaceleracion +
+        Tiempo_de_Entrada_y_Salida_de_Pasajeros +
+        Tiempo_de_apaertura_cierre_de_Cabina +
+        Tiempo_de_Recuperacion;
+      Pasajeros_Atendidos_en_5_min = (5 * 60 * Pasajeros) / Tiempo_total;
+      Cabinas_Nesesarias = Math.ceil(poblacionServida / Pasajeros_Atendidos_en_5_min);
+    }
+
+    if (
+      data.TipoDeEdificio &&
+      data.TipoDeEdificio["intervalo de espera seg."] &&
+      data.TipoDeEdificio["intervalo de espera seg."].length >= 2
+    ) {
+      const intervaloEsperaMin = data.TipoDeEdificio["intervalo de espera seg."][0];
+      const intervaloEsperaMax = data.TipoDeEdificio["intervalo de espera seg."][1];
+
+      if (Tiempo_total <= intervaloEsperaMin - 15) {
         Mensaje = "Excelente";
       } else if (
-        Tiempo_total > data.TipoDeEdificio["intervalo de espera seg."][0] - 15 &&
-        Tiempo_total <= data.TipoDeEdificio["intervalo de espera seg."][1] + 15
+        Tiempo_total > intervaloEsperaMin - 15 &&
+        Tiempo_total <= intervaloEsperaMax + 15
       ) {
         Mensaje = "Óptimo";
-      } else if (Tiempo_total <= data.TipoDeEdificio["intervalo de espera seg."][1] + 15) {
+      } else if (Tiempo_total <= intervaloEsperaMax + 15) {
         Mensaje = "Regular";
-      } else if (Tiempo_total <= data.TipoDeEdificio["intervalo de espera seg."][1] + 30) {
+      } else if (Tiempo_total <= intervaloEsperaMax + 30) {
         Mensaje = "Bajo";
-      } else if (Tiempo_total >= data.TipoDeEdificio["intervalo de espera seg."][1] + 30) {
+      } else if (Tiempo_total > intervaloEsperaMax + 30) {
         Mensaje = "Pésimo";
       }
-    
+    } else {
+      Mensaje = "No disponible";
+    }
   }
-  
-  // Resultado final con valores asignados
+
   result = {
     Pisos: pisos,
     totalPoblacion: totalPoblacion,
@@ -110,7 +153,8 @@ export const calculateResults = (routeData, allData) => {
     Valor_de_Salto: Valor_de_Salto,
     Velocidad_Desarrollada: Velocidad_Desarrollada,
     Distancia_Recorrida: Distancia_Recorrida,
-    Tiempo_de_Recorrido_con_Detenciones_Parciales: Tiempo_de_Recorrido_con_Detenciones_Parciales,
+    Tiempo_de_Recorrido_con_Detenciones_Parciales:
+      Tiempo_de_Recorrido_con_Detenciones_Parciales,
     Tiempo_Sumado_Aceleracion: Tiempo_Sumado_Aceleracion,
     Aceleracion_Desaceleracion: Aceleracion_Desaceleracion,
     Tiempo_Total_Puerta: Tiempo_Total_Puerta,
@@ -121,11 +165,11 @@ export const calculateResults = (routeData, allData) => {
     Pasajeros_Atendidos_en_5_min: Pasajeros_Atendidos_en_5_min,
     Cabinas_Nesesarias: Cabinas_Nesesarias,
     Mensaje: Mensaje,
-};
-
+  };
 
   return result;
 };
+
 
 const encontrarTiempoTotalPorAnchoDePuerta = (ancho, allData) => {
   const puertasData = allData.puertas_tiempo_total[0].data;
