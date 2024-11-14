@@ -3,6 +3,9 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import { db } from '../../../connection/firebase';
 import { usersText } from '../../../components/common/Text/texts';
 import { useAuth } from '../../../context/AuthContext'; // Importar para obtener currentUser
+import DownloadData from '../../../components/layout/DownloadData';
+import UploadData from '../../../components/layout/UploadData';
+import GenerateExample from '../../../components/layout/GenerateExample';
 
 const Users = () => {
   const { currentUser } = useAuth(); // Obtener currentUser
@@ -95,56 +98,62 @@ const Users = () => {
           {usersText.addUser}
         </button>
       </div>
+      {['Administrador', 'Gerencia'].includes(currentUser.role) && (
+        <div className="flex space-x-4 mb-6">
+          <DownloadData collectionName="login firebase" name="Usuarios" />
+          <UploadData collectionName="login firebase"  />
+          <GenerateExample headers={['username', 'password', 'email', 'phone', 'role']} name="Ejemplo para Usuarios"  />
+        </div>
+      )}
       <div className="overflow-auto">
-      <table className="w-full bg-white border ">
-        <thead>
-          <tr className="text-black font-bold">
-            <th className="border px-4 py-2">{usersText.index}</th>
-            <th className="border px-4 py-2">{usersText.username}</th>
-            <th className="border px-4 py-2">{usersText.email}</th>
-            <th className="border px-4 py-2">{usersText.phone}</th>
-            <th className="border px-4 py-2">{usersText.role}</th>
-            {['Administrador', 'Gerencia'].includes(currentUser.role) && (
-              <>
-                <th className="border px-4 py-2">{usersText.password}</th>
-                <th className="border px-4 py-2">{usersText.actions}</th>
-              </>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id} className="text-black">
-              <td className="border px-4 py-2">{user.index}</td>
-              <td className="border px-4 py-2">{user.username}</td>
-              <td className="border px-4 py-2">{user.email}</td>
-              <td className="border px-4 py-2">{user.phone}</td>
-              <td className="border px-4 py-2">{user.role}</td>
+        <table className="w-full bg-white border ">
+          <thead>
+            <tr className="text-black font-bold">
+              <th className="border px-4 py-2">{usersText.index}</th>
+              <th className="border px-4 py-2">{usersText.username}</th>
+              <th className="border px-4 py-2">{usersText.email}</th>
+              <th className="border px-4 py-2">{usersText.phone}</th>
+              <th className="border px-4 py-2">{usersText.role}</th>
               {['Administrador', 'Gerencia'].includes(currentUser.role) && (
                 <>
-                  <td className="border px-4 py-2">{user.password}</td>
-                  <td className="border px-4 py-2">
-                    <button
-                      className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2"
-                      onClick={() => handleOpenModal(user)}
-                    >
-                      {usersText.edit}
-                    </button>
-                    <button
-                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      {usersText.delete}
-                    </button>
-                  </td>
+                  <th className="border px-4 py-2">{usersText.password}</th>
+                  <th className="border px-4 py-2">{usersText.actions}</th>
                 </>
               )}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="text-black">
+                <td className="border px-4 py-2">{user.index}</td>
+                <td className="border px-4 py-2">{user.username}</td>
+                <td className="border px-4 py-2">{user.email}</td>
+                <td className="border px-4 py-2">{user.phone}</td>
+                <td className="border px-4 py-2">{user.role}</td>
+                {['Administrador', 'Gerencia'].includes(currentUser.role) && (
+                  <>
+                    <td className="border px-4 py-2">{user.password}</td>
+                    <td className="border px-4 py-2">
+                      <button
+                        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700 transition mr-2"
+                        onClick={() => handleOpenModal(user)}
+                      >
+                        {usersText.edit}
+                      </button>
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                        onClick={() => handleDeleteUser(user.id)}
+                      >
+                        {usersText.delete}
+                      </button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black ">

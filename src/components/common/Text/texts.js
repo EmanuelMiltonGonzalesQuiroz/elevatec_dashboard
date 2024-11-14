@@ -29,6 +29,7 @@ export const homeText = {
   clientPhone: "Tel. Cliente",
   city: "Ciudad",
   quotedBy: "Cotizado por",
+  DeletedBy: "Eliminado por",
   total: "Total",
   date: "Fecha",
   actions: "Acciones",

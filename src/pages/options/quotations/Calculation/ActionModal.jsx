@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../../../../context/AuthContext';
 
 const ActionModal = ({ 
   show, 
@@ -13,9 +14,12 @@ const ActionModal = ({
   onViewWord, 
   handleCloseModal 
 }) => {
+  const { currentUser } = useAuth();
   if (!show) {
     return null;
   }
+   // Obtener currentUser
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -56,14 +60,14 @@ const ActionModal = ({
           >
             Ver PDF Tecnolift Sin Membretado
           </button>
-
-          <button
-            className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
-            onClick={onViewProcedure}
-          >
-            Ver Procedimiento
-          </button>
-
+          {['Administrador'].includes(currentUser.role) && (
+               <button
+                className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
+                onClick={onViewProcedure}
+              >
+                Ver Procedimiento
+              </button>
+          )}
           <button
             className="bg-green-500 text-white py-2 px-4 mb-4 rounded hover:bg-green-700 transition w-full"
             onClick={onConfirm}

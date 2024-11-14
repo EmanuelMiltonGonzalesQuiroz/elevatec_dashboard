@@ -8,6 +8,7 @@ import CustomModal from '../../../components/UI/CustomModal';
 import Modal from './Calculation/Modal';
 import { useAuth } from '../../../context/AuthContext';
 import deleteQuotation from './deleteQuotation'; 
+import getFieldValue from '../../../components/layout/getFieldValue';
 
 // Función para formatear la fecha a partir del ID del documento
 const formatDateFromDocId = (docId) => {
@@ -36,6 +37,8 @@ const QuotationList = ({ showDeleted }) => {
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [selectedPDFOption, setSelectedPDFOption] = useState(null);
   const [showPDFModal, setShowPDFModal] = useState(false); // Estado para manejar el segundo modal de PDF
+  const [deletedByName, setDeletedByName] = useState({});
+
 
   useEffect(() => {
     const fetchQuotations = async () => {
@@ -129,18 +132,26 @@ const QuotationList = ({ showDeleted }) => {
     const quotationRef = doc(db, 'list of quotations', id);
     
     try {
-      await updateDoc(quotationRef, { state: status });
+      const updateData = { state: status };
+  
+      // Si el estado es "deleted", añade el campo DeletedBy con el ID del usuario actual
+      if (status === 'deleted' && currentUser) {
+        updateData.DeletedBy = currentUser.id;
+      }
+  
+      await updateDoc(quotationRef, updateData);
   
       // Actualizar el estado local para reflejar el cambio en la interfaz de usuario
       setQuotations((prevQuotations) =>
         prevQuotations.map((quotation) =>
-          quotation.id === id ? { ...quotation, state: status } : quotation
+          quotation.id === id ? { ...quotation, ...updateData } : quotation
         )
       );
     } catch (error) {
       console.error('Error al actualizar el estado:', error);
     }
   };
+  
 
   const handleDateChange = (event) => {
     let selectedDate = new Date(event.target.value + "T00:00:00");
@@ -188,6 +199,23 @@ const QuotationList = ({ showDeleted }) => {
     // Buscar el nombre del cliente basado en clientId primero, luego usar location.client si no se encuentra
     return clientNames[location.clientId] || location.client;
   };
+  const fetchDeletedByName = async (userId) => {
+    if (userId && !deletedByName[userId]) { // Carga solo si el usuario no está ya en el estado
+      const username = await getFieldValue("login firebase", userId, "username");
+      setDeletedByName((prev) => ({ ...prev, [userId]: username || 'N/A' }));
+    }
+  };
+
+  useEffect(() => {
+    // Cargar nombres de usuarios que eliminaron las cotizaciones cuando `showDeleted` está activo
+    if (showDeleted) {
+      filteredQuotations.forEach((quotation) => {
+        if (quotation.state === 'deleted') {
+          fetchDeletedByName(quotation.DeletedBy);
+        }
+      });
+    }
+  }, [filteredQuotations, showDeleted]);
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-lg shadow-lg max-h-[75vh] text-black">
@@ -222,6 +250,9 @@ const QuotationList = ({ showDeleted }) => {
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.city}</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.location}</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.quotedBy}</th>
+              {showDeleted && (
+                <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.DeletedBy}</th>
+              )}
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.total}</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.date}</th>
               <th className="text-left py-2 px-4 bg-gray-200 text-black font-bold">{homeText.actions}</th>
@@ -237,7 +268,10 @@ const QuotationList = ({ showDeleted }) => {
                 <td className="py-2 px-4 text-black">{quotation.clientPhone}</td>
                 <td className="py-2 px-4 text-black">{quotation.city}</td>
                 <td className="py-2 px-4 text-black">{quotation.address}</td>
-                <td className="py-2 px-4 text-black">{quotation.quotedBy}</td> 
+                <td className="py-2 px-4 text-black">{quotation.quotedBy}</td>
+                {showDeleted && (
+                  <td className="py-2 px-4 text-black">{deletedByName[quotation.DeletedBy] || ""}</td>
+                )}
                 <td className="py-2 px-4 text-black">{quotation.total}</td> 
                 <td className="py-2 px-4 text-black">{quotation.date}</td>
                 <td className="py-2 px-4">

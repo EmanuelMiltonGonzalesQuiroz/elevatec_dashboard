@@ -6,6 +6,7 @@ import ClientList from './ClientList';
 import ClientForm from './ClientForm';
 import ClientSearch from './ClientSearch';
 import QuotationsModal from './QuotationsModal';
+import DownloadData from '../../../components/layout/DownloadData';
 
 const Clients = () => {
   const { currentUser } = useAuth();
@@ -80,6 +81,11 @@ const Clients = () => {
   return (
     <div className="p-6 bg-gray-100 text-black">
       <ClientSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleOpenModal={handleOpenModal} />
+      {['Administrador', 'Gerencia'].includes(currentUser.role) && (
+        <div className="flex space-x-4 mb-6">
+          <DownloadData collectionName="clients" name="Clientes" />
+        </div>
+      )}
       <ClientList
         clients={clients}
         filteredClients={filteredClients}
