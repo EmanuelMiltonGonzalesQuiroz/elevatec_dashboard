@@ -1,59 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, LoadScriptNext, MarkerF } from '@react-google-maps/api';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../../connection/firebase'; // Importar la conexión a Firestore
+import { db } from '../../../../connection/firebase';
 import { calculateDistance } from '../../../../components/layout/calculateDistance';
 
 const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisabled }) => {
-  const [locations, setLocations] = useState([]); // Estado para guardar las ubicaciones existentes
+  const [locations, setLocations] = useState([]);
+  const [tooClose, setTooClose] = useState(false);
 
-  // Función para obtener las ubicaciones desde Firestore
   useEffect(() => {
     const fetchLocationsAndColors = async () => {
-      try {
-        const locationsCol = collection(db, 'locations');
-        const locationSnapshot = await getDocs(locationsCol);
-        const locationList = locationSnapshot.docs
-          .map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .filter(location =>
-            location.Tipo?.[0] === 'CONSTRUCCION' &&
-            location.Tipo?.[1] === 'CA' &&
-            location.Tipo?.[2] === 'C. ASCENSORES'
-          );
-        setLocations(locationList);
-      } catch (error) {
-        console.error('Error obteniendo datos de Firestore:', error);
-      }
+      const locationsCol = collection(db, 'locations');
+      const locationSnapshot = await getDocs(locationsCol);
+      const locationList = locationSnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter(location =>
+          location.Tipo?.[0] === 'CONSTRUCCION' &&
+          location.Tipo?.[1] === 'CA' &&
+          location.Tipo?.[2] === 'C. ASCENSORES'
+        );
+      setLocations(locationList);
     };
 
     fetchLocationsAndColors();
   }, []);
 
-  // Validar si las coordenadas son válidas
   const isValidLatLng = (lat, lng) => {
     return typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
   };
 
-  // Función para manejar los clics en el mapa
   const handleMapClickWithCheck = (event) => {
     const clickedLocation = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
 
-    // Verificar si las coordenadas son válidas
     if (!isValidLatLng(clickedLocation.lat, clickedLocation.lng)) {
-      console.error('Coordenadas no válidas:', clickedLocation);
       return;
     }
 
-    let tooClose = false;
-    const threshold = 20; // Distancia mínima de 20 metros
+    const threshold = 20;
+    let isTooClose = false;
 
-    // Verificar si la nueva ubicación está muy cerca de alguna ubicación existente con "Cotizacion_A"
     locations.forEach((location) => {
       if (location.state === 'Cotizacion_A' && isValidLatLng(location.location?.lat, location.location?.lng)) {
         const distance = calculateDistance(
@@ -63,25 +54,16 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
           clickedLocation.lng
         );
         if (distance < threshold) {
-          tooClose = true;
+          isTooClose = true;
         }
       }
     });
 
-    if (tooClose) {
-      // Pregunta de confirmación para continuar
-      const userConfirmed = window.confirm('Ya hay una cotización para esta ubicación. ¿Desea continuar?');
-      if (!userConfirmed) {
-        setButtonDisabled(true);
-        return;
-      } else {
-        setButtonDisabled(false);
-      }
-    } else {
-      setButtonDisabled(false);
+    setTooClose(isTooClose);
+    setButtonDisabled(isTooClose);
+    if (!isTooClose) {
+      handleMapClick(event);
     }
-    
-    handleMapClick(event); // Procesar la lógica normal del clic
   };
 
   return (
@@ -90,9 +72,8 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
         mapContainerStyle={{ width: '100%', height: '100%' }}
         center={isValidLatLng(mapCenter.lat, mapCenter.lng) ? mapCenter : { lat: -16.495543, lng: -68.133543 }}
         zoom={10}
-        onClick={handleMapClickWithCheck} // Usamos la función modificada de clic en el mapa
+        onClick={handleMapClickWithCheck}
       >
-        {/* Renderizar los marcadores de las ubicaciones existentes */}
         {Array.isArray(locations) &&
           locations
             .filter((location) => isValidLatLng(location.location?.lat, location.location?.lng) && location.state !== 'Eliminar' && location.state !== 'default')
@@ -105,7 +86,6 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
             ))
         }
 
-        {/* Marcador para la nueva ubicación seleccionada */}
         {isValidLatLng(markerPosition.lat, markerPosition.lng) && (
           <MarkerF position={markerPosition} />
         )}

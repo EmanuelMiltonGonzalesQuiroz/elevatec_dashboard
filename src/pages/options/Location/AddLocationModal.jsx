@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { db } from '../../../connection/firebase'; // Importar Firestore
 import { doc, setDoc, collection, getDocs } from 'firebase/firestore'; // Importar funciones de Firestore
 import CustomSelect from '../../../components/UI/CustomSelect';
 import MapComponent from '../../../components/UI/MapComponent';
+import { geocodeAddress } from '../../../components/layout/geocodeAddress';
 
 const typeOptions = {
   Construccion: [
@@ -42,6 +43,17 @@ const AddLocationModal = ({ onClose }) => {
     Tipo1: '',
     Tipo2: '',
   });
+
+  useEffect(() => {
+    const fetchGeocoding = async () => {
+      try {
+        await geocodeAddress(description, markerPosition, setMarkerPosition);
+      } catch (error) {
+      }
+    };
+    fetchGeocoding();
+  }, [description, markerPosition, setMarkerPosition]);
+  
 
   const handleMapClick = (clickedLocation) => {
     setMarkerPosition(clickedLocation);
@@ -204,12 +216,14 @@ const AddLocationModal = ({ onClose }) => {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-lg h-[45%] text-black">
-          <MapComponent
-            mapCenter={markerPosition}
-            markerPosition={markerPosition}
-            handleMapClick={handleMapClick}
-            setButtonDisabled={setIsButtonDisabled}
-          />
+        <MapComponent
+          mapCenter={markerPosition}
+          markerPosition={markerPosition}
+          handleMapClick={handleMapClick}
+          address={description}  // Aquí pasamos la dirección como prop
+          setButtonDisabled={setIsButtonDisabled}
+        />
+
         </div>
 
         {distanceWarning && <p className="text-red-500">{distanceWarning}</p>}

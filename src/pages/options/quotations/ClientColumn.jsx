@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomSelect from '../../../components/UI/CustomSelect';
 import { clientColumnText } from '../../../components/common/Text/texts';
 import NewClientModal from './NewClientModal';
 import MapComponent from './ClientColumn/MapComponent';
 import logo from '../../../assets/images/COTA LOGO/elevatec_logo_sin_fondo.png';
+import { geocodeAddress } from '../../../components/layout/geocodeAddress';
 
 const ClientColumn = ({
   formData,
@@ -23,6 +24,19 @@ const ClientColumn = ({
   const updateFormData = (field, value) => {
     setFormData({ [field]: value });
   };
+  useEffect(() => {
+    const fetchGeocoding = async () => {
+      if (formData['Ubicacion_nombre']) {
+        try {
+          await geocodeAddress(formData['Ubicacion_nombre'], formData['Ubicacion'], (newLocation) => {
+            handleClientChange('Ubicacion', newLocation);
+          });
+        } catch {}
+      }
+    };
+    fetchGeocoding();
+  }, [formData['Ubicacion_nombre']]);
+  
 
   // Shared field handlers
   const handleVendedorChange = (e) => {
@@ -139,7 +153,7 @@ const validateCuotas = () => {
             onChange={handleVendedorChange}
             className="p-3 border-2 border-gray-300 rounded-lg w-full"
           />
-
+ 
           {/* Payment Method - Independent Field */}
           <label htmlFor="paymentMethod" className="mt-4 font-semibold text-black">
             Forma de Pago
@@ -311,12 +325,14 @@ const validateCuotas = () => {
 
         {/* Right Column */}
         <div className="w-full h-[60vh]">
-          <MapComponent
-            mapCenter={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
-            markerPosition={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
-            handleMapClick={handleMapClick}
-            setButtonDisabled={setIsButtonDisabled}
-          />
+        <MapComponent
+          mapCenter={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
+          markerPosition={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
+          handleMapClick={handleMapClick}
+          setButtonDisabled={setIsButtonDisabled}
+          address={formData['Ubicacion_nombre']}  // Añade aquí el nombre de la ubicación
+        />
+
         </div>
       </div>
 

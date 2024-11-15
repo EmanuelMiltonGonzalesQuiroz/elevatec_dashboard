@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, LoadScriptNext, MarkerF } from '@react-google-maps/api';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../connection/firebase';  // Importar la conexión a Firestore
+import { db } from '../../connection/firebase';
 
-const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisabled }) => {
-  const [mapLocations, setMapLocations] = useState([]); // Estado para las ubicaciones
-  const [stateColors, setStateColors] = useState({});  // Estado para los colores de estado
+const MapComponent = ({ mapCenter, markerPosition, handleMapClick, address }) => {
+  const [mapLocations, setMapLocations] = useState([]);
+  const [stateColors, setStateColors] = useState({});
 
-  // Función para obtener las ubicaciones y los colores de Firestore
   useEffect(() => {
     const fetchLocationsAndColors = async () => {
       try {
-        // Obtener las ubicaciones desde la colección 'locations'
         const locationsCol = collection(db, 'locations');
         const locationSnapshot = await getDocs(locationsCol);
         const locationList = locationSnapshot.docs.map(doc => ({
@@ -19,9 +17,8 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
           ...doc.data(),
         }));
 
-        setMapLocations(locationList); // Guardar las ubicaciones en el estado
+        setMapLocations(locationList);
 
-        // Obtener los colores de estado desde la colección 'locationStates'
         const statesCol = collection(db, 'locationStates');
         const statesSnapshot = await getDocs(statesCol);
 
@@ -31,26 +28,43 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
           stateData[doc.id] = data.color;
         });
 
-        setStateColors(stateData);  // Guardar los colores de estado en el estado
+        setStateColors(stateData);
       } catch (error) {
         console.error('Error obteniendo datos de Firestore:', error);
       }
     };
 
-    fetchLocationsAndColors();  // Llamamos a la función para obtener datos
-  }, []);  // Solo corre una vez cuando el componente se monta
+    fetchLocationsAndColors();
+  }, []);
 
-  // Manejar clics en el mapa
   const handleMapClickWithCheck = (event) => {
     if (event && event.latLng) {
       const clickedLocation = {
         lat: event.latLng.lat(),
         lng: event.latLng.lng(),
       };
-
-      handleMapClick(clickedLocation); // Actualizar la posición del marcador
+      handleMapClick(clickedLocation);
     }
   };
+
+  // Geocode the address and update map center
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      if (!address) return;
+
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          const location = results[0].geometry.location;
+          handleMapClick({ lat: location.lat(), lng: location.lng() });
+        } else {
+          
+        }
+      });
+    };
+
+    geocodeAddress();
+  }, [address, handleMapClick]);
 
   return (
     <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
@@ -60,10 +74,9 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
         zoom={10}
         onClick={handleMapClickWithCheck}
       >
-        {/* Renderizar los marcadores con los colores basados en el estado */}
         {Array.isArray(mapLocations) &&
           mapLocations
-            .filter((location) => location.state !== 'Eliminar' && location.state !== 'default' && location.state !== '') // Filtra ubicaciones con estados indeseados
+            .filter((location) => location.state !== 'Eliminar' && location.state !== 'default' && location.state !== '')
             .map((location) =>
               location.location && location.location.lat && location.location.lng ? (
                 <MarkerF
@@ -72,7 +85,7 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
                   icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
                 />
               ) : null
-            ) 
+            )
         }
         {markerPosition && markerPosition.lat && markerPosition.lng && (
           <MarkerF position={markerPosition} />

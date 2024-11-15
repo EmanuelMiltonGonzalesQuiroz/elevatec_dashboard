@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapComponentM from './MapComponentM'; // Asegúrate de que la ruta sea la correcta
+import { geocodeAddress } from '../../../../components/layout/geocodeAddress';
 
-const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
+const Location = ({ handleAddItem }) => {
   const [locationName, setLocationName] = useState('');
   const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); // Posición inicial del marcador
 
@@ -9,6 +10,19 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
   const handleLocationNameChange = (e) => {
     setLocationName(e.target.value);
   };
+
+  // Ejecuta la geocodificación cuando cambia el nombre de la ubicación
+  useEffect(() => {
+    const fetchGeocodedLocation = async () => {
+      if (locationName) {
+        try {
+          const newLocation = await geocodeAddress(locationName, markerPosition, setMarkerPosition);
+          setMarkerPosition(newLocation); // Actualiza la posición en el mapa
+        } catch {}
+      }
+    };
+    fetchGeocodedLocation();
+  }, [locationName, markerPosition]);
 
   // Función para manejar clics en el mapa y actualizar la ubicación del marcador
   const handleMapClick = (event) => {
@@ -21,10 +35,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
 
   // Función para guardar la ubicación
   const saveLocation = () => {
-    if (!locationName || !markerPosition) {
-      alert("Por favor, ingresa el nombre de la ubicación y selecciona una posición en el mapa.");
-      return;
-    }
+    if (!locationName || !markerPosition) return;
 
     const locationData = {
       name: locationName,
@@ -60,7 +71,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
       {/* Mapa */}
       <div className="h-[30vh] mt-2">
         <MapComponentM
-          mapCenter={markerPosition} // Pasamos la posición inicial aquí
+          mapCenter={markerPosition}
           markerPosition={markerPosition}
           handleMapClick={handleMapClick}
         />
@@ -68,7 +79,7 @@ const Location = ({ handleAddItem }) => { // Recibe la función handleAddItem
 
       {/* Botón para guardar la ubicación */}
       <button
-        className="mt-4 bg-blue-500 text-white px-3 py-1 rounded" // Reducido el tamaño del botón
+        className="mt-4 bg-blue-500 text-white px-3 py-1 rounded"
         onClick={saveLocation}
       >
         Guardar Ubicación
