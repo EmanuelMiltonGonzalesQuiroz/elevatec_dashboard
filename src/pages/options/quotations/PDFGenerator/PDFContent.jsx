@@ -107,7 +107,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         rightMargin: 20,
         topMargin: 40,
         bottomMargin: 30,
-        experience: 30,
+        experience: 35,
         city: city,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
@@ -121,7 +121,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         topMargin: 40,
         bottomMargin: 30,
         city: city,
-        experience: 10,
+        experience: 35,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
         recipient: recipient,
@@ -134,7 +134,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         topMargin: 15,
         bottomMargin: 20,
         city: city,
-        experience: 10,
+        experience: 35,
         date: formattedDate,
         refNumber: quotationCode || "COT-XXX/AAAA/SC.",
         recipient: recipient,
@@ -302,7 +302,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         {type.toLowerCase().includes('word') ? 'Guardar Word' : 'Guardar PDF'}
       </button> 
   
-      {!type.toLowerCase().includes('word') && (
+      {!type.toLowerCase().includes('word') && ( 
         isGenerating || isFetchingQuotations ? (
           <div>Abriendo PDF, por favor espera...</div> 
         ) : (

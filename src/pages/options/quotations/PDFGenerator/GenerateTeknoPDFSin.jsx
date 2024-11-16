@@ -24,7 +24,8 @@ export const generateTeknoPDFSin = (doc, formData, values, config) => {
   };
 
   // Añadir el contenido del PDF
-  startY = Header({ doc, config, startY });
+  startY = Header({ doc, config, startY , formData});  
+
   startY = MainContent({ doc, config, formData, startY });
 
   // Especificaciones técnicas

@@ -8,6 +8,8 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
   const [locations, setLocations] = useState([]);
   const [tooClose, setTooClose] = useState(false);
 
+  const defaultPosition = { lat: -16.495543, lng: -68.133543 }; // Posición inicial por defecto
+
   useEffect(() => {
     const fetchLocationsAndColors = async () => {
       const locationsCol = collection(db, 'locations');
@@ -70,7 +72,7 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={isValidLatLng(mapCenter.lat, mapCenter.lng) ? mapCenter : { lat: -16.495543, lng: -68.133543 }}
+        center={isValidLatLng(mapCenter.lat, mapCenter.lng) ? mapCenter : defaultPosition}
         zoom={10}
         onClick={handleMapClickWithCheck}
       >
@@ -86,9 +88,11 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
             ))
         }
 
-        {isValidLatLng(markerPosition.lat, markerPosition.lng) && (
-          <MarkerF position={markerPosition} />
-        )}
+        {/* Mostrar el marcador inicial si el usuario no ha elegido aún una posición */}
+        <MarkerF
+          position={isValidLatLng(markerPosition.lat, markerPosition.lng) ? markerPosition : defaultPosition}
+          icon="http://maps.google.com/mapfiles/ms/icons/red-dot.png" // Cambiar a marcador rojo
+        />
       </GoogleMap>
     </LoadScriptNext>
   );

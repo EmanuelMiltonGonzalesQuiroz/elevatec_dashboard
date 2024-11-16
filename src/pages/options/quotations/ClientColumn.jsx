@@ -133,6 +133,16 @@ const validateCuotas = () => {
   );
   return Math.abs(100 - totalPercentage) <= 0.02;
 };
+const handleBuildingNameChange = (e) => {
+  const buildingName = e.target.value;
+  handleClientChange('NombreEdificio', buildingName);
+};
+
+const handleWarrantyTimeChange = (e) => {
+  const warrantyTime = Math.max(0, parseInt(e.target.value, 10) || 0); // Ensure positive integer
+  handleClientChange('TiempoGarantia', warrantyTime);
+  console.log(formData)
+};
 
 
   return (
@@ -320,6 +330,31 @@ const validateCuotas = () => {
                 </>
               )}
             </div>
+            <label htmlFor="buildingName" className="mt-4 font-semibold text-black">
+              Nombre del Edificio:
+            </label>
+            <input
+              type="text"
+              id="buildingName"
+              placeholder="Ingrese el nombre del edificio"
+              value={formData['NombreEdificio'] || ''}
+              onChange={(e) => handleBuildingNameChange(e)}
+              className="p-3 border-2 border-gray-300 rounded-lg w-full"
+            />
+
+            {/* Tiempo de Garantía */}
+            <label htmlFor="warrantyTime" className="mt-4 font-semibold text-black">
+              Tiempo de Garantía (en meses):
+            </label>
+            <input
+              type="number"
+              id="warrantyTime"
+              placeholder="Ingrese el tiempo de garantía en meses"
+              value={formData['TiempoGarantia'] || ''}
+              onChange={(e) => handleWarrantyTimeChange(e)}
+              className="p-3 border-2 border-gray-300 rounded-lg w-full"
+              min="0"
+            />
           </div>
         </div>
 

@@ -75,9 +75,9 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       // Imagen de Piso
       [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Piso"].height + 5 } }],
 
-      [{ content: "Pasamanos", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['PasamanosAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Pasamanos", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: ((Number(dataItem['PasamanosAdicional']?.nombre) || 0) + 1) + " (en acero inoxidable cepillado)", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
       [{ content: "Espejo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['EspejoAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-      [{ content: "Iluminación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Iluminación LED.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Iluminación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Iluminación LED (encendido y apagado automatizado).", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
       [{ content: "Intercomunicador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
       [{ content: "Sintetizador de voz", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Sistema de voz y gong incluido.", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
@@ -115,9 +115,9 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       [{content: "Hoja", colSpan: 2}, "Normal " + (extractDoorDetails(dataItem['doors']?.nombre)?.hojas || " "),"Normal " + (extractDoorDetails(dataItem['doors']?.nombre)?.hojas || " ")],
       [{ content: "Paso libre", colSpan: 2}, { content: extractDoorDetails(dataItem['doors']?.nombre)?.size + " x 2100mm" || " " }, { content: extractDoorDetails(dataItem['doors']?.nombre)?.size + " x 2100mm" || " "}],
       
-      [{ content: "Acabado", colSpan: 2}, "INOXIDABLE", { content: dataItem['Puertas_en_inoxidable']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
-      [{ content: "", colSpan: 2}, "EPOXI", { content: dataItem['Puertas_En_Epoxi']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
-      [{ content: "", colSpan: 2}, "VIDRIO", { content: dataItem['Puertas_En_Vidrio']?.UNIDADES || "0",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Acabado", colSpan: 2}, "INOXIDABLE (1)", { content: "INOXIDABLE ("+(dataItem['Puertas_en_inoxidable']?.UNIDADES || "0")+ ")",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "", colSpan: 2}, "", { content: "EPOXI ("+(dataItem['Puertas_En_Epoxi']?.UNIDADES || "0")+ ")",  styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "", colSpan: 2}, "", { content: "VIDRIO ("+(dataItem['Puertas_En_Vidrio']?.UNIDADES || "0")+ ")",  styles: { halign: 'center', fontStyle: 'bold' } }],
       [{ content: "Detector", colSpan: 2 }, { content: dataItem['PuertaDetector'] || "Barrera Infrarroja", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
       // Imagen de Puertas
@@ -130,7 +130,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       [{ content: "SEÑALIZACIÓN", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, "CABINA", "PISOS"],
       [{ content: "Tipo pulsador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['TipoBotonera']?.nombre || " ", dataItem['TipoBotonera']?.nombre || " "],
       [{ content: "Acabado botoneras", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['BotonesCabina']?.nombre || " ", dataItem['BotonesPiso']?.nombre || " "],
-      [{ content: "Indicadores", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['Indicador_de_Cabina']?.nombre || " ", dataItem['Indicador_de_piso']?.nombre || " "],
+      [{ content: "Indicadores", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, dataItem['Indicador_de_Cabina']?.nombre || " ", (dataItem['Indicador_de_piso']?.nombre || " ")+" (en todos los pisos)"],
       [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Indicadores"].height + 5 } }],
       [{ content: "TFT A COLOR CON IMÁGENES A GUSTO DEL CLIENTE (MAX 5 IMÁGENES HD)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold', cellWidth: 'auto' } }]
     ];
@@ -198,7 +198,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
               images.forEach((img, i) => {
                 if (img) {
                   doc.addImage(img, 'JPEG', startX + i * (width + imgSpacing), data.cell.y + offsetY, width, height);
-                }
+                } 
               });
             }
           }

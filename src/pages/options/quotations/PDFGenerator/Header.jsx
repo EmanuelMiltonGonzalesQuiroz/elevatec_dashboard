@@ -1,4 +1,4 @@
-const Header = ({ doc, config, startY }) => {
+const Header = ({ doc, config, startY, formData }) => {
   const { leftMargin, city, date, refNumber, recipient } = config;
   const pageWidth = doc.internal.pageSize.getWidth(); 
   const rightMargin = 20; 
@@ -6,7 +6,7 @@ const Header = ({ doc, config, startY }) => {
 
   let currentY = startY-10;
   const lineSpacing = 10; 
-
+ 
   doc.setFontSize(12);
 
   const cityText = city && city.toLowerCase().includes("transporte por el cliente") 
@@ -17,6 +17,12 @@ const Header = ({ doc, config, startY }) => {
 
   doc.text(refNumber, leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
+  if(formData[0]["NombreEdificio"]){
+    doc.text("Proyecyo:", leftMargin, currentY, { maxWidth: maxTextWidth });
+  currentY += lineSpacing;
+  doc.text(formData[0]["NombreEdificio"], leftMargin, currentY, { maxWidth: maxTextWidth });
+  currentY += lineSpacing;
+  }
 
   doc.text("Señor:", leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;

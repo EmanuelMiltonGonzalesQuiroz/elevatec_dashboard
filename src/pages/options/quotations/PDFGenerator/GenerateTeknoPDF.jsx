@@ -5,12 +5,12 @@ import TechnicalDetails from './TechnicalDetails';
 import TableComponent from './TableComponent'; 
 
 import teknoliftHeader from '../../../../assets/images/teknoliftHeader.jpg';  
-import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg';    
+import teknoliftRight from '../../../../assets/images/teknoliftRight.jpg';     
 import teknoliftWaterMark from '../../../../assets/images/teknoliftWaterMark.jpg'; 
-import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg'; 
-
-export const generateTeknoPDF = (doc, formData, values, config) => { 
-  const pageWidth = doc.internal.pageSize.getWidth(); 
+import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg';  
+ 
+export const generateTeknoPDF = (doc, formData, values, config) => {  
+  const pageWidth = doc.internal.pageSize.getWidth();  
   const pageHeight = doc.internal.pageSize.getHeight(); 
   const headerHeight = 40;  
   const footerHeight = 30; 
@@ -19,7 +19,6 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
 
   let startY = topMargin + 20; 
 
-  // Función para añadir la imagen del encabezado 
   const addHeaderImage = (doc, imageBase64, x = 0, y = 0, width, height) => {
     try {
       doc.addImage(imageBase64, 'JPEG', x, y, width, height);
@@ -28,7 +27,6 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
     }
   };
 
-  // Función para añadir la imagen del lado derecho
   const addRightImage = (doc, imageBase64, x, y, height) => {
     try {
       doc.addImage(imageBase64, 'JPEG', x, y, rightImageWidth, height); // Usa el ancho fijo y ocupa toda la altura
@@ -58,14 +56,14 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
     try {
       const footerY = pageHeight - footerHeight - 10; 
       doc.addImage(imageBase64, 'JPEG', 0, footerY, pageWidth, footerHeight);
-    } catch (error) {
+    } catch (error) { 
       console.error("Error al cargar la imagen del footer: ", error.message);
     }
   };
-
-  // Función para verificar si se necesita una nueva página
+ 
+  // Función para verificar si se necesita una nueva página 
   const checkAddPage = (doc, currentY) => {
-    if (currentY + 20 > pageHeight - bottomMargin) { // Usar el margen inferior de config
+    if (currentY + 20 > pageHeight - bottomMargin) { // Usar el margen inferior de config 
       doc.addPage();
       addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight); 
       addRightImage(doc, teknoliftRight, pageWidth - rightImageWidth, headerHeight, pageHeight - headerHeight - footerHeight); // Ajusta la imagen del lado derecho para ocupar toda la altura disponible
@@ -74,27 +72,27 @@ export const generateTeknoPDF = (doc, formData, values, config) => {
       return topMargin + 20; // Usar el margen superior de config al reiniciar la posición Y
     }
     return currentY;
-  };
+  }; 
 
-  // Añadir el encabezado, la imagen del lado derecho y la marca de agua en la primera página
-  addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight); 
+  // Añadir el encabezado, la imagen del lado derecho y la marca de agua en la primera página  
+  addHeaderImage(doc, teknoliftHeader, 0, 0, pageWidth, headerHeight);   
   addRightImage(doc, teknoliftRight, pageWidth - rightImageWidth, headerHeight, pageHeight - headerHeight - footerHeight); 
-  addWatermark(doc, teknoliftWaterMark); 
-  addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight); 
-
-  // Generar el contenido del PDF
-  startY = Header({ doc, config, startY });
-  startY = MainContent({ doc, config, formData, startY });
-
+  addWatermark(doc, teknoliftWaterMark);   
+  addFooterImage(doc, teknoliftFooterJPG, pageHeight, footerHeight);  
+ 
+  // Generar el contenido del PDF 
+  startY = Header({ doc, config, startY , formData});   
+  startY = MainContent({ doc, config, formData, startY });   
+     
   // Especificaciones técnicas
-  startY = checkAddPage(doc, startY); 
+  startY = checkAddPage(doc, startY);   
   startY = TechnicalSpecifications({ doc, formData, startY, config });
 
-  // Detalles técnicos
+  // Detalles técnicos   
   startY = checkAddPage(doc, startY); 
-  startY = TechnicalDetails({ doc, formData, startY , config});
+  startY = TechnicalDetails({ doc, formData, startY , config}); 
 
-  // Tabla de componentes finales
+  // Tabla de componentes finales 
   startY = checkAddPage(doc, startY); 
   startY = TableComponent({ doc, formData, values, startY , config});
 

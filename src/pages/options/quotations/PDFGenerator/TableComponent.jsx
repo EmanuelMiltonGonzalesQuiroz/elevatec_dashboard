@@ -57,14 +57,15 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
 
     // Añadir el título
     currentYPosition = checkAddPage(doc, currentYPosition, 10, config);
-    doc.setFontSize(12).setFont("Helvetica", "bold").text(`Opcionales Incluidos en la Cotización N° ${n + 1}:`, leftMargin, currentYPosition);
-
+    doc.setFontSize(12).setFont("Helvetica", "bold")
+    .text(`Opcionales Incluidos en la Cotización N° ${n + 1}:`, leftMargin, currentYPosition + 10);
     // Crear la tabla con los opcionales incluidos
     const opcionalesRows = opcionalesIncluidos.length > 0
       ? opcionalesIncluidos.map(opcional => [`* ${opcional.nombre}`])
       : [["No se agregó ningún opcional"]];
 
     // Generar la tabla con 'plain' y evitar la división de filas
+    currentYPosition += 10;
     doc.autoTable({
       startY: currentYPosition + 5,
       body: opcionalesRows,
@@ -98,9 +99,10 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   });
 
   const totalFormatted = totalAfterDiscount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const totalInWords = convertNumberToWords(Math.floor(totalAfterDiscount));
-  const decimals = ((totalAfterDiscount % 1) * 100).toFixed(0);
-
+  const totalInWords = convertNumberToWords(Math.floor(totalAfterDiscount)); // Obtiene el entero correctamente.
+  const decimals = ((totalAfterDiscount % 1) * 100).toFixed(0); // Calcula correctamente los decimales.
+  const [entero] = totalFormatted.split(','); // Obtiene solo la parte entera.
+  const cleanedEntero = entero.replace('.', ''); 
   // Generar la tabla PRECIO con todos los items
   let tableData = [
     ["ITEM", "DESCRIPCIÓN", "CANT.", "VEL.", "CAP.", "PARADAS", "UNITARIO $us", "TOTAL $us"],
@@ -112,10 +114,35 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       row[3],
       row[4],
       row[5],
-      row[6]
+      row[6],
     ]),
-    [{ content: "Valor Total del Equipo Instalado y Funcionando", colSpan: 7, styles: { halign: 'center', fontStyle: 'bold' } }, totalFormatted]
+    [
+      {
+        content: "Valor Total del Equipo Instalado y Funcionando",
+        colSpan: 7,
+        styles: { halign: 'center', fontStyle: 'bold' },
+      },
+      totalFormatted,
+    ],
+    [
+      {
+        content: `Son: ${convertNumberToWords(cleanedEntero)} ${decimals}/100 Dólares Americanos`,
+        colSpan: 8,
+        styles: { halign: 'center', fontStyle: 'bold' },
+      }
+    ],
   ];
+
+  let text = [
+    [
+      {
+        content: "El precio influye en la logística, importación, transporte,  montaje. Entrega llave en mano instalado y funcionanado",
+        styles: { align: "justify"},
+      }
+    ]
+  ];
+
+
 
   doc.autoTable({
     startY: startY + 10, // Añadir un poco de espacio desde el punto inicial
@@ -129,6 +156,21 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   });
 
   let currentYPosition = doc.lastAutoTable.finalY + 10;
+
+  doc.autoTable({
+    startY: currentYPosition,
+    body: text,
+    theme: 'plain',
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
+    styles: {
+      fontSize: 12,
+      lineHeightFactor: 1.5,
+      cellPadding: { top: 3, bottom: 3 }// Adjust line height
+    },
+    pageBreak: 'auto',
+    rowPageBreak: 'avoid',
+  });
+  currentYPosition = doc.lastAutoTable.finalY + 10;
 
   currentYPosition = checkAddPage(doc, currentYPosition, 60, config); // Verificar si se necesita nueva página
 
@@ -186,6 +228,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     pageBreak: 'avoid', // Romper la tabla si no cabe en la página
   });
   currentYPosition = doc.lastAutoTable.finalY + 5;
+  const maintenancePhrase = "mantenimiento preventivo y correctivo";
 
   const termsData = [
     [
@@ -198,13 +241,17 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       { content: "GARANTÍA DE EQUIPO O FABRICACIÓN", styles: { fontStyle: 'bold', fontSize: 12 } }
     ],
     [
-      { content: "Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación, a partir de la puesta en funcionamiento de los ascensores. Quedan excluidos de la garantía los daños ocasionados por uso indebido, daños maliciosos ocasionados por terceros, daños por incidencias de agua, rayos o tormentas y otros no relacionados con defectos de fabricación.", styles: { fontSize: 12 } }
+      { content: "Los equipos están cubiertos con una garantía de cinco (5) años contra defectos de fabricación, a partir de la puesta en funcionamiento de los ascensores. Quedan excluidos de la garantía los daños ocasionados por uso indebido, daños maliciosos ocasionados por terceros, daños por incidencias de agua, rayos o tormentas y otros no relacionados con defectos de fabricación.", styles: { fontSize: 12 }}
     ],
     [
-      { content: "GARANTÍA DE INSTALACIÓN Y MONTAJE", styles: { fontStyle: 'bold', fontSize: 12 } }
+      { content: "GARANTÍA DE INSTALACIÓN Y MONTAJE", styles: { fontStyle: 'bold', fontSize: 12 } } 
     ],
     [
-      { content: "Jalmeco Ltda., responsable de la instalación y Montaje, realizará el mantenimiento preventivo y correctivo de forma gratuita por Dieciocho (18) meses calendario, tiempo en el cual subsanará cualquier defecto en forma gratuita por el tiempo indicado.", styles: { fontSize: 12 } }
+      {
+        content: `Jalmeco Ltda., responsable de la instalación y Montaje, realizará el ${maintenancePhrase} de forma gratuita por ${(formData[0]["TiempoGarantia"] ? convertNumberToWords(formData[0]["TiempoGarantia"]) : "Dieciocho") + " (" + (formData[0]["TiempoGarantia"] || "18") + ")"} meses calendario, tiempo en el cual subsanará cualquier defecto en forma gratuita por el tiempo indicado.`,
+        styles: { fontSize: 12 },
+        boldPhrase: maintenancePhrase  // Especifica la frase en negrita aquí
+      }
     ],
     [
       { content: "OBLIGACIONES DEL COMPRADOR", styles: { fontStyle: 'bold', fontSize: 12 } }
@@ -229,11 +276,59 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     theme: 'plain',
     tableWidth: tableWidth,
     margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
-    styles: { overflow: 'linebreak', fontSize: 12 },
+    styles: { overflow: 'linebreak', fontSize: 12, halign: 'justify' },
     pageBreak: 'auto',
     rowPageBreak: 'avoid',
+    didDrawCell: function (data) {
+      const { cell, doc } = data;
+  
+      // Verificar si hay una frase específica para poner en negrita
+      if (!cell.raw || !cell.raw.content || !cell.raw.boldPhrase) return;
+  
+      const content = cell.raw.content;
+      const phraseToBold = cell.raw.boldPhrase; // La frase a poner en negrita
+      const boldStartIndex = content.indexOf(phraseToBold);
+  
+      // Limpiar el contenido existente en la celda
+      doc.setFillColor(255, 255, 255);
+      doc.rect(data.cell.x, data.cell.y, cell.width, cell.height, 'F');
+  
+      // Dividir el contenido en líneas basadas en el ancho de la celda
+      const maxWidth = cell.width - 4; // Espacio para márgenes
+      const splitContent = doc.splitTextToSize(content, maxWidth);
+      const lineHeight = 6;
+  
+      // Redibujar el texto con negritas para la frase completa
+      let currentY = data.cell.y + 4;
+  
+      splitContent.forEach((line) => {
+        let currentX = data.cell.x + 2;
+        const words = line.split(" ");
+  
+        words.forEach((word) => {
+          // Verificar si la palabra completa coincide con la frase a negritar
+          const isBold = phraseToBold.split(" ").includes(word.trim());
+  
+          if (isBold) {
+            doc.setFont('helvetica', 'bold');
+          } else {
+            doc.setFont('helvetica', 'normal');
+          }
+  
+          // Dibujar la palabra con el estilo apropiado
+          doc.text(word + " ", currentX, currentY);
+          currentX += doc.getTextWidth(word + " ");
+        });
+  
+        currentY += lineHeight; // Avanzar a la siguiente línea
+      });
+  
+      // Añadir salto de línea adicional entre el párrafo y el siguiente título
+      currentY += lineHeight * 1.5; // Ajusta para el espacio deseado entre párrafos
+    },
   });
-
+  
+  
   currentYPosition = doc.lastAutoTable.finalY;
 
   return doc.lastAutoTable.finalY + 10;

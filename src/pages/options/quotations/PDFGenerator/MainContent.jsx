@@ -1,62 +1,210 @@
+import { convertNumberToWords } from "../../../../components/layout/convertNumberToWords";
+
 const MainContent = ({ doc, config, formData, startY }) => {
-  const { leftMargin = 20, rightMargin = 20, fontSize = 12, experience } = config; // Asegurar márgenes y tamaño de fuente
+  const {
+    leftMargin = 20,
+    rightMargin = 20,
+    fontSize = 12,
+    experience,
+  } = config;
   const pageWidth = doc.internal.pageSize.getWidth();
-  const maxTextWidth = pageWidth - leftMargin - rightMargin; // Ajustar el ancho de texto respetando los márgenes
+  const maxTextWidth = pageWidth - leftMargin - rightMargin;
 
-  let currentY = startY || 20; // Asegurar que startY esté definido
+  let currentY = startY || 20;
 
-  // Función para convertir números a palabras
-  const numberToWords = (num) => {
-    const words = ['Cero', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve'];
-    return words[num] || num.toString();
-  };
-
-  // Si `formData` no es un array, lo convertimos en uno para procesarlo de manera uniforme
   const formDataArray = Array.isArray(formData) ? formData : [formData];
 
-  // Variables para almacenar la suma de valores y otros datos
   let totalAscensores = 0;
-  
-  // Sumar los valores que deban ser acumulados de ambos formData
+
   formDataArray.forEach((data) => {
-    totalAscensores += data['08_Número de ascensores'] || 0; // Sumar el número de ascensores
+    totalAscensores += data["08_Número de ascensores"] || 0;
   });
 
-  // Texto dinámico basado en la suma de los ascensores (incluyendo número en palabras y en formato numérico)
-  const installationDescription = `De acuerdo a su solicitud, tenemos el agrado de poner en su consideración la Provisión e Instalación de ${numberToWords(totalAscensores)} (${totalAscensores}) Ascensores Sociales, marca ELEVATEC de última tecnología, que cumple con todos los requerimientos necesarios para su obra.`;
+  const lineSpacing = 7; // Menor interlineado
 
-  // Texto fijo adicional
-  const additionalInfo = `Los equipos ofertados cumplen con Normativa internacional, en fabricación de Ascensores, y cuentan con la certificación del Sistema de Gestión de Calidad ISO9001, certificación en Sistemas de Gestión Ambiental (SGA) ISO 14001, Certificación en Sistemas de gestión de la seguridad y salud en el trabajo ISO45001.`;
-
-  const experienceInfo = `La experiencia de más de ${experience} años en el mercado de nuestra Empresa, y los más de 500 equipos instalados a nivel nacional, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`;
-
-  // Ajustar la posición de las líneas
-  const lineSpacing = 10; // Espaciado entre líneas
-
-  // Añadir el contenido al PDF, ajustando la posición con currentY
   doc.setFontSize(fontSize);
 
   // Ref.: Propuesta
-  doc.text(`Ref.: Propuesta de Instalación`, leftMargin, currentY, { maxWidth: maxTextWidth });
-  currentY += lineSpacing;
+  doc.text(
+    `Ref.: Presentacion Propuesta Provision e instalacion de ${convertNumberToWords(
+      totalAscensores
+    )} (${totalAscensores}) Ascensores`,
+    leftMargin,
+    currentY,
+    { maxWidth: maxTextWidth }
+  );
+  currentY += 10; // Salto de línea reducido
 
-  // De nuestra mayor consideración
-  doc.text("De nuestra mayor consideración:", leftMargin, currentY, { maxWidth: maxTextWidth });
-  currentY += lineSpacing + 5;
+  doc.text("De nuestra mayor consideración:", leftMargin, currentY, {
+    maxWidth: maxTextWidth,
+  });
+  currentY += 10; // Salto de línea reducido
 
-  // Descripción de instalación
-  doc.text(installationDescription, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });
-  currentY += lineSpacing * 2;
+  // Descripción de instalación con texto en negrilla y justificado
+  const installationTextSegments = [
+    {
+      text:
+        "De acuerdo a su solicitud, tenemos el agrado de poner en su consideración la Provisión e Instalación de ",
+      bold: false,
+    },
+    {
+      text: `${convertNumberToWords(totalAscensores)} (${totalAscensores}) Ascensores Sociales`,
+      bold: true,
+    },
+    {
+      text:
+        ", marca ELEVATEC de última tecnología, que cumple con todos los requerimientos necesarios para su obra.",
+      bold: false,
+    },
+  ];
 
-  // Información adicional
-  doc.text(additionalInfo, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });
-  currentY += lineSpacing * 2 + 5;
+  currentY = renderTextWithBold(doc, installationTextSegments, {
+    x: leftMargin,
+    y: currentY,
+    maxWidth: maxTextWidth,
+    lineHeight: lineSpacing,
+    align: "justify",
+  });
 
-  // Información de experiencia
-  doc.text(experienceInfo, leftMargin, currentY, { maxWidth: maxTextWidth, align: "justify" });
+  // Añadir espacio después del párrafo
+  currentY += 5; // Espacio reducido entre párrafos
 
-  // Retornar la nueva posición de Y para continuar con otros contenidos
-  return currentY + lineSpacing * 2+10;
+  // Información adicional con ISO en negrilla y justificado
+  const additionalInfoSegments = [
+    {
+      text:
+        "Los equipos ofertados cumplen con Normativa internacional, en fabricación de Ascensores, y cuentan con la certificación del Sistema de Gestión de Calidad ",
+      bold: false,
+    },
+    { text: "ISO9001", bold: true },
+    {
+      text: ", certificación en Sistemas de Gestión Ambiental (SGA) ",
+      bold: false,
+    },
+    { text: "ISO 14001", bold: true },
+    {
+      text:
+        ", Certificación en Sistemas de gestión de la seguridad y salud en el trabajo ",
+      bold: false,
+    },
+    { text: "ISO45001", bold: true },
+    { text: ".", bold: false },
+  ];
+
+  currentY = renderTextWithBold(doc, additionalInfoSegments, {
+    x: leftMargin,
+    y: currentY,
+    maxWidth: maxTextWidth,
+    lineHeight: lineSpacing,
+    align: "justify",
+  });
+
+  // Añadir espacio después del párrafo
+  currentY += 5; // Espacio reducido entre párrafos
+
+  // Información de experiencia utilizando renderTextWithBold para respetar márgenes y justificación
+  const experienceInfoSegments = [
+    { text: `La experiencia de más de `, bold: false },
+    { text: `${experience} años`, bold: true },
+    { text: ` en el mercado de nuestra Empresa, y los más de `, bold: false },
+    { text: `500 equipos`, bold: true },
+    { text: ` instalados a nivel nacional, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`, bold: false },
+  ];
+
+  currentY = renderTextWithBold(doc, experienceInfoSegments, {
+    x: leftMargin,
+    y: currentY,
+    maxWidth: maxTextWidth,
+    lineHeight: lineSpacing,
+    align: "justify",
+  });
+
+  // Actualizar currentY para el siguiente contenido
+  currentY += 5; // Margen extra al final
+
+  return currentY + 10;
 };
+
+function renderTextWithBold(doc, textSegments, options) {
+  const { x, y, maxWidth, lineHeight, align } = options;
+  let currentY = y;
+
+  const spaceWidth = doc.getTextWidth(" ");
+  const lines = [];
+  let currentLine = [];
+  let currentLineWidth = 0;
+  let currentLineSpaces = 0;
+
+  textSegments.forEach((segment) => {
+    const words = segment.text.split(" ");
+    words.forEach((word) => {
+      const wordWidth = doc.getTextWidth(word);
+
+      // Verificar si la palabra cabe en la línea actual
+      if (
+        currentLine.length > 0 &&
+        currentLineWidth + spaceWidth + wordWidth > maxWidth
+      ) {
+        lines.push({
+          words: currentLine,
+          width: currentLineWidth,
+          spaces: currentLineSpaces,
+        });
+        currentLine = [];
+        currentLineWidth = 0;
+        currentLineSpaces = 0;
+      }
+
+      if (currentLine.length > 0) {
+        currentLineWidth += spaceWidth;
+        currentLineSpaces += 1;
+      }
+
+      currentLine.push({ text: word, bold: segment.bold });
+      currentLineWidth += wordWidth;
+    });
+  });
+
+  if (currentLine.length > 0) {
+    lines.push({
+      words: currentLine,
+      width: currentLineWidth,
+      spaces: currentLineSpaces,
+    });
+  }
+
+  lines.forEach((line, lineIndex) => {
+    let currentX = x;
+
+    if (align === "justify" && lineIndex < lines.length - 1 && line.spaces > 0) {
+      const extraSpace = (maxWidth - line.width) / line.spaces;
+      line.words.forEach((wordObj, index) => {
+        doc.setFont(undefined, wordObj.bold ? "bold" : "normal");
+        doc.text(wordObj.text, currentX, currentY);
+        const wordWidth = doc.getTextWidth(wordObj.text);
+        currentX += wordWidth;
+        if (index < line.words.length - 1) {
+          currentX += spaceWidth + extraSpace;
+        }
+      });
+    } else {
+      // Alineación normal o última línea
+      line.words.forEach((wordObj, index) => {
+        doc.setFont(undefined, wordObj.bold ? "bold" : "normal");
+        doc.text(wordObj.text, currentX, currentY);
+        const wordWidth = doc.getTextWidth(wordObj.text);
+        currentX += wordWidth;
+        if (index < line.words.length - 1) {
+          currentX += spaceWidth;
+        }
+      });
+    }
+
+    currentY += lineHeight;
+  });
+
+  return currentY;
+}
+
 
 export default MainContent;
