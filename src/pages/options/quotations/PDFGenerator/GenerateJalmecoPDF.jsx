@@ -3,18 +3,17 @@ import MainContent from './MainContent'; // Importar el contenido principal
 import TechnicalSpecifications from './TechnicalSpecifications'; // Importar las especificaciones técnicas
 import TechnicalDetails from './TechnicalDetails'; // Importar los detalles técnicos
 import TableComponent from './TableComponent'; // Importar el componente de tabla
-
+ 
 import jalmecoHeaderJPG from '../../../../assets/images/jalmecoHeader.jpg'; // Importar el encabezado
 import jalmecoWaterMark from '../../../../assets/images/jalmecoWaterMark.jpg'; // Importar la marca de agua
 import teknoliftFooterJPG from '../../../../assets/images/teknoliftFooter.jpg'; // Importar el footer
-
 export const generateJalmecoPDF = (doc, formData, values, config) => {
   const pageWidth = doc.internal.pageSize.getWidth(); // Obtener el ancho de la página
   const pageHeight = doc.internal.pageSize.getHeight(); // Obtener la altura de la página
   const headerHeight = 40; // Aumentar la altura del encabezado
-  const footerHeight = 30; // Altura del footer
+  const footerHeight = 30; // Altura del footer  
 
-  let startY = headerHeight + 20; // Ajustar para que el contenido comience 10 unidades más abajo
+  let startY = headerHeight + 20; // Ajustar para qu e el contenido comience 10 unidades más abajo
 
   // Función interna para añadir la imagen de encabezado
   const addHeaderImage = (doc, imageBase64, x = 0, y = 0, width, height) => {

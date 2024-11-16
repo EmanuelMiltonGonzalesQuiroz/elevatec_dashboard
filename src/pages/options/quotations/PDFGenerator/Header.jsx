@@ -18,7 +18,7 @@ const Header = ({ doc, config, startY, formData }) => {
   doc.text(refNumber, leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
   if(formData[0]["NombreEdificio"]){
-    doc.text("Proyecyo:", leftMargin, currentY, { maxWidth: maxTextWidth });
+    doc.text("Proyecto:", leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;
   doc.text(formData[0]["NombreEdificio"], leftMargin, currentY, { maxWidth: maxTextWidth });
   currentY += lineSpacing;

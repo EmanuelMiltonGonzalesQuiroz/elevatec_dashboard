@@ -11,7 +11,7 @@ const MainContent = ({ doc, config, formData, startY }) => {
   const maxTextWidth = pageWidth - leftMargin - rightMargin;
 
   let currentY = startY || 20;
-
+ 
   const formDataArray = Array.isArray(formData) ? formData : [formData];
 
   let totalAscensores = 0;
@@ -105,10 +105,10 @@ const MainContent = ({ doc, config, formData, startY }) => {
   // Información de experiencia utilizando renderTextWithBold para respetar márgenes y justificación
   const experienceInfoSegments = [
     { text: `La experiencia de más de `, bold: false },
-    { text: `${experience} años`, bold: true },
-    { text: ` en el mercado de nuestra Empresa, y los más de `, bold: false },
-    { text: `500 equipos`, bold: true },
-    { text: ` instalados a nivel nacional, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`, bold: false },
+    { text: `${experience} años  en el mercado`, bold: true },
+    { text: ` de nuestra Empresa, y los más de `, bold: false },
+    { text: `500 equipos  instalados a nivel nacional`, bold: true },
+    { text: `, garantizan no solo la calidad de los equipos a instalarse, sino toda la cadena existente desde la Venta, Instalación, Montaje, provisión de repuestos originales, servicios de mantenimiento, modernizaciones, servicios de emergencia las 24 horas del día, etc.`, bold: false },
   ];
 
   currentY = renderTextWithBold(doc, experienceInfoSegments, {

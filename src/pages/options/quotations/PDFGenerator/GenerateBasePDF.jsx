@@ -15,13 +15,11 @@ export const generateBasePDF = (doc, formData, values, config) => {
   // Especificaciones técnicas   
   startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página    
   startY = TechnicalSpecifications({ doc, formData, startY , config}); 
-  // Detalles técnicos   
   startY = checkAddPage(doc, startY, config); // Verificar si se necesi ta una nueva página
   startY = TechnicalDetails({ doc, formData, startY , config}); 
 
   // Tabla de componentes finales 
   startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página
-  // eslint-disable-next-line no-unused-vars
   startY = TableComponent({ doc, formData, values, startY, config });
 
 

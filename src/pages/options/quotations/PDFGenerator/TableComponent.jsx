@@ -22,7 +22,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
 
   values.forEach((value, n) => {
     // Añadir un título para identificar la cotización
-    startY += 10; // Incrementar la posición Y para la siguiente sección
+    startY += 0; // Incrementar la posición Y para la siguiente sección
 
     // Definir los datos principales
     const valorFormateado = parseFloat(value["VAR7"].toFixed(2)).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -142,8 +142,6 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     ]
   ];
 
-
-
   doc.autoTable({
     startY: startY + 10, // Añadir un poco de espacio desde el punto inicial
     head: [[{ content: "PRECIO", colSpan: 8, styles: { halign: 'left', fontStyle: 'boldunderline', fillColor: [255,255, 255], textColor: [0, 0, 0] } }]],
@@ -155,7 +153,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     pageBreak: 'avoid', // Romper la tabla si no cabe en la página
   });
 
-  let currentYPosition = doc.lastAutoTable.finalY + 10;
+  let currentYPosition = doc.lastAutoTable.finalY ;
 
   doc.autoTable({
     startY: currentYPosition,
@@ -170,9 +168,8 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     pageBreak: 'auto',
     rowPageBreak: 'avoid',
   });
-  currentYPosition = doc.lastAutoTable.finalY + 10;
 
-  currentYPosition = checkAddPage(doc, currentYPosition, 60, config); // Verificar si se necesita nueva página
+  // Verificar si se necesita nueva página
 
   const paymentPlanData = [
     [
@@ -213,7 +210,6 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   }
 
   doc.autoTable({
-    startY: currentYPosition+10,
     head: [[{ content: "FORMA DE PAGO", colSpan: 8, styles: { halign: 'left', fontStyle: 'boldunderline', fillColor: [255,255, 255], textColor: [0, 0, 0] } }]],
     body: paymentPlanData,
     theme: 'grid',
@@ -265,9 +261,6 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
     [
       { content: "La oferta tiene una validez de siete (7) días a partir de la fecha, concluido este periodo, se tendrá que realizar una actualización de la presente cotización.", styles: { fontSize: 12 } }
     ],
-    [{ content: " ", styles: { minCellHeight: 25 } }],
-    [{ content: "Ing. Frank Jaldin Navia", styles: { halign: 'center', fontStyle: 'bold', fontSize: 12 } }],
-    [{ content: "GERENTE REGIONAL", styles: { halign: 'center', fontSize: 12 } }]
   ];
 
   doc.autoTable({
@@ -327,9 +320,26 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
       currentY += lineHeight * 1.5; // Ajusta para el espacio deseado entre párrafos
     },
   });
-  
-  
-  currentYPosition = doc.lastAutoTable.finalY;
+ 
+  currentYPosition = doc.lastAutoTable.finalY+50;
+
+  currentYPosition = checkAddPage(doc, currentYPosition, 30, config);
+   
+  let firma=[
+    [{ content: "Ing. Frank Jaldin Navia", styles: { halign: 'center', fontStyle: 'bold', fontSize: 12 } }],
+    [{ content: "GERENTE REGIONAL", styles: { halign: 'center', fontSize: 12 } }]
+  ]
+  doc.autoTable({
+    startY: currentYPosition<topMargin ? topMargin+50: currentYPosition,
+    body: firma,
+    theme: 'plain',
+    tableWidth: tableWidth,
+    margin: { top: topMargin, bottom: bottomMargin, left: leftMargin, right: rightMargin },
+    styles: { overflow: 'linebreak', fontSize: 12, halign: 'justify' },
+    pageBreak: 'auto',
+    rowPageBreak: 'avoid'
+});
+ 
 
   return doc.lastAutoTable.finalY + 10;
 };

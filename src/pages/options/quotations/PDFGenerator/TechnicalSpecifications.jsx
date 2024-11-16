@@ -7,7 +7,7 @@ const checkAddPage = (doc, currentY, additionalSpace = 20, config) => {
   const pageHeight = doc.internal.pageSize.height;
   if (currentY + additionalSpace > pageHeight - bottomMargin) {
     doc.addPage();
-    return config.topMargin +10 || 30; // Reinicia la posición Y en la nueva página, respetando el margen superior
+    return config.topMargin ; // Reinicia la posición Y en la nueva página, respetando el margen superior
   }
   return currentY;
 };
@@ -18,10 +18,11 @@ const TechnicalSpecifications = ({ doc, formData, startY, config }) => {
   // Lista de contenidos que deben tener líneas horizontales
   const rowsWithLines = [
     "MÁQUINA DE TRACCIÓN",
-    "1. ESPECIFICACIONES TÉCNICAS ASCENSOR"
+    "1. ESPECIFICACIONES TÉCNICAS ASCENSOR",
+    "CABLE DE TRACCIÓN"
   ];
 
-  let currentYPosition = startY;
+  let currentYPosition = startY-10;
 
   formData.forEach((dataItem, index) => {
     currentYPosition = checkAddPage(doc, currentYPosition, 50, config); // Verificar si se necesita nueva página
@@ -46,7 +47,9 @@ const TechnicalSpecifications = ({ doc, formData, startY, config }) => {
       [{ content: "Embarque:", styles: { fontStyle: 'bold' } }, dataItem['Embarque']?.nombre + " (entrada y salida por el mismo lado)" || "Falta"],
       [{ content: "Datos eléctricos:", styles: { fontStyle: 'bold' } }, "Fuerza trifásica 380v – 50Hz / Iluminación 220v"],
       [{ content: "MÁQUINA DE TRACCIÓN", colSpan: 2, styles: { fontStyle: 'bold', halign: 'center' } }],
-      [{ content: "Máquina de tracción:", styles: { fontStyle: 'bold' } }, dataItem['MaquinaTraccion']?.nombre || "Falta, sin engranajes, funcionamiento silencioso y ahorro energético"]
+      [{ content: "Máquina de tracción:", styles: { fontStyle: 'bold' } }, (dataItem['MaquinaTraccion']?.nombre || "") + ", sin enqranajes, de funcionamiento silencioso y ahorro energético, tecnologia de magneto sincrono permanente"],
+      [{ content: "CABLE DE TRACCIÓN", colSpan: 2, styles: { fontStyle: 'bold', halign: 'center' } }],
+      [{ content: "Cables de acero, con las certificaciones de calidad del fabricante, de alta eficiencia tecnologla y durabilidad exclusiva para el uso en elevadores verticales de alto trAfico.", colSpan: 2 }]
     ];
 
     const lineThickness = 0.2; // Grosor de la línea en mm

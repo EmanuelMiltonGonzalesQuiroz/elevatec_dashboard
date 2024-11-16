@@ -297,21 +297,21 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
           fontSize: '16px',
           border: 'none',
           cursor: 'pointer'
-        }}
+        }} 
       > 
         {type.toLowerCase().includes('word') ? 'Guardar Word' : 'Guardar PDF'}
       </button> 
-  
+      
       {!type.toLowerCase().includes('word') && ( 
         isGenerating || isFetchingQuotations ? (
           <div>Abriendo PDF, por favor espera...</div> 
         ) : (
           mergedPdfUrl && <iframe src={`${mergedPdfUrl}#filename=hola.pdf`} className="h-[80vh] min-w-[80vw]" title="Vista PDF" />
         )
-      )}
-    </>
-  );
+      )} 
+    </> 
+  );     
+    
+};    
   
-};
-
 export default PDFContent;

@@ -50,7 +50,21 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
   let currentYPosition = startY;
 
   formData.forEach((dataItem, index) => {
-    currentYPosition += 10;
+    currentYPosition += 0;
+
+    const cabinaMap = {
+      "PINTADO": "Paneles de acero pintado con pintura electrostática (antivandálica)",
+      "SEMPLICE": "Paneles de acero pintado con pintura electrostática (antivandálica)",
+      "CONFORT": "Paneles en melamina con detalles de acero inoxidable",
+      "INOXIDABLE": "Paneles en acero inoxidable",
+      "PANORAMICO 1": "Panel con vidrio de seguridad",
+      "PANORAMICO 2": "Panel con vidrio de seguridad",
+      "PANORAMICO 3": "Panel con vidrio de seguridad"
+    };
+    
+    // Obtener la descripción basada en el nombre
+    const cabinaNombre = dataItem['Cabina']?.nombre || " ";
+    const descripcionCabina = cabinaMap[cabinaNombre] || "Descripción no disponible";
 
     const technicalDetails = [
       [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
@@ -58,7 +72,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       ["FOSO", dataItem['06_Foso'] || " ", "HUIDA", dataItem['07_Huida'] || " "],
 
       [{ content: "CABINA", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
-      ["Cabina", dataItem['Cabina']?.nombre || " ", { content: "Según catálogo", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
+      ["Cabina", dataItem['Cabina'].nombre ? ("MODELO "+dataItem['Cabina'].nombre) : "", { content: descripcionCabina, colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
       ["Dimensiones", { content: "De acuerdo a diseño de ingeniería", colSpan: 3, styles: { halign: 'center', fontStyle: 'bold' } }],
 
       [{ content: "En cumplimiento a Normativa europea EN81", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],
@@ -76,7 +90,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       [{ content: " ", colSpan: 4, styles: { minCellHeight: imageList["Piso"].height + 5 } }],
 
       [{ content: "Pasamanos", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: ((Number(dataItem['PasamanosAdicional']?.nombre) || 0) + 1) + " (en acero inoxidable cepillado)", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
-      [{ content: "Espejo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: dataItem['EspejoAdicional']?.nombre || " ", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
+      [{ content: "Espejo", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: ((Number(dataItem['EspejoAdicional']?.nombre) || 0) + 1) || "1", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
       [{ content: "Iluminación", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Iluminación LED (encendido y apagado automatizado).", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
 
       [{ content: "Intercomunicador", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }, { content: "Incluido", colSpan: 2, styles: { halign: 'center', fontStyle: 'bold' } }],
@@ -206,7 +220,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
       }
     });
 
-    currentYPosition = doc.lastAutoTable.finalY + 10;
+    currentYPosition = doc.lastAutoTable.finalY;
   });
 
   return doc.lastAutoTable.finalY;
