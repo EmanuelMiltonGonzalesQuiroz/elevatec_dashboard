@@ -61,7 +61,7 @@ const PDFContent = ({ formData, values, timestamp, type }) => {
         const year = quotation.data.timestamp.split('T')[0].split('_')[0];
         const city = formData[0]['Ciudad']?.nombre || 'Desconocido';
         const cityAbbreviation = getCityAbbreviation(city);
-        quotation.code = `COT-${index + 101}/${year}/${cityAbbreviation}`;
+        quotation.code = `COT-${index + 1501}/${year}/${cityAbbreviation}`;
     
         if (quotation.data.timestamp === timestamp) {
           setQuotationCode(quotation.code);

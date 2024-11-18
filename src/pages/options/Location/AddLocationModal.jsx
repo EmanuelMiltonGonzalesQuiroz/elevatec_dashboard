@@ -5,7 +5,7 @@ import { doc, setDoc, collection, getDocs } from 'firebase/firestore'; // Import
 import CustomSelect from '../../../components/UI/CustomSelect';
 import MapComponent from '../../../components/UI/MapComponent';
 import { geocodeAddress } from '../../../components/layout/geocodeAddress';
-
+ 
 const typeOptions = {
   Construccion: [
     { id: 'CA', label: 'C. ASCENSORES' },

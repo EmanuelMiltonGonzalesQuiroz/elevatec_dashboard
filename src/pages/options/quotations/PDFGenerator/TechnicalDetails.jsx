@@ -65,6 +65,7 @@ const TechnicalDetails = ({ doc, formData, startY, config }) => {
     // Obtener la descripción basada en el nombre
     const cabinaNombre = dataItem['Cabina']?.nombre || " ";
     const descripcionCabina = cabinaMap[cabinaNombre] || "Descripción no disponible";
+    console.log(formData)
 
     const technicalDetails = [
       [{ content: "DIMENSIÓN DE POZO (MM)", colSpan: 4, styles: { halign: 'center', fontStyle: 'bold' } }],

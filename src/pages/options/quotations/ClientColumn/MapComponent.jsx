@@ -4,31 +4,39 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../../connection/firebase';
 import { calculateDistance } from '../../../../components/layout/calculateDistance';
 
-const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisabled }) => {
+const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisabled, address }) => {
   const [locations, setLocations] = useState([]);
+  const [currentMarkerPosition, setCurrentMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 });
   const [tooClose, setTooClose] = useState(false);
-
-  const defaultPosition = { lat: -16.495543, lng: -68.133543 }; // Posición inicial por defecto
 
   useEffect(() => {
     const fetchLocationsAndColors = async () => {
       const locationsCol = collection(db, 'locations');
       const locationSnapshot = await getDocs(locationsCol);
       const locationList = locationSnapshot.docs
-        .map(doc => ({
+        .map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }))
-        .filter(location =>
-          location.Tipo?.[0] === 'CONSTRUCCION' &&
-          location.Tipo?.[1] === 'CA' &&
-          location.Tipo?.[2] === 'C. ASCENSORES'
+        .filter(
+          (location) =>
+            location.Tipo?.[0] === 'CONSTRUCCION' &&
+            location.Tipo?.[1] === 'CA' &&
+            location.Tipo?.[2] === 'C. ASCENSORES'
         );
       setLocations(locationList);
     };
 
     fetchLocationsAndColors();
   }, []);
+
+  useEffect(() => {
+    if (address) {
+      // Simular geocodificación por nombre de ubicación
+      // Actualizar el marcador según un nombre proporcionado
+      setCurrentMarkerPosition(mapCenter); // Puedes ajustar esta lógica si tienes una API real.
+    }
+  }, [address, mapCenter]);
 
   const isValidLatLng = (lat, lng) => {
     return typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
@@ -64,7 +72,8 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     setTooClose(isTooClose);
     setButtonDisabled(isTooClose);
     if (!isTooClose) {
-      handleMapClick(event);
+      setCurrentMarkerPosition(clickedLocation);
+      handleMapClick(event); // Notificar el cambio al componente padre
     }
   };
 
@@ -72,27 +81,28 @@ const MapComponent = ({ mapCenter, markerPosition, handleMapClick, setButtonDisa
     <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={isValidLatLng(mapCenter.lat, mapCenter.lng) ? mapCenter : defaultPosition}
+        center={isValidLatLng(currentMarkerPosition.lat, currentMarkerPosition.lng)
+          ? currentMarkerPosition
+          : { lat: -16.495543, lng: -68.133543 }}
         zoom={10}
         onClick={handleMapClickWithCheck}
       >
+        {/* Renderizar otros marcadores */}
         {Array.isArray(locations) &&
           locations
-            .filter((location) => isValidLatLng(location.location?.lat, location.location?.lng) && location.state !== 'Eliminar' && location.state !== 'default')
+            .filter((location) => isValidLatLng(location.location?.lat, location.location?.lng))
             .map((location) => (
               <MarkerF
                 key={location.id}
                 position={{ lat: location.location.lat, lng: location.location.lng }}
                 icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
               />
-            ))
-        }
+            ))}
 
-        {/* Mostrar el marcador inicial si el usuario no ha elegido aún una posición */}
-        <MarkerF
-          position={isValidLatLng(markerPosition.lat, markerPosition.lng) ? markerPosition : defaultPosition}
-          icon="http://maps.google.com/mapfiles/ms/icons/red-dot.png" // Cambiar a marcador rojo
-        />
+        {/* Renderizar el marcador actual */}
+        {isValidLatLng(currentMarkerPosition.lat, currentMarkerPosition.lng) && (
+          <MarkerF position={currentMarkerPosition} />
+        )}
       </GoogleMap>
     </LoadScriptNext>
   );

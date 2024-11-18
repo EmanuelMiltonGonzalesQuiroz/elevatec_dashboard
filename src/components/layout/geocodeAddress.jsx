@@ -30,12 +30,8 @@ export const geocodeAddress = async (address, markerPosition, setMarkerPosition)
                     ) {
                         setMarkerPosition(newLocation);
                         resolve(newLocation);
-                    } else {
-                        reject('La ubicación excede el límite de 0.2 grados de cambio en latitud o longitud.');
-                    }
-                } else {
-                    reject('Error en la geocodificación: ' + status);
-                }
+                    } 
+                } 
             }
         );
     });

@@ -19,6 +19,8 @@ const ClientColumn = ({
   const [locationError, setLocationError] = useState('');
   const [numCuotas, setNumCuotas] = useState(0); // Default is 1 cuota
   const [cuotas, setCuotas] = useState([{ nombre: '', porcentaje: 100 }]); 
+  const [markerPosition, setMarkerPosition] = useState({ lat: -16.495543, lng: -68.133543 }); // Estado local para el marcador
+
 
   // Function to update formData
   const updateFormData = (field, value) => {
@@ -28,14 +30,18 @@ const ClientColumn = ({
     const fetchGeocoding = async () => {
       if (formData['Ubicacion_nombre']) {
         try {
-          await geocodeAddress(formData['Ubicacion_nombre'], formData['Ubicacion'], (newLocation) => {
-            handleClientChange('Ubicacion', newLocation);
+          await geocodeAddress(formData['Ubicacion_nombre'], markerPosition, (newLocation) => {
+            handleClientChange('Ubicacion', newLocation); // Actualizar en formData
+            setMarkerPosition(newLocation); // Actualizar posición en el mapa
           });
-        } catch {}
+        } catch (error) {
+          setLocationError('Error al obtener la ubicación.');
+        }
       }
     };
     fetchGeocoding();
   }, [formData['Ubicacion_nombre']]);
+
   
 
   // Shared field handlers
@@ -360,14 +366,13 @@ const handleWarrantyTimeChange = (e) => {
 
         {/* Right Column */}
         <div className="w-full h-[60vh]">
-        <MapComponent
-          mapCenter={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
-          markerPosition={formData['Ubicacion'] || { lat: -16.495543, lng: -68.133543 }}
-          handleMapClick={handleMapClick}
-          setButtonDisabled={setIsButtonDisabled}
-          address={formData['Ubicacion_nombre']}  // Añade aquí el nombre de la ubicación
-        />
-
+          <MapComponent
+            mapCenter={markerPosition} // Posición actual del mapa
+            markerPosition={markerPosition} // Posición actual del marcador
+            handleMapClick={handleMapClick}
+            setButtonDisabled={setIsButtonDisabled}
+            address={formData['Ubicacion_nombre']}
+          />
         </div>
       </div>
 

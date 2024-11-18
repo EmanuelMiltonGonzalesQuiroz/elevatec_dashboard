@@ -12,17 +12,12 @@ export const generateBasePDF = (doc, formData, values, config) => {
   startY = Header({ doc, config, startY , formData});  
   startY = MainContent({ doc, config, formData, startY });       
     
-  // Especificaciones técnicas   
+  // Especificaciones técnicas    
   startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página    
   startY = TechnicalSpecifications({ doc, formData, startY , config}); 
   startY = checkAddPage(doc, startY, config); // Verificar si se necesi ta una nueva página
   startY = TechnicalDetails({ doc, formData, startY , config}); 
 
-  // Tabla de componentes finales 
   startY = checkAddPage(doc, startY, config); // Verificar si se necesita una nueva página
-  startY = TableComponent({ doc, formData, values, startY, config });
-
-
-  // Sección final 
-   
+  startY = TableComponent({ doc, formData, values, startY, config });   
 };

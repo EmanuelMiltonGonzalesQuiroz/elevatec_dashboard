@@ -225,6 +225,7 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
   });
   currentYPosition = doc.lastAutoTable.finalY + 5;
   const maintenancePhrase = "mantenimiento preventivo y correctivo";
+  const maintenancePhrase2 = "15 (quince) años.";
 
   const termsData = [
     [
@@ -247,6 +248,16 @@ const TableComponent = ({ doc, formData, values, startY, config }) => {
         content: `Jalmeco Ltda., responsable de la instalación y Montaje, realizará el ${maintenancePhrase} de forma gratuita por ${(formData[0]["TiempoGarantia"] ? convertNumberToWords(formData[0]["TiempoGarantia"]) : "Dieciocho") + " (" + (formData[0]["TiempoGarantia"] || "18") + ")"} meses calendario, tiempo en el cual subsanará cualquier defecto en forma gratuita por el tiempo indicado.`,
         styles: { fontSize: 12 },
         boldPhrase: maintenancePhrase  // Especifica la frase en negrita aquí
+      }
+    ],
+    [
+      { content: "GARANTÍA DE FUNCIONAMIENTO", styles: { fontStyle: 'bold', fontSize: 12 } } 
+    ],
+    [
+      {
+        content: `Una vez concluido el periodo de mantenimiento gratuito se garantiza el funcionamiento del equipo por el periodo de 15 (quince) años. Esta garantía entrara en vigencia mientras se mantenga el contrato de mantenimiento vigente con nuestra empresa`,
+        styles: { fontSize: 12 },
+        boldPhrase: maintenancePhrase2  // Especifica la frase en negrita aquí
       }
     ],
     [

@@ -17,11 +17,11 @@ const updateGrupo7 = (formData, valor3, allData) => {
   const findGroupItemByName = (groupItems, name) => {
     return groupItems.find(item => item.nombre === name);
   };
-
+ 
   const descriptions = {
     "Llavines_con_llave": formData['Llavines_con_llave']?.UNIDADES || 0,
-    "Pasamanos_adicional": parseInt(formData['PasamanosAdicional']?.nombre || 0, 10),  // Cargar unidades desde nombre
-    "Espejo_adicional": parseInt(formData['EspejoAdicional']?.nombre || 0, 10),  // Cargar unidades desde nombre
+    "Pasamanos_adicional": parseInt(formData['PasamanosAdicional']?.nombre || 0, 10)+1,  // Cargar unidades desde nombre
+    "Espejo_adicional": parseInt(formData['EspejoAdicional']?.nombre || 0, 10)+1,  // Cargar unidades desde nombre
     "Sistema_de_monitoreo": formData['Sistema_de_monitoreo']?.UNIDADES || 0,
     "Pre_Apertura_de_puertas": formData['Pre_Apertura_de_puertas']?.UNIDADES || 0,
     "Aire_acondicionado": formData['Aire_acondicionado']?.UNIDADES || 0,
